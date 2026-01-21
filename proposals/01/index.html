@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S74 wine&café - Návrh 1</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <!-- Navigace -->
+    <nav class="fixed w-full top-0 bg-white/90 backdrop-blur-sm shadow-md z-50">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="text-2xl font-bold bg-gradient-to-r from-red-700 to-amber-600 bg-clip-text text-transparent">
+                    S74 wine&café
+                </div>
+                <button id="menu-toggle" class="md:hidden text-gray-700">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+                <div id="menu" class="hidden md:flex space-x-6">
+                    <a href="#o-nas" class="text-gray-700 hover:text-blue-600 transition">O nás</a>
+                    <a href="#sluzby" class="text-gray-700 hover:text-blue-600 transition">Služby</a>
+                    <a href="#reference" class="text-gray-700 hover:text-blue-600 transition">Reference</a>
+                    <a href="#kontakt" class="text-gray-700 hover:text-blue-600 transition">Kontakt</a>
+                </div>
+            </div>
+            <div id="mobile-menu" class="hidden md:hidden mt-4 space-y-2">
+                <a href="#o-nas" class="block py-2 text-gray-700 hover:text-blue-600">O nás</a>
+                <a href="#sluzby" class="block py-2 text-gray-700 hover:text-blue-600">Služby</a>
+                <a href="#reference" class="block py-2 text-gray-700 hover:text-blue-600">Reference</a>
+                <a href="#kontakt" class="block py-2 text-gray-700 hover:text-blue-600">Kontakt</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero sekce -->
+    <section class="pt-24 pb-16 bg-cover bg-center bg-no-repeat relative" style="background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('images/hero.jpg');">
+        <div class="container mx-auto px-4 text-center relative z-10">
+            <h1 class="text-5xl md:text-6xl font-bold mb-6 text-white">
+                S74 wine&café
+            </h1>
+            <p class="text-xl text-white max-w-2xl mx-auto mb-8">
+                Vinný bar a kavárna s výběrovými víny a kávovými specialitami v srdci Prahy
+            </p>
+            <a href="#kontakt" class="inline-block bg-gradient-to-r from-red-700 to-amber-600 text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg transition transform hover:-translate-y-1">
+                Kontaktujte nás
+            </a>
+        </div>
+    </section>
+
+    <!-- O nás -->
+    <section id="o-nas" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center mb-12 text-gray-800">O nás</h2>
+            <div class="max-w-4xl mx-auto mb-12">
+                <img src="images/about.jpg" alt="Interiér S74 wine&café" class="w-full rounded-xl shadow-lg">
+            </div>
+            <div class="max-w-3xl mx-auto text-center">
+                <p class="text-lg text-gray-600 mb-6">
+                    S74 wine&café je jedinečné místo, kde se setkávají vášeň pro výběrová vína a umění přípravy kávy. 
+                    Nacházíme se v krásném prostředí na Janáčkovo nábřeží v Praze, kde vytváříme příjemnou atmosféru 
+                    pro všechny milovníky kvalitních nápojů.
+                </p>
+                <p class="text-lg text-gray-600 mb-6">
+                    Naše tým znalců vám pomůže vybrat to pravé víno nebo kávovou specialitu. Nabízíme pečlivě vybraná vína 
+                    z různých vinařských regionů a prvotřídní kávu z nejlepších pražíren. U nás najdete klidné místo pro setkání 
+                    s přáteli nebo příjemný večer.
+                </p>
+                <div class="grid md:grid-cols-3 gap-8 mt-12">
+                    <div class="text-center">
+                        <div class="text-4xl font-bold text-red-700 mb-2">100+</div>
+                        <div class="text-gray-600">Druhů vín</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-4xl font-bold text-amber-600 mb-2">20+</div>
+                        <div class="text-gray-600">Kávových specialit</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-4xl font-bold text-red-600 mb-2">5★</div>
+                        <div class="text-gray-600">Hodnocení hostů</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Služby -->
+    <section id="sluzby" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center mb-12 text-gray-800">Naše služby</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2 overflow-hidden">
+                    <img src="images/service1.jpg" alt="Výběrová vína" class="w-full h-48 object-cover mb-6 rounded-lg">
+                    <h3 class="text-2xl font-bold mb-4 text-gray-800">Výběrová vína</h3>
+                    <p class="text-gray-600">
+                        Nabízíme pečlivě vybraná vína z různých vinařských regionů. Od českých a moravských vín až po mezinárodní speciality. Naše vína si můžete vychutnat u nás nebo odnést s sebou.
+                    </p>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2 overflow-hidden">
+                    <img src="images/service2.jpg" alt="Kávové speciality" class="w-full h-48 object-cover mb-6 rounded-lg">
+                    <h3 class="text-2xl font-bold mb-4 text-gray-800">Kávové speciality</h3>
+                    <p class="text-gray-600">
+                        Připravujeme prvotřídní kávu z nejlepších pražíren. Nabízíme espresso, cappuccino, latte i alternativní metody přípravy. Každá káva je umění, které si u nás můžete vychutnat.
+                    </p>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2 overflow-hidden">
+                    <img src="images/service3.jpg" alt="Vinný bar a kavárna" class="w-full h-48 object-cover mb-6 rounded-lg">
+                    <h3 class="text-2xl font-bold mb-4 text-gray-800">Vinný bar & Kavárna</h3>
+                    <p class="text-gray-600">
+                        Příjemné prostředí pro setkání s přáteli, obchodní jednání nebo romantický večer. Nabízíme klidnou atmosféru, kde můžete relaxovat a vychutnat si kvalitní nápoje.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reference -->
+    <section id="reference" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center mb-12 text-gray-800">Reference</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-gray-50 p-6 rounded-lg border-l-4 border-blue-600">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold mr-4">
+                            JD
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-800">Jan Novák</h4>
+                            <p class="text-sm text-gray-600">Ředitel společnosti ABC</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 italic">
+                        "Spolupráce byla vynikající. Profesionální přístup a skvělé výsledky. Vřele doporučuji!"
+                    </p>
+                    <div class="mt-4 text-yellow-500">★★★★★</div>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-lg border-l-4 border-purple-600">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold mr-4">
+                            MK
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-800">Marie Svobodová</h4>
+                            <p class="text-sm text-gray-600">Majitelka firmy XYZ</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 italic">
+                        "Velmi spokojená s kvalitou služeb. Tým je spolehlivý a vždy ochotný pomoci."
+                    </p>
+                    <div class="mt-4 text-yellow-500">★★★★★</div>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-lg border-l-4 border-pink-600">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-pink-600 rounded-full flex items-center justify-center text-white font-bold mr-4">
+                            PD
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-800">Petr Dvořák</h4>
+                            <p class="text-sm text-gray-600">CEO společnosti DEF</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 italic">
+                        "Výborná komunikace a rychlé dodání. Určitě budeme spolupracovat i v budoucnu."
+                    </p>
+                    <div class="mt-4 text-yellow-500">★★★★★</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Kontakt -->
+    <section id="kontakt" class="py-20 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center mb-12 text-gray-800">Kontakt</h2>
+            <div class="grid md:grid-cols-2 gap-12 max-w-5xl mx-auto">
+                <div>
+                    <h3 class="text-2xl font-bold mb-6 text-gray-800">Kontaktní informace</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <svg class="w-6 h-6 text-blue-600 mr-4 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                            <div>
+                                <p class="font-semibold text-gray-800">Adresa</p>
+                                <p class="text-gray-600">Janáčkovo nábřeží<br>Praha</p>
+                                <a href="https://www.google.com/maps/place/S74+wine%26caf%C3%A9/@50.0762918,14.4507375,19z/data=!4m15!1m7!3m6!1s0x470b949cd7a5735d:0x220f7c97e298164b!2zSmnFmcOtaG8geiBQb2TEm2JyYWQ!8m2!3d50.07761!4d14.44916!16zL20vMGNxX2pj!3m6!1s0x470b9519df27a10f:0x7f7d9601fb05431!8m2!3d50.0761278!4d14.4505275!10e1!16s%2Fg%2F11x63n30x9?entry=ttu&g_ep=EgoyMDI2MDExMy4wIKXMDSoASAFQAw%3D%3D" target="_blank" class="text-red-600 hover:text-red-700 mt-2 inline-block text-sm">Zobrazit na mapě →</a>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <svg class="w-6 h-6 text-blue-600 mr-4 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                            </svg>
+                            <div>
+                                <p class="font-semibold text-gray-800">Instagram</p>
+                                <a href="https://www.instagram.com/s74_wineandcafe/" target="_blank" class="text-gray-600 hover:text-red-600">@s74_wineandcafe</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-bold mb-6 text-gray-800">Napište nám</h3>
+                    <form class="space-y-4">
+                        <div>
+                            <input type="text" placeholder="Vaše jméno" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <input type="email" placeholder="Váš email" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <textarea placeholder="Vaše zpráva" rows="5" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-lg font-semibold hover:shadow-lg transition">
+                            Odeslat zprávu
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2024 S74 wine&café. Všechna práva vyhrazena.</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
