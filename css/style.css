@@ -243,6 +243,10 @@ h1, h2, h3, h4, h5, .logo {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+.card {
+    border: 1px solid rgba(212, 175, 55, 0.4);
+}
+
 .card:hover {
     transform: translateY(-3px);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
@@ -295,7 +299,7 @@ h1, h2, h3, h4, h5, .logo {
     width: 100%;
     aspect-ratio: 4/3;
     flex-shrink: 0;
-    background-image: url('../images/about.jpg');
+    background-image: url('../images/deserts.jpg');
 }
 
 .card-content {
@@ -447,5 +451,18 @@ h1, h2, h3, h4, h5, .logo {
 
     .logo a {
         font-size: 1.5rem;
+    }
+
+    .footer-item {
+        display: none;
+    }
+
+    .footer-item:first-child {
+        display: flex;
+    }
+
+    .social-icons {
+        display: inline-flex;
+        margin-top: 0.5rem;
     }
 }
