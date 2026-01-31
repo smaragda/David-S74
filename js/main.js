@@ -1,6 +1,9 @@
 // Smooth scrolling for navigation links
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
+        // Skip #menu - handled by lightbox
+        if (this.getAttribute('href') === '#menu') return;
+
         e.preventDefault();
         const target = document.querySelector(this.getAttribute('href'));
         if (target) {
@@ -47,5 +50,38 @@ window.addEventListener('scroll', () => {
     } else {
         header.style.backgroundColor = 'var(--color-dark-gray)';
         header.style.backdropFilter = 'none';
+    }
+});
+
+// Menu Lightbox
+const menuBtn = document.getElementById('menu-btn');
+const menuNavLink = document.querySelector('.nav-menu a[href="#menu"]');
+const lightbox = document.getElementById('menu-lightbox');
+const lightboxClose = document.querySelector('.lightbox-close');
+
+function openLightbox(e) {
+    e.preventDefault();
+    lightbox.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+    lightbox.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+menuBtn.addEventListener('click', openLightbox);
+menuNavLink.addEventListener('click', openLightbox);
+lightboxClose.addEventListener('click', closeLightbox);
+
+lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) {
+        closeLightbox();
+    }
+});
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+        closeLightbox();
     }
 });
