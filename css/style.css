@@ -241,10 +241,7 @@ h1, h2, h3, h4, h5, .logo {
     border-radius: 8px;
     overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.card {
-    border: 1px solid rgba(212, 175, 55, 0.4);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .card:hover {
