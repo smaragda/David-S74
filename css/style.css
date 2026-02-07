@@ -613,6 +613,7 @@ h1, h2, h3, h4, h5, .logo {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center bottom;
     transition: transform 0.4s ease;
 }
 
@@ -626,8 +627,8 @@ h1, h2, h3, h4, h5, .logo {
 
 .wine-card-type {
     display: inline-block;
-    font-size: 0.75rem;
-    font-weight: 400;
+    font-size: 0.8rem;
+    font-weight: 500;
     color: var(--color-gold);
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -636,15 +637,15 @@ h1, h2, h3, h4, h5, .logo {
 
 .wine-card-title {
     font-family: var(--font-heading);
-    font-size: 1.15rem;
+    font-size: 1.25rem;
     font-weight: 400;
     color: var(--color-white);
     margin-bottom: 0.25rem;
-    line-height: 1.3;
+    line-height: 1.35;
 }
 
 .wine-card-year {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     color: var(--color-text);
     opacity: 0.7;
     margin-bottom: 0.75rem;
@@ -659,19 +660,19 @@ h1, h2, h3, h4, h5, .logo {
 }
 
 .wine-card-country {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     color: var(--color-text);
     opacity: 0.8;
 }
 
 .wine-card-price {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     font-weight: 500;
     color: var(--color-white);
 }
 
 .wine-card-price span {
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     font-weight: 300;
     opacity: 0.7;
 }
@@ -707,6 +708,7 @@ h1, h2, h3, h4, h5, .logo {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center bottom;
 }
 
 .wine-detail-content {

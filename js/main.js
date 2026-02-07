@@ -90,6 +90,27 @@ document.addEventListener('keydown', (e) => {
 // Wine Section
 // ==========================================
 
+// Fallback data pro případ, že fetch selže (file:// protokol)
+const WINES_FALLBACK = [
+    {
+      "id": "gruner-veltliner-federspiel-2024",
+      "name": "Grüner Veltliner Federspiel Terrassen",
+      "year": 2024,
+      "type": "white",
+      "typeLabel": "Bílé",
+      "taste": "Suché",
+      "country": "Rakousko",
+      "producer": "Domäne Wachau",
+      "description": "Vůně bílého pepře, jemné tóny bylin, tropického ovoce, s dotykem zralého žlutého jablka. Středně plná chuť se svěží kyselinou. Harmonické a šťavnaté víno s pikantním závěrem. Velmi typický zástupce kategorie Federspiel.",
+      "alcohol": "12.5%",
+      "prices": {
+        "glass": 60,
+        "bottle": 399
+      },
+      "image": "images/vino1.jpeg"
+    }
+];
+
 let winesData = [];
 let activeFilters = {
     type: 'all',
@@ -100,14 +121,16 @@ let activeFilters = {
 async function loadWines() {
     try {
         const response = await fetch('data/wines.json');
+        if (!response.ok) throw new Error('Fetch failed');
         const data = await response.json();
         winesData = data.wines;
-
-        generateCountryFilters();
-        renderWines();
     } catch (error) {
-        console.error('Chyba při načítání vín:', error);
+        console.warn('Načítání z JSON selhalo, použit fallback:', error.message);
+        winesData = WINES_FALLBACK;
     }
+
+    generateCountryFilters();
+    renderWines();
 }
 
 // Generate country filter buttons dynamically
