@@ -85,3 +85,176 @@ document.addEventListener('keydown', (e) => {
         closeLightbox();
     }
 });
+
+// ==========================================
+// Wine Section
+// ==========================================
+
+let winesData = [];
+let activeFilters = {
+    type: 'all',
+    country: 'all'
+};
+
+// Fetch wines data
+async function loadWines() {
+    try {
+        const response = await fetch('data/wines.json');
+        const data = await response.json();
+        winesData = data.wines;
+
+        generateCountryFilters();
+        renderWines();
+    } catch (error) {
+        console.error('Chyba při načítání vín:', error);
+    }
+}
+
+// Generate country filter buttons dynamically
+function generateCountryFilters() {
+    const countries = [...new Set(winesData.map(wine => wine.country))];
+    const countryFilterGroup = document.querySelectorAll('.filter-group')[1];
+
+    if (!countryFilterGroup) return;
+
+    countries.forEach(country => {
+        const btn = document.createElement('button');
+        btn.className = 'filter-btn';
+        btn.dataset.filter = 'country';
+        btn.dataset.value = country;
+        btn.textContent = country;
+        countryFilterGroup.appendChild(btn);
+    });
+
+    // Add click listeners to all filter buttons
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', handleFilterClick);
+    });
+}
+
+// Handle filter button click
+function handleFilterClick(e) {
+    const btn = e.target;
+    const filterType = btn.dataset.filter;
+    const filterValue = btn.dataset.value;
+
+    // Update active state in UI
+    const filterGroup = btn.closest('.filter-group');
+    filterGroup.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    // Update active filters
+    activeFilters[filterType] = filterValue;
+
+    // Re-render wines
+    renderWines();
+}
+
+// Render wine cards
+function renderWines() {
+    const grid = document.getElementById('wine-grid');
+    const emptyMsg = document.getElementById('wine-empty');
+
+    if (!grid) return;
+
+    // Filter wines
+    const filteredWines = winesData.filter(wine => {
+        const typeMatch = activeFilters.type === 'all' || wine.type === activeFilters.type;
+        const countryMatch = activeFilters.country === 'all' || wine.country === activeFilters.country;
+        return typeMatch && countryMatch;
+    });
+
+    // Clear grid
+    grid.innerHTML = '';
+
+    if (filteredWines.length === 0) {
+        emptyMsg.style.display = 'block';
+        return;
+    }
+
+    emptyMsg.style.display = 'none';
+
+    // Create wine cards
+    filteredWines.forEach(wine => {
+        const card = createWineCard(wine);
+        grid.appendChild(card);
+    });
+}
+
+// Create a wine card element
+function createWineCard(wine) {
+    const card = document.createElement('article');
+    card.className = 'wine-card';
+    card.dataset.wineId = wine.id;
+
+    card.innerHTML = `
+        <div class="wine-card-image">
+            <img src="${wine.image}" alt="${wine.name}" loading="lazy">
+        </div>
+        <div class="wine-card-content">
+            <span class="wine-card-type">${wine.typeLabel}</span>
+            <h3 class="wine-card-title">${wine.name}</h3>
+            <p class="wine-card-year">${wine.year}</p>
+            <div class="wine-card-footer">
+                <span class="wine-card-country">${wine.country}</span>
+                <span class="wine-card-price">${wine.prices.bottle},- <span>Kč</span></span>
+            </div>
+        </div>
+    `;
+
+    card.addEventListener('click', () => openWineDetail(wine));
+
+    return card;
+}
+
+// Wine Detail Lightbox
+const wineLightbox = document.getElementById('wine-lightbox');
+const wineLightboxClose = document.querySelector('.wine-lightbox-close');
+
+function openWineDetail(wine) {
+    // Populate detail content
+    document.getElementById('wine-detail-img').src = wine.image;
+    document.getElementById('wine-detail-img').alt = wine.name;
+    document.getElementById('wine-detail-type').textContent = `${wine.typeLabel} • ${wine.taste}`;
+    document.getElementById('wine-detail-title').textContent = `${wine.name} ${wine.year}`;
+    document.getElementById('wine-detail-description').textContent = wine.description;
+    document.getElementById('wine-detail-producer').textContent = wine.producer;
+    document.getElementById('wine-detail-country').textContent = wine.country;
+    document.getElementById('wine-detail-year').textContent = wine.year;
+    document.getElementById('wine-detail-alcohol').textContent = wine.alcohol;
+    document.getElementById('wine-detail-taste').textContent = wine.taste;
+    document.getElementById('wine-detail-price-glass').textContent = `${wine.prices.glass},-`;
+    document.getElementById('wine-detail-price-bottle').textContent = `${wine.prices.bottle},-`;
+
+    // Open lightbox
+    wineLightbox.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeWineLightbox() {
+    wineLightbox.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+if (wineLightboxClose) {
+    wineLightboxClose.addEventListener('click', closeWineLightbox);
+}
+
+if (wineLightbox) {
+    wineLightbox.addEventListener('click', (e) => {
+        if (e.target === wineLightbox) {
+            closeWineLightbox();
+        }
+    });
+}
+
+// Close wine lightbox on Escape
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && wineLightbox && wineLightbox.classList.contains('active')) {
+        closeWineLightbox();
+    }
+});
+
+// Initialize wines on page load
+document.addEventListener('DOMContentLoaded', loadWines);
+

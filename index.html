@@ -93,6 +93,39 @@
         </div>
     </section>
 
+    <!-- Wine Section -->
+    <section id="wine" class="wine-section">
+        <div class="wine-container">
+            <div class="wine-header">
+                <h2 class="section-title">Naše vína</h2>
+                <p class="wine-description">Pečlivě vybraná přírodní vína z rodinných vinařství.</p>
+            </div>
+
+            <!-- Filtry -->
+            <div class="wine-filters">
+                <div class="filter-group">
+                    <span class="filter-label">Typ:</span>
+                    <button class="filter-btn active" data-filter="type" data-value="all">Vše</button>
+                    <button class="filter-btn" data-filter="type" data-value="white">Bílé</button>
+                    <button class="filter-btn" data-filter="type" data-value="red">Červené</button>
+                    <button class="filter-btn" data-filter="type" data-value="rose">Růžové</button>
+                </div>
+                <div class="filter-group">
+                    <span class="filter-label">Země:</span>
+                    <button class="filter-btn active" data-filter="country" data-value="all">Vše</button>
+                    <!-- Další tlačítka zemí se vygenerují dynamicky -->
+                </div>
+            </div>
+
+            <!-- Grid s víny -->
+            <div class="wine-grid" id="wine-grid">
+                <!-- Karty vín se vygenerují pomocí JS -->
+            </div>
+
+            <p class="wine-empty" id="wine-empty" style="display: none;">Žádná vína neodpovídají vašemu filtru.</p>
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-container">
@@ -122,6 +155,55 @@
     <div id="menu-lightbox" class="lightbox">
         <button type="button" class="lightbox-close" aria-label="Zavřít">&times;</button>
         <img src="images/menu.jpg" alt="Menu S74 wine&café" class="lightbox-image">
+    </div>
+
+    <!-- Wine Detail Lightbox -->
+    <div id="wine-lightbox" class="lightbox wine-lightbox">
+        <button type="button" class="lightbox-close wine-lightbox-close" aria-label="Zavřít">&times;</button>
+        <div class="wine-detail">
+            <div class="wine-detail-image">
+                <img id="wine-detail-img" src="" alt="">
+            </div>
+            <div class="wine-detail-content">
+                <span class="wine-detail-type" id="wine-detail-type"></span>
+                <h2 class="wine-detail-title" id="wine-detail-title"></h2>
+                <p class="wine-detail-description" id="wine-detail-description"></p>
+
+                <div class="wine-detail-info">
+                    <div class="wine-info-row">
+                        <span class="wine-info-label">Vinařství:</span>
+                        <span class="wine-info-value" id="wine-detail-producer"></span>
+                    </div>
+                    <div class="wine-info-row">
+                        <span class="wine-info-label">Země původu:</span>
+                        <span class="wine-info-value" id="wine-detail-country"></span>
+                    </div>
+                    <div class="wine-info-row">
+                        <span class="wine-info-label">Ročník:</span>
+                        <span class="wine-info-value" id="wine-detail-year"></span>
+                    </div>
+                    <div class="wine-info-row">
+                        <span class="wine-info-label">Obsah alkoholu:</span>
+                        <span class="wine-info-value" id="wine-detail-alcohol"></span>
+                    </div>
+                    <div class="wine-info-row">
+                        <span class="wine-info-label">Charakter:</span>
+                        <span class="wine-info-value" id="wine-detail-taste"></span>
+                    </div>
+                </div>
+
+                <div class="wine-detail-prices">
+                    <div class="wine-price-item">
+                        <span class="wine-price-label">0,1l</span>
+                        <span class="wine-price-value" id="wine-detail-price-glass"></span>
+                    </div>
+                    <div class="wine-price-item">
+                        <span class="wine-price-label">0,75l</span>
+                        <span class="wine-price-value" id="wine-detail-price-bottle"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="js/main.js"></script>
