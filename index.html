@@ -126,6 +126,31 @@
         </div>
     </section>
 
+    <!-- Contact Section -->
+    <section id="contact" class="contact-section">
+        <div class="contact-container">
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h2 class="section-title">Kontakt</h2>
+                    <p class="contact-text">Najdete nás na adrese:</p>
+                    <p class="contact-address">Slezská 856/74, 130 00 Praha 3-Vinohrady</p>
+                </div>
+                <div class="contact-map-wrapper">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2560.5532327605883!2d14.44836027289698!3d50.07592809344385!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x470b9519df27a10f%3A0x7f7d9601fb05431!2zUzc0IHdpbmUmY2Fmw6k!5e0!3m2!1scs!2scz!4v1770827784716!5m2!1scs!2scz"
+                        width="600"
+                        height="450"
+                        style="border:0;"
+                        allowfullscreen=""
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"
+                        title="Mapa S74 wine&café"
+                    ></iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-container">
@@ -152,9 +177,16 @@
     </footer>
 
     <!-- Menu Lightbox -->
-    <div id="menu-lightbox" class="lightbox">
+    <div id="menu-lightbox" class="lightbox menu-lightbox">
         <button type="button" class="lightbox-close" aria-label="Zavřít">&times;</button>
-        <img src="images/menu.jpg" alt="Menu S74 wine&café" class="lightbox-image">
+        <div class="menu-lightbox-content">
+            <div class="menu-doc-tabs" role="tablist" aria-label="Výběr dokumentu">
+                <button type="button" class="menu-doc-tab active" data-doc="menu" aria-selected="true">Menu</button>
+                <button type="button" class="menu-doc-tab" data-doc="wine-cz" aria-selected="false">Vinný lístek (CZ)</button>
+                <button type="button" class="menu-doc-tab" data-doc="wine-en" aria-selected="false">Wine List (EN)</button>
+            </div>
+            <div id="menu-doc-pages" class="menu-doc-pages"></div>
+        </div>
     </div>
 
     <!-- Wine Detail Lightbox -->

@@ -58,9 +58,64 @@ const menuBtn = document.getElementById('menu-btn');
 const menuNavLink = document.querySelector('.nav-menu a[href="#menu"]');
 const lightbox = document.getElementById('menu-lightbox');
 const lightboxClose = document.querySelector('.lightbox-close');
+const menuDocPages = document.getElementById('menu-doc-pages');
+const menuDocTabs = Array.from(document.querySelectorAll('.menu-doc-tab'));
+
+const MENU_DOCS = {
+    menu: {
+        alt: 'Menu S74 wine&café',
+        pages: [
+            'images/menu-docs/menu-00.jpg'
+        ]
+    },
+    'wine-cz': {
+        alt: 'Vinný lístek S74 (CZ)',
+        pages: [
+            'images/menu-docs/wine-cz-00.jpg',
+            'images/menu-docs/wine-cz-01.jpg',
+            'images/menu-docs/wine-cz-02.jpg',
+            'images/menu-docs/wine-cz-03.jpg'
+        ]
+    },
+    'wine-en': {
+        alt: 'Wine list S74 (EN)',
+        pages: [
+            'images/menu-docs/wine-en-00.jpg',
+            'images/menu-docs/wine-en-01.jpg',
+            'images/menu-docs/wine-en-02.jpg',
+            'images/menu-docs/wine-en-03.jpg'
+        ]
+    }
+};
+
+function renderMenuDocument(docKey) {
+    if (!menuDocPages || !MENU_DOCS[docKey]) return;
+
+    const doc = MENU_DOCS[docKey];
+    menuDocPages.innerHTML = '';
+
+    doc.pages.forEach((src, index) => {
+        const img = document.createElement('img');
+        img.className = 'menu-doc-image';
+        img.src = src;
+        img.loading = index === 0 ? 'eager' : 'lazy';
+        img.alt = `${doc.alt} - stránka ${index + 1}`;
+        menuDocPages.appendChild(img);
+    });
+
+    menuDocTabs.forEach(tab => {
+        const isActive = tab.dataset.doc === docKey;
+        tab.classList.toggle('active', isActive);
+        tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    });
+}
 
 function openLightbox(e) {
     e.preventDefault();
+    const activeTab = menuDocTabs.find(tab => tab.classList.contains('active'));
+    if (activeTab) {
+        renderMenuDocument(activeTab.dataset.doc);
+    }
     lightbox.classList.add('active');
     document.body.style.overflow = 'hidden';
 }
@@ -70,18 +125,39 @@ function closeLightbox() {
     document.body.style.overflow = '';
 }
 
-menuBtn.addEventListener('click', openLightbox);
-menuNavLink.addEventListener('click', openLightbox);
-lightboxClose.addEventListener('click', closeLightbox);
+if (menuBtn) {
+    menuBtn.addEventListener('click', openLightbox);
+}
 
-lightbox.addEventListener('click', (e) => {
-    if (e.target === lightbox) {
-        closeLightbox();
-    }
+if (menuNavLink) {
+    menuNavLink.addEventListener('click', openLightbox);
+}
+
+if (lightboxClose) {
+    lightboxClose.addEventListener('click', closeLightbox);
+}
+
+if (lightbox) {
+    lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox) {
+            closeLightbox();
+        }
+    });
+}
+
+menuDocTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+        renderMenuDocument(tab.dataset.doc);
+    });
 });
 
+const initialMenuTab = menuDocTabs.find(tab => tab.classList.contains('active'));
+if (initialMenuTab) {
+    renderMenuDocument(initialMenuTab.dataset.doc);
+}
+
 document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+    if (e.key === 'Escape' && lightbox && lightbox.classList.contains('active')) {
         closeLightbox();
     }
 });
@@ -280,4 +356,3 @@ document.addEventListener('keydown', (e) => {
 
 // Initialize wines on page load
 document.addEventListener('DOMContentLoaded', loadWines);
-
