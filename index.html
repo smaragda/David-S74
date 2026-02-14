@@ -11,23 +11,28 @@
 </head>
 <body>
     <!-- Header -->
-    <header class="header">
-        <nav class="nav">
-            <div class="nav-container">
-                <div class="logo">
-                    <a href="#home"><img src="images/logo.jpg" alt="S74 wine&café"></a>
-                </div>
-                <ul class="nav-menu">
-                    <li><a href="#home" class="active">Domů</a></li>
-                    <li><a href="#menu">Menu</a></li>
-                    <li><a href="#about">O nás</a></li>
-                    <li><a href="#wine">Vína</a></li>
-                    <li><a href="#events">Akce</a></li>
-                    <li><a href="#contact">Kontakt</a></li>
-                </ul>
-            </div>
-        </nav>
-    </header>
+	    <header class="header">
+	        <nav class="nav">
+	            <div class="nav-container">
+	                <div class="logo">
+	                    <a href="#home"><img src="images/logo.jpg" alt="S74 wine&café"></a>
+	                </div>
+	                <div class="nav-right">
+	                    <ul class="nav-menu">
+	                        <li><a href="#home" class="active">Domů</a></li>
+	                        <li><a href="#menu">Menu</a></li>
+	                        <li><a href="#about">O nás</a></li>
+	                        <li><a href="#wine">Vína</a></li>
+	                        <li><a href="#events">Akce</a></li>
+	                        <li><a href="#contact">Kontakt</a></li>
+	                    </ul>
+
+	                    <!-- Tebi widget launcher will be moved here in "header" mode -->
+	                    <div id="reserve-slot-header" class="reserve-slot reserve-slot-header" aria-label="Rezervace"></div>
+	                </div>
+	            </div>
+	        </nav>
+	    </header>
 
     <!-- Hero Section -->
     <section id="home" class="hero">
@@ -126,15 +131,84 @@
         </div>
     </section>
 
+    <!-- Events / Reservations -->
+	    <section id="events" class="events-section">
+	        <div class="events-container">
+	            <div class="events-layout">
+	                <div class="events-left">
+	                    <div class="events-header">
+	                        <h2 class="section-title">Akce</h2>
+	                        <p class="events-description">Rezervace míst v kavárně.</p>
+	                    </div>
+
+	                    <div class="events-actions">
+	                        <button
+	                          type="button"
+	                          class="btn-primary btn-reserve"
+	                          id="reserve-toggle-btn"
+	                          aria-controls="reserve-panel"
+	                          aria-expanded="false">
+	                            Rezervovat stůl
+	                        </button>
+	                        <p class="events-hint" id="reserve-hint">Kliknutím zobrazíte rezervační widget.</p>
+	                    </div>
+	                </div>
+
+		                <div class="events-right">
+		                    <div id="reserve-panel" class="events-panel" hidden>
+		                        <!-- Tebi widget launcher will be moved here in "events" / "button" mode -->
+		                        <div id="reserve-slot-events" class="reserve-slot reserve-slot-events" aria-label="Rezervace"></div>
+		                    </div>
+		                </div>
+	            </div>
+	        </div>
+	    </section>
+
     <!-- Contact Section -->
     <section id="contact" class="contact-section">
         <div class="contact-container">
-            <div class="contact-content">
-                <div class="contact-info">
-                    <h2 class="section-title">Kontakt</h2>
-                    <p class="contact-text">Najdete nás na adrese:</p>
-                    <p class="contact-address">Slezská 856/74, 130 00 Praha 3-Vinohrady</p>
+            <h2 class="section-title">Kontakt</h2>
+
+            <div class="contact-grid">
+                <!-- Levá strana - Info karty -->
+                <div class="contact-info-group">
+                    <!-- Adresa -->
+                    <div class="contact-card">
+                        <div class="contact-icon">📍</div>
+                        <h3 class="contact-card-title">Adresa</h3>
+                        <p class="contact-card-text">Slezská 856/74<br>130 00 Praha 3-Vinohrady</p>
+                    </div>
+
+                    <!-- Otevírací doba -->
+                    <div class="contact-card">
+                        <div class="contact-icon">🕐</div>
+                        <h3 class="contact-card-title">Otevírací doba</h3>
+                        <p class="contact-card-text">Po-Ne<br>8:00-23:00</p>
+                    </div>
+
+                    <!-- Rezervace -->
+                    <div class="contact-card">
+                        <div class="contact-icon">📅</div>
+                        <h3 class="contact-card-title">Rezervace</h3>
+                        <p class="contact-card-text">
+                            <a href="#events" class="contact-link">Rezervovat stůl</a>
+                        </p>
+                    </div>
+
+                    <!-- Instagram -->
+                    <div class="contact-card">
+                        <div class="contact-icon">📱</div>
+                        <h3 class="contact-card-title">Sledujte nás</h3>
+                        <a href="https://www.instagram.com/s74_wineandcafe/"
+                           class="contact-social-link"
+                           target="_blank"
+                           rel="noopener noreferrer">
+                            @s74_wineandcafe
+                        </a>
+                    </div>
                 </div>
+
+                <!-- Pravá strana - Mapa -->
                 <div class="contact-map-wrapper">
                     <iframe
                         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2560.5532327605883!2d14.44836027289698!3d50.07592809344385!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x470b9519df27a10f%3A0x7f7d9601fb05431!2zUzc0IHdpbmUmY2Fmw6k!5e0!3m2!1scs!2scz!4v1770827784716!5m2!1scs!2scz"
@@ -238,6 +312,10 @@
         </div>
     </div>
 
-    <script src="js/main.js"></script>
-</body>
-</html>
+	    <script src="js/main.js"></script>
+	    <script
+	      src="https://live.tebi.co/ecom/widget-manager.js"
+	      data-widget-token="516094_b60d2375756aa69730e6dd7521b41bf3ec933587a0ad7b5c01cd5a093c9435cd"
+	      id="tebi"></script>
+	</body>
+	</html>

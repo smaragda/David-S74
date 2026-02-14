@@ -356,3 +356,151 @@ document.addEventListener('keydown', (e) => {
 
 // Initialize wines on page load
 document.addEventListener('DOMContentLoaded', loadWines);
+
+// ==========================================
+// Reservations (Tebi widget)
+// ==========================================
+
+function initTebiReservations() {
+    const allowedPlacements = new Set(['floating', 'events', 'header', 'button']);
+    const urlParams = new URLSearchParams(window.location.search);
+    let placement = urlParams.get('tebi') || 'events';
+    if (!allowedPlacements.has(placement)) placement = 'events';
+
+    // On small screens, the header slot is hidden; fall back to the button-in-events flow.
+    if (placement === 'header' && window.matchMedia && window.matchMedia('(max-width: 768px)').matches) {
+        placement = 'button';
+    }
+
+    document.body.dataset.tebiPlacement = placement;
+
+    const headerSlot = document.getElementById('reserve-slot-header');
+    const eventsSlot = document.getElementById('reserve-slot-events');
+    const eventsLayout = document.querySelector('.events-layout');
+    const panel = document.getElementById('reserve-panel');
+    const toggleBtn = document.getElementById('reserve-toggle-btn');
+    const eventsHint = document.getElementById('reserve-hint');
+
+    // UI toggles per mode.
+    if (panel) {
+        // Only visible by default in "events" mode; "button" controls it, "header"/"floating" keep it hidden.
+        panel.hidden = placement !== 'events';
+    }
+
+    if (toggleBtn) {
+        toggleBtn.style.display = placement === 'button' ? '' : 'none';
+        toggleBtn.setAttribute('aria-expanded', 'false');
+    }
+
+    if (eventsHint) {
+        eventsHint.style.display = placement === 'button' ? '' : 'none';
+    }
+
+    // For managed placements we hide the injected floating iframe until we mount it.
+    if (placement !== 'floating') {
+        document.body.classList.add('tebi-managed');
+    }
+
+    function getTebiIframe() {
+        return (
+            document.querySelector('iframe[id^="tebi_rs_"]') ||
+            document.querySelector('iframe[src*="live.tebi.co/api/widget/" i]')
+        );
+    }
+
+    function chooseSlot() {
+        if (placement === 'header' && headerSlot) return headerSlot;
+        if ((placement === 'events' || placement === 'button') && eventsSlot) return eventsSlot;
+        return null;
+    }
+
+    function normalizeIframe(iframe) {
+        // Convert the injected fixed-position launcher into an inline element.
+        iframe.style.position = 'static';
+        iframe.style.inset = 'auto';
+        iframe.style.right = 'auto';
+        iframe.style.bottom = 'auto';
+        iframe.style.zIndex = 'auto';
+        iframe.style.transform = 'none';
+    }
+
+    let mounted = false;
+    function mountIframeIfReady() {
+        const iframe = getTebiIframe();
+        if (!iframe || mounted) return Boolean(iframe);
+
+        const slot = chooseSlot();
+        if (!slot) {
+            // No suitable slot; just let it behave as the default floating launcher.
+            document.body.classList.remove('tebi-managed');
+            document.body.classList.add('tebi-mounted');
+            mounted = true;
+            return true;
+        }
+
+        normalizeIframe(iframe);
+        slot.appendChild(iframe);
+        mounted = true;
+
+        if (placement !== 'button') {
+            document.body.classList.add('tebi-mounted');
+        }
+
+        return true;
+    }
+
+    // If already injected, mount immediately; otherwise observe.
+    if (!mountIframeIfReady()) {
+        const observer = new MutationObserver(() => {
+            if (mountIframeIfReady()) observer.disconnect();
+        });
+        observer.observe(document.documentElement, { childList: true, subtree: true });
+    }
+
+    function setToggleUi(open) {
+        if (!toggleBtn) return;
+        toggleBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        toggleBtn.textContent = open ? 'Skrýt rezervace' : 'Rezervovat stůl';
+        if (eventsHint) {
+            eventsHint.textContent = open
+                ? 'Kliknutím widget skryjete.'
+                : 'Kliknutím zobrazíte rezervační widget.';
+        }
+    }
+
+    function setOpen(open) {
+        if (panel) panel.hidden = !open;
+
+        // Fallback pro browsery bez :has() - nastavit data attribute
+        const eventsRight = document.querySelector('.events-right');
+        if (eventsRight) {
+            eventsRight.dataset.hidden = !open;
+        }
+
+        if (open) {
+            mountIframeIfReady();
+            document.body.classList.add('tebi-mounted');
+            // Žádný scroll - uživatel už je v Events sekci, kde kliknul
+        } else {
+            document.body.classList.remove('tebi-mounted');
+        }
+        setToggleUi(open);
+    }
+
+    if (placement === 'events') {
+        // Always visible in "events" mode.
+        setOpen(true);
+    }
+
+    if (placement === 'button' && toggleBtn) {
+        let open = false;
+        setOpen(open);
+
+        toggleBtn.addEventListener('click', () => {
+            open = !open;
+            setOpen(open);
+        });
+    }
+}
+
+document.addEventListener('DOMContentLoaded', initTebiReservations);

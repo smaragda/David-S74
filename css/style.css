@@ -57,6 +57,12 @@ h1, h2, h3, h4, h5, .logo {
     align-items: center;
 }
 
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
 .logo a {
     display: flex;
     align-items: center;
@@ -98,6 +104,49 @@ h1, h2, h3, h4, h5, .logo {
     right: 0;
     height: 1px;
     background-color: var(--color-white);
+}
+
+/* ==========================================
+   Reservations (Tebi)
+   ========================================== */
+
+/* The Tebi script injects an iframe with id like "tebi_rs_01". */
+.tebi-managed iframe[id^="tebi_rs_"],
+.tebi-managed iframe[src*="live.tebi.co/api/widget/"] {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 160ms ease;
+}
+
+.tebi-mounted iframe[id^="tebi_rs_"],
+.tebi-mounted iframe[src*="live.tebi.co/api/widget/"] {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.reserve-slot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.reserve-slot-header iframe[id^="tebi_rs_"],
+.reserve-slot-header iframe[src*="live.tebi.co/api/widget/"] {
+    /* Keep the original size; just let it sit inline in the header. */
+    position: static !important;
+    inset: auto !important;
+    z-index: auto !important;
+    transform: none !important;
+    margin-left: 0.25rem;
+}
+
+.reserve-slot-events iframe[id^="tebi_rs_"],
+.reserve-slot-events iframe[src*="live.tebi.co/api/widget/"] {
+    position: static !important;
+    inset: auto !important;
+    z-index: auto !important;
+    transform: none !important;
+    margin-top: 0.75rem;
 }
 
 /* Hero Section */
@@ -328,7 +377,7 @@ h1, h2, h3, h4, h5, .logo {
 
 /* Contact Section */
 .contact-section {
-    background-color: var(--color-dark-gray);
+    background-color: var(--color-dark);
     padding: 4rem 2rem;
 }
 
@@ -337,36 +386,79 @@ h1, h2, h3, h4, h5, .logo {
     margin: 0 auto;
 }
 
-.contact-content {
+.contact-grid {
     display: grid;
-    grid-template-columns: minmax(240px, 340px) 1fr;
-    gap: 1.5rem;
-    align-items: stretch;
+    grid-template-columns: minmax(320px, 420px) 1fr;
+    gap: 2rem;
+    margin-top: 2rem;
 }
 
-.contact-info {
+.contact-info-group {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.contact-card {
     background-color: var(--color-light-gray);
     border-radius: 8px;
-    padding: 1.5rem;
+    padding: 1.25rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
-.contact-info:hover {
+.contact-card:hover {
     transform: translateY(-3px);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
 }
 
-.contact-text {
-    font-size: 0.95rem;
-    color: var(--color-text);
-    margin-bottom: 0.45rem;
+.contact-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
 }
 
-.contact-address {
+.contact-card-title {
+    font-family: var(--font-heading);
     font-size: 1rem;
     color: var(--color-white);
-    line-height: 1.5;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.contact-card-text {
+    font-size: 0.9rem;
+    color: var(--color-text);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.contact-link {
+    color: var(--color-gold-light);
+    text-decoration: none;
+    transition: color 0.3s ease;
+    font-weight: 400;
+}
+
+.contact-link:hover {
+    color: var(--color-gold);
+}
+
+.contact-social-link {
+    display: inline-flex;
+    align-items: center;
+    color: var(--color-gold-light);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+}
+
+.contact-social-link:hover {
+    color: var(--color-gold);
 }
 
 .contact-map-wrapper {
@@ -387,6 +479,88 @@ h1, h2, h3, h4, h5, .logo {
     width: 100%;
     height: 100%;
     display: block;
+}
+
+/* Events / Reservations */
+.events-section {
+    background-color: var(--color-dark-gray);
+    padding: 4.5rem 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.events-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.events-layout {
+    display: grid;
+    grid-template-columns: minmax(260px, 420px) 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+.events-left {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.events-right {
+    display: flex;
+    justify-content: center;
+}
+
+.events-header {
+    margin-bottom: 1.5rem;
+}
+
+.events-description {
+    font-size: 0.95rem;
+    font-weight: 300;
+    color: var(--color-text);
+    line-height: 1.6;
+    margin-top: 0.5rem;
+    opacity: 0.9;
+}
+
+.events-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.btn-reserve {
+    padding: 0.85rem 1.6rem;
+}
+
+.events-hint {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    max-width: 28rem;
+}
+
+.events-panel {
+    width: min(560px, 100%);
+    background: linear-gradient(180deg, rgba(58, 58, 58, 0.7) 0%, rgba(45, 45, 45, 0.7) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+    display: flex;
+    justify-content: center;
+}
+
+/* Fix pro widget - skrýt grid sloupec když je panel hidden */
+.events-layout:has(#reserve-panel[hidden]) {
+    grid-template-columns: 1fr;
+}
+
+/* Fallback pro browsery bez :has() podpory */
+.events-right[data-hidden="true"] {
+    display: none;
 }
 
 /* Footer */
@@ -465,12 +639,34 @@ h1, h2, h3, h4, h5, .logo {
         flex-direction: column;
         justify-content: center;
     }
+
+    .contact-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .contact-info-group {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 @media (max-width: 768px) {
-    .nav-menu {
+    .nav-right {
         gap: 0.5rem;
-        font-size: 0.75rem;
+    }
+
+    .nav-menu {
+        gap: 0.4rem 0.9rem;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+
+    .nav-menu a {
+        font-size: 0.8rem;
+        letter-spacing: 0.3px;
+    }
+
+    .reserve-slot-header {
+        display: none;
     }
     
     .hero {
@@ -483,6 +679,19 @@ h1, h2, h3, h4, h5, .logo {
 
     .contact-section {
         padding: 3rem 1.5rem;
+    }
+
+    .events-section {
+        padding: 3.5rem 1.5rem;
+    }
+
+    .events-layout {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+
+    .events-right {
+        justify-content: flex-start;
     }
 
     .contact-content {
@@ -521,12 +730,20 @@ h1, h2, h3, h4, h5, .logo {
     }
 
     .nav-menu {
-        gap: 0.4rem;
-        font-size: 0.7rem;
+        gap: 0.35rem 0.75rem;
+    }
+
+    .nav-menu a {
+        font-size: 0.74rem;
+        letter-spacing: 0.25px;
     }
 
     .logo img {
         height: 35px;
+    }
+
+    .contact-info-group {
+        grid-template-columns: 1fr;
     }
 
     .footer-item {
