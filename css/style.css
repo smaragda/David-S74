@@ -906,8 +906,8 @@ h1, h2, h3, h4, h5, .logo {
 
 .filter-btn {
     padding: 0.4rem 0.9rem;
-    background-color: transparent;
-    border: 1px solid var(--color-light-gray);
+    background-color: rgba(212, 175, 55, 0.07);
+    border: 1px solid rgba(212, 175, 55, 0.3);
     color: var(--color-text);
     font-family: var(--font-body);
     font-size: 0.85rem;
@@ -918,6 +918,7 @@ h1, h2, h3, h4, h5, .logo {
 }
 
 .filter-btn:hover {
+    background-color: rgba(212, 175, 55, 0.15);
     border-color: var(--color-gold-light);
     color: var(--color-white);
 }
@@ -952,15 +953,19 @@ h1, h2, h3, h4, h5, .logo {
 
 .wine-card-image {
     width: 100%;
-    aspect-ratio: 4/3;
+    height: 160px;
     overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.2);
 }
 
 .wine-card-image img {
-    width: 100%;
+    width: auto;
+    max-width: 45%;
     height: 100%;
-    object-fit: cover;
-    object-position: center bottom;
+    object-fit: contain;
     transition: transform 0.4s ease;
 }
 
@@ -1049,13 +1054,16 @@ h1, h2, h3, h4, h5, .logo {
 .wine-detail-image {
     flex: 0 0 45%;
     max-width: 45%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.2);
 }
 
 .wine-detail-image img {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center bottom;
+    height: auto;
+    object-fit: contain;
 }
 
 .wine-detail-content {
@@ -1168,7 +1176,8 @@ h1, h2, h3, h4, h5, .logo {
     .wine-detail-image {
         flex: 0 0 auto;
         max-width: 100%;
-        height: 250px;
+        min-height: 250px;
+        height: auto;
     }
 
     .wine-detail-content {
