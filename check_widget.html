@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { margin: 0; padding: 20px; font-family: Arial; }
+        #events { scroll-margin-top: 0; }
+    </style>
+</head>
+<body>
+    <script>
+        setTimeout(() => {
+            const eventsSection = document.getElementById('events');
+            if (eventsSection) {
+                eventsSection.scrollIntoView({ behavior: 'instant', block: 'start' });
+            }
+        }, 100);
+    </script>
+</body>
+</html>
