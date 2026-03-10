@@ -1216,3 +1216,15 @@ h1, h2, h3, h4, h5, .logo {
         flex: 1;
     }
 }
+
+/* Kava slideshow lightbox */
+.kava-lightbox { align-items: center; justify-content: center; }
+.kava-slideshow { width: min(700px, 95vw); text-align: center; position: relative; }
+.kava-slideshow-title { color: var(--gold); font-family: var(--font-serif); margin-bottom: 1.5rem; }
+.kava-slide-wrapper { display: flex; align-items: center; gap: 1rem; }
+.kava-slide-img { flex: 1; width: 100%; max-height: 70vh; object-fit: contain; border-radius: 8px; }
+.kava-arrow { background: rgba(255,255,255,0.1); border: none; color: #fff; font-size: 2rem; padding: 0.5rem 1rem; cursor: pointer; border-radius: 4px; transition: background 0.2s; }
+.kava-arrow:hover { background: rgba(255,255,255,0.25); }
+.kava-dots { margin-top: 1rem; display: flex; justify-content: center; gap: 0.5rem; }
+.kava-dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.3); border: none; cursor: pointer; transition: background 0.2s; }
+.kava-dot.active { background: var(--gold); }

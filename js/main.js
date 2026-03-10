@@ -503,4 +503,82 @@ function initTebiReservations() {
     }
 }
 
+// Kava slideshow lightbox
+(function () {
+    const photos = [
+        'images/kava-3-druhy.jpg',
+        'images/kava-costarica.webp',
+        'images/kava-guatemala.webp',
+        'images/kava-mexiko.webp'
+    ];
+    const alts = ['3 druhy kávy', 'Costa Rica', 'Guatemala', 'Mexiko'];
+
+    let currentIndex = 0;
+    const lightbox = document.getElementById('kava-lightbox');
+    const slideImg = document.getElementById('kava-slide-img');
+    const dotsContainer = document.getElementById('kava-dots');
+
+    // Build dots
+    photos.forEach((_, i) => {
+        const dot = document.createElement('button');
+        dot.className = 'kava-dot' + (i === 0 ? ' active' : '');
+        dot.setAttribute('aria-label', `Fotka ${i + 1}`);
+        dot.addEventListener('click', () => openKavaSlideshow(i));
+        dotsContainer.appendChild(dot);
+    });
+
+    function updateDots() {
+        dotsContainer.querySelectorAll('.kava-dot').forEach((dot, i) => {
+            dot.classList.toggle('active', i === currentIndex);
+        });
+    }
+
+    function openKavaSlideshow(index) {
+        currentIndex = index;
+        slideImg.src = photos[currentIndex];
+        slideImg.alt = alts[currentIndex];
+        updateDots();
+        lightbox.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeKava() {
+        lightbox.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    // Card click
+    const kavaCard = document.getElementById('kava-card');
+    if (kavaCard) {
+        kavaCard.addEventListener('click', () => openKavaSlideshow(0));
+        kavaCard.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openKavaSlideshow(0); }
+        });
+    }
+
+    // Arrows
+    lightbox.querySelector('.kava-arrow-prev').addEventListener('click', () => {
+        openKavaSlideshow((currentIndex - 1 + photos.length) % photos.length);
+    });
+    lightbox.querySelector('.kava-arrow-next').addEventListener('click', () => {
+        openKavaSlideshow((currentIndex + 1) % photos.length);
+    });
+
+    // Close button
+    lightbox.querySelector('.lightbox-close').addEventListener('click', closeKava);
+
+    // Click outside slideshow
+    lightbox.addEventListener('click', (e) => {
+        if (!e.target.closest('.kava-slideshow')) closeKava();
+    });
+
+    // Keyboard
+    document.addEventListener('keydown', (e) => {
+        if (!lightbox.classList.contains('active')) return;
+        if (e.key === 'Escape') closeKava();
+        if (e.key === 'ArrowLeft') openKavaSlideshow((currentIndex - 1 + photos.length) % photos.length);
+        if (e.key === 'ArrowRight') openKavaSlideshow((currentIndex + 1) % photos.length);
+    });
+}());
+
 document.addEventListener('DOMContentLoaded', initTebiReservations);
