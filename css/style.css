@@ -334,7 +334,7 @@ h1, h2, h3, h4, h5, .logo {
 }
 
 .card-small:nth-child(1) .card-image-placeholder {
-    background-image: url('../images/croissants-2.jpg');
+    background-image: url('../images/desserts.jpg');
 }
 
 .card-small:nth-child(2) .card-image-placeholder {
