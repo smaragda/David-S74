@@ -218,6 +218,10 @@ h1, h2, h3, h4, h5, .logo {
     letter-spacing: 1px;
 }
 
+[hidden] {
+    display: none !important;
+}
+
 .btn-primary {
     display: inline-block;
     padding: 1rem 2.5rem;
@@ -311,12 +315,6 @@ h1, h2, h3, h4, h5, .logo {
     aspect-ratio: 1;
 }
 
-.card-small .card-title {
-    padding: 0.75rem 1rem;
-    margin: 0;
-    background-color: rgba(0, 0, 0, 0.3);
-}
-
 .card-large {
     grid-column: 4;
     grid-row: 1;
@@ -368,6 +366,18 @@ h1, h2, h3, h4, h5, .logo {
     font-size: 1.4rem;
 }
 
+.card-small .card-content {
+    padding: 1rem;
+}
+
+.card-small .card-title {
+    margin-bottom: 0;
+}
+
+.card-small .card-description {
+    margin-top: 0.6rem;
+}
+
 .card-description {
     font-size: 0.9rem;
     font-weight: 300;
@@ -384,6 +394,15 @@ h1, h2, h3, h4, h5, .logo {
 .contact-container {
     max-width: 1200px;
     margin: 0 auto;
+}
+
+.contact-description {
+    max-width: 600px;
+    font-size: 0.95rem;
+    font-weight: 300;
+    color: var(--color-text);
+    line-height: 1.6;
+    letter-spacing: 0.2px;
 }
 
 .contact-grid {
@@ -620,24 +639,22 @@ h1, h2, h3, h4, h5, .logo {
 /* Responsive Design */
 @media (max-width: 968px) {
     .card-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .card-large {
         grid-column: span 2;
-        flex-direction: row;
-        align-items: stretch;
+        grid-row: auto;
+        flex-direction: column;
     }
 
     .card-image-large {
-        width: 50%;
-        aspect-ratio: auto;
+        width: 100%;
+        aspect-ratio: 4 / 3;
     }
 
     .card-large .card-content {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
+        display: block;
     }
 
     .contact-grid {
@@ -704,11 +721,16 @@ h1, h2, h3, h4, h5, .logo {
     
     .card-grid {
         grid-template-columns: 1fr;
-        grid-template-areas:
-            "card1"
-            "card2"
-            "card3"
-            "card4";
+    }
+
+    .card-large {
+        grid-column: auto;
+        grid-row: auto;
+    }
+
+    .card-image-large {
+        width: 100%;
+        aspect-ratio: 4 / 3;
     }
     
     .footer-content {

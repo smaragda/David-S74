@@ -1,0 +1,93 @@
+{
+  "web": {
+    "nazev": "S74 wine&café"
+  },
+  "hlavicka": {
+    "menu": {
+      "domu": "Domů",
+      "menu": "Menu",
+      "o_nas": "O nás",
+      "vina": "Vína",
+      "akce": "Akce",
+      "kontakt": "Kontakt"
+    }
+  },
+  "uvod": {
+    "nadpis": "S74 wine&café",
+    "podnadpis": "",
+    "hlavni_tlacitko": "Podívejte se na menu"
+  },
+  "o_nas": {
+    "nadpis": "O nás",
+    "popis": "Místo, kde se potkává výběrová káva a autentická, pečlivě vybraná vína - pro klidná rána a živá večerní setkání.",
+    "karty": {
+      "dezerty": {
+        "nadpis": "Dezerty",
+        "popis": ""
+      },
+      "vyberova_kava": {
+        "nadpis": "Výběrová káva",
+        "popis": ""
+      },
+      "vybrana_vina": {
+        "nadpis": "Vybraná vína",
+        "popis": ""
+      },
+      "atmosfera": {
+        "nadpis": "Atmosféra",
+        "popis": "Od ranního espressa až k pozdním večerním rozhovorům."
+      }
+    }
+  },
+  "akce": {
+    "nadpis": "Akce",
+    "popis": "Rezervace míst v kavárně - postaráme se o vás prostřednictvím rezervačního systému Tebi.",
+    "tlacitko_rezervace": "Rezervovat stůl",
+    "napoveda_pod_tlacitkem": "Kliknutím zobrazíte rezervační widget."
+  },
+  "kontakt": {
+    "nadpis": "Kontakt",
+    "popis": "",
+    "adresa": {
+      "nadpis": "Adresa",
+      "radek_1": "Slezská 856/74",
+      "radek_2": "130 00 Praha 3-Vinohrady"
+    },
+    "oteviraci_doba": {
+      "nadpis": "Otevírací doba",
+      "radek_1": "Po-Pá 9:30-22",
+      "radek_2": "So-Ne 15-22"
+    },
+    "rezervace": {
+      "nadpis": "Rezervace",
+      "odkaz_text": "Rezervovat stůl"
+    },
+    "socialni_site": {
+      "nadpis": "Sledujte nás",
+      "instagram_text": "@s74_wineandcafe"
+    }
+  },
+  "paticka": {
+    "nazev": "S74 wine&café",
+    "adresa": "Slezská 856/74, 130 00 Praha 3-Vinohrady"
+  },
+  "dialogy": {
+    "menu": {
+      "zalozka_menu": "Menu",
+      "zalozka_vinny_listek_cz": "Vinný lístek (CZ)",
+      "zalozka_vinny_listek_en": "Wine List (EN)"
+    },
+    "detail_vina": {
+      "vinarstvi": "Vinařství:",
+      "zeme_puvodu": "Země původu:",
+      "rocnik": "Ročník:",
+      "obsah_alkoholu": "Obsah alkoholu:",
+      "charakter": "Charakter:",
+      "cena_sklenka": "0,1l",
+      "cena_lahve": "0,75l"
+    },
+    "kava": {
+      "nadpis": "Výběrová káva"
+    }
+  }
+}

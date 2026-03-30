@@ -53,6 +53,119 @@ window.addEventListener('scroll', () => {
     }
 });
 
+let contentData = null;
+
+function getNestedValue(source, path) {
+    return path.split('.').reduce((value, key) => {
+        if (value && typeof value === 'object' && key in value) {
+            return value[key];
+        }
+        return undefined;
+    }, source);
+}
+
+function setElementText(element, value) {
+    if (!element || typeof value !== 'string') return;
+
+    element.textContent = value;
+
+    if (element.id === 'reserve-toggle-btn') {
+        element.dataset.closedText = value;
+    }
+
+    if (element.id === 'reserve-hint') {
+        element.dataset.closedText = value;
+    }
+}
+
+function toggleOptionalElement(element, value) {
+    if (!element) return;
+    element.hidden = !value;
+}
+
+function applySimpleContent(source) {
+    document.querySelectorAll('[data-i18n]').forEach(element => {
+        const path = element.dataset.i18n;
+        const value = getNestedValue(source, path);
+
+        if (typeof value !== 'string') return;
+
+        setElementText(element, value);
+
+        if (element.dataset.i18nOptional === 'true') {
+            toggleOptionalElement(element, value.trim());
+        }
+    });
+}
+
+function applyMultiLineContent(source) {
+    document.querySelectorAll('[data-i18n-lines]').forEach(element => {
+        const basePath = element.dataset.i18nLines;
+        const keys = (element.dataset.i18nLineKeys || '')
+            .split(',')
+            .map(key => key.trim())
+            .filter(Boolean);
+        const baseValue = getNestedValue(source, basePath);
+
+        if (!baseValue || typeof baseValue !== 'object' || keys.length === 0) return;
+
+        const lines = keys
+            .map(key => baseValue[key])
+            .filter(value => typeof value === 'string' && value.trim() !== '');
+
+        if (lines.length === 0) return;
+
+        element.innerHTML = lines.map(line => line.replace(/</g, '&lt;').replace(/>/g, '&gt;')).join('<br>');
+    });
+}
+
+function applyJoinedContent(source) {
+    document.querySelectorAll('[data-i18n-join]').forEach(element => {
+        const basePath = element.dataset.i18nJoin;
+        const keys = (element.dataset.i18nJoinKeys || '')
+            .split(',')
+            .map(key => key.trim())
+            .filter(Boolean);
+        const separator = element.dataset.i18nJoinSeparator || ' ';
+        const baseValue = getNestedValue(source, basePath);
+
+        if (!baseValue || typeof baseValue !== 'object' || keys.length === 0) return;
+
+        const joinedText = keys
+            .map(key => baseValue[key])
+            .filter(value => typeof value === 'string' && value.trim() !== '')
+            .join(separator);
+
+        if (!joinedText) return;
+
+        element.textContent = joinedText;
+    });
+}
+
+function applyContent(source) {
+    applySimpleContent(source);
+    applyMultiLineContent(source);
+    applyJoinedContent(source);
+
+    const pageTitle = getNestedValue(source, 'web.nazev');
+    if (typeof pageTitle === 'string' && pageTitle.trim()) {
+        document.title = pageTitle;
+    }
+}
+
+async function loadContent() {
+    try {
+        const response = await fetch('data/content.json');
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        const data = await response.json();
+        contentData = data;
+        applyContent(data);
+    } catch (error) {
+        console.warn('Načítání content.json selhalo, použit fallback z HTML:', error.message);
+    }
+}
+
 // Menu Lightbox
 const menuBtn = document.getElementById('menu-btn');
 const menuNavLink = document.querySelector('.nav-menu a[href="#menu"]');
@@ -380,6 +493,8 @@ function initTebiReservations() {
     const panel = document.getElementById('reserve-panel');
     const toggleBtn = document.getElementById('reserve-toggle-btn');
     const eventsHint = document.getElementById('reserve-hint');
+    const closedButtonText = () => toggleBtn?.dataset.closedText || 'Rezervovat stůl';
+    const closedHintText = () => eventsHint?.dataset.closedText || 'Kliknutím zobrazíte rezervační widget.';
 
     // UI toggles per mode.
     if (panel) {
@@ -460,11 +575,11 @@ function initTebiReservations() {
     function setToggleUi(open) {
         if (!toggleBtn) return;
         toggleBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
-        toggleBtn.textContent = open ? 'Skrýt rezervace' : 'Rezervovat stůl';
+        toggleBtn.textContent = open ? 'Skrýt rezervace' : closedButtonText();
         if (eventsHint) {
             eventsHint.textContent = open
                 ? 'Kliknutím widget skryjete.'
-                : 'Kliknutím zobrazíte rezervační widget.';
+                : closedHintText();
         }
     }
 
@@ -581,4 +696,10 @@ function initTebiReservations() {
     });
 }());
 
-document.addEventListener('DOMContentLoaded', initTebiReservations);
+document.addEventListener('DOMContentLoaded', () => {
+    const contentReady = loadContent();
+    loadWines();
+    contentReady.finally(() => {
+        initTebiReservations();
+    });
+});

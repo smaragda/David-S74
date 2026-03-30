@@ -19,12 +19,12 @@
 	                </div>
 	                <div class="nav-right">
 	                    <ul class="nav-menu">
-	                        <li><a href="#home" class="active">Domů</a></li>
-	                        <li><a href="#menu">Menu</a></li>
-	                        <li><a href="#about">O nás</a></li>
-	                        <li><a href="#wine">Vína</a></li>
-	                        <li><a href="#events">Akce</a></li>
-	                        <li><a href="#contact">Kontakt</a></li>
+	                        <li><a href="#home" class="active" data-i18n="hlavicka.menu.domu">Domů</a></li>
+	                        <li><a href="#menu" data-i18n="hlavicka.menu.menu">Menu</a></li>
+	                        <li><a href="#about" data-i18n="hlavicka.menu.o_nas">O nás</a></li>
+	                        <li><a href="#wine" data-i18n="hlavicka.menu.vina">Vína</a></li>
+	                        <li><a href="#events" data-i18n="hlavicka.menu.akce">Akce</a></li>
+	                        <li><a href="#contact" data-i18n="hlavicka.menu.kontakt">Kontakt</a></li>
 	                    </ul>
 
 	                    <!-- Tebi widget launcher will be moved here in "header" mode -->
@@ -41,8 +41,9 @@
             <div class="hero-image-placeholder"></div>
         </div>
         <div class="hero-content">
-            <h1 class="hero-title">S74 wine&café</h1>
-            <button type="button" class="btn-primary" id="menu-btn">Podívejte se na menu</button>
+            <h1 class="hero-title" data-i18n="uvod.nadpis">S74 wine&café</h1>
+            <p class="hero-subtitle" data-i18n="uvod.podnadpis" data-i18n-optional="true" hidden></p>
+            <button type="button" class="btn-primary" id="menu-btn" data-i18n="uvod.hlavni_tlacitko">Podívejte se na menu</button>
         </div>
     </section>
 
@@ -51,8 +52,8 @@
         <div class="about-container">
             <div class="about-content">
                 <div class="about-text">
-                    <h2 class="section-title">O nás</h2>
-                    <p class="about-description">
+                    <h2 class="section-title" data-i18n="o_nas.nadpis">O nás</h2>
+                    <p class="about-description" data-i18n="o_nas.popis">
                         Místo, kde se potkává výběrová káva a autentická, pečlivě vybraná vína - pro klidná rána a živá večerní setkání.
                     </p>
                 </div>
@@ -64,21 +65,30 @@
                             <div class="card-image-placeholder">
                                 <!-- Placeholder pro obrázek espressa -->
                             </div>
-                            <h3 class="card-title">Dezerty</h3>
+                            <div class="card-content">
+                                <h3 class="card-title" data-i18n="o_nas.karty.dezerty.nadpis">Dezerty</h3>
+                                <p class="card-description" data-i18n="o_nas.karty.dezerty.popis" data-i18n-optional="true" hidden></p>
+                            </div>
                         </div>
                         
                         <div class="card card-small" id="kava-card" role="button" tabindex="0">
                             <div class="card-image-placeholder">
                                 <!-- Placeholder pro obrázek cappuccino -->
                             </div>
-                            <h3 class="card-title">Výběrová káva</h3>
+                            <div class="card-content">
+                                <h3 class="card-title" data-i18n="o_nas.karty.vyberova_kava.nadpis">Výběrová káva</h3>
+                                <p class="card-description" data-i18n="o_nas.karty.vyberova_kava.popis" data-i18n-optional="true" hidden></p>
+                            </div>
                         </div>
                         
                         <div class="card card-small">
                             <div class="card-image-placeholder">
                                 <!-- Placeholder pro obrázek vína -->
                             </div>
-                            <h3 class="card-title">Vybraná vína</h3>
+                            <div class="card-content">
+                                <h3 class="card-title" data-i18n="o_nas.karty.vybrana_vina.nadpis">Vybraná vína</h3>
+                                <p class="card-description" data-i18n="o_nas.karty.vybrana_vina.popis" data-i18n-optional="true" hidden></p>
+                            </div>
                         </div>
                         
                         <!-- Větší karta vpravo -->
@@ -87,8 +97,8 @@
                                 <!-- Placeholder pro obrázek atmosféry -->
                             </div>
                             <div class="card-content">
-                                <h3 class="card-title">Atmosféra</h3>
-                                <p class="card-description">Od ranního espressa až k pozdním večerním rozhovorům.</p>
+                                <h3 class="card-title" data-i18n="o_nas.karty.atmosfera.nadpis">Atmosféra</h3>
+                                <p class="card-description" data-i18n="o_nas.karty.atmosfera.popis">Od ranního espressa až k pozdním večerním rozhovorům.</p>
                             </div>
                         </div>
                     </div>
@@ -103,8 +113,8 @@
 	            <div class="events-layout">
 	                <div class="events-left">
 	                    <div class="events-header">
-	                        <h2 class="section-title">Akce</h2>
-	                        <p class="events-description">Rezervace míst v kavárně — postaráme se o vás prostřednictvím rezervačního systému Tebi.</p>
+	                        <h2 class="section-title" data-i18n="akce.nadpis">Akce</h2>
+	                        <p class="events-description" data-i18n="akce.popis">Rezervace míst v kavárně — postaráme se o vás prostřednictvím rezervačního systému Tebi.</p>
 	                    </div>
 
 	                    <div class="events-actions">
@@ -112,11 +122,12 @@
 	                          type="button"
 	                          class="btn-primary btn-reserve"
 	                          id="reserve-toggle-btn"
+                              data-i18n="akce.tlacitko_rezervace"
 	                          aria-controls="reserve-panel"
 	                          aria-expanded="false">
 	                            Rezervovat stůl
 	                        </button>
-	                        <p class="events-hint" id="reserve-hint">Kliknutím zobrazíte rezervační widget.</p>
+	                        <p class="events-hint" id="reserve-hint" data-i18n="akce.napoveda_pod_tlacitkem">Kliknutím zobrazíte rezervační widget.</p>
 	                    </div>
 	                </div>
 
@@ -133,7 +144,8 @@
     <!-- Contact Section -->
     <section id="contact" class="contact-section">
         <div class="contact-container">
-            <h2 class="section-title">Kontakt</h2>
+            <h2 class="section-title" data-i18n="kontakt.nadpis">Kontakt</h2>
+            <p class="contact-description" data-i18n="kontakt.popis" data-i18n-optional="true" hidden></p>
 
             <div class="contact-grid">
                 <!-- Levá strana - Info karty -->
@@ -141,31 +153,32 @@
                     <!-- Adresa -->
                     <div class="contact-card">
                         <div class="contact-icon">📍</div>
-                        <h3 class="contact-card-title">Adresa</h3>
-                        <p class="contact-card-text">Slezská 856/74<br>130 00 Praha 3-Vinohrady</p>
+                        <h3 class="contact-card-title" data-i18n="kontakt.adresa.nadpis">Adresa</h3>
+                        <p class="contact-card-text" data-i18n-lines="kontakt.adresa" data-i18n-line-keys="radek_1,radek_2">Slezská 856/74<br>130 00 Praha 3-Vinohrady</p>
                     </div>
 
                     <!-- Otevírací doba -->
                     <div class="contact-card">
                         <div class="contact-icon">🕐</div>
-                        <h3 class="contact-card-title">Otevírací doba</h3>
-                        <p class="contact-card-text">Po–Pá 9:30–22<br>So–Ne 15–22</p>
+                        <h3 class="contact-card-title" data-i18n="kontakt.oteviraci_doba.nadpis">Otevírací doba</h3>
+                        <p class="contact-card-text" data-i18n-lines="kontakt.oteviraci_doba" data-i18n-line-keys="radek_1,radek_2">Po–Pá 9:30–22<br>So–Ne 15–22</p>
                     </div>
 
                     <!-- Rezervace -->
                     <div class="contact-card">
                         <div class="contact-icon">📅</div>
-                        <h3 class="contact-card-title">Rezervace</h3>
+                        <h3 class="contact-card-title" data-i18n="kontakt.rezervace.nadpis">Rezervace</h3>
                         <p class="contact-card-text">
-                            <a href="#events" class="contact-link">Rezervovat stůl</a>
+                            <a href="#events" class="contact-link" data-i18n="kontakt.rezervace.odkaz_text">Rezervovat stůl</a>
                         </p>
                     </div>
 
                     <!-- Instagram -->
                     <div class="contact-card">
                         <div class="contact-icon">📱</div>
-                        <h3 class="contact-card-title">Sledujte nás</h3>
+                        <h3 class="contact-card-title" data-i18n="kontakt.socialni_site.nadpis">Sledujte nás</h3>
                         <a href="https://www.instagram.com/s74_wineandcafe/"
+                           data-i18n="kontakt.socialni_site.instagram_text"
                            class="contact-social-link"
                            target="_blank"
                            rel="noopener noreferrer">
@@ -195,11 +208,11 @@
     <footer class="footer">
         <div class="footer-container">
             <div class="footer-content">
-                <span class="footer-item">S74 wine&café</span>
+                <span class="footer-item" data-i18n="paticka.nazev">S74 wine&café</span>
                 <span class="footer-separator">|</span>
-                <span class="footer-item">Slezská 856/74, 130 00 Praha 3-Vinohrady</span>
+                <span class="footer-item" data-i18n="paticka.adresa">Slezská 856/74, 130 00 Praha 3-Vinohrady</span>
                 <span class="footer-separator">|</span>
-                <span class="footer-item">Po–Pá 9:30–22, So–Ne 15–22</span>
+                <span class="footer-item" data-i18n-join="kontakt.oteviraci_doba" data-i18n-join-keys="radek_1,radek_2" data-i18n-join-separator=", ">Po–Pá 9:30–22, So–Ne 15–22</span>
                 <span class="footer-separator">|</span>
                 <span class="footer-item">
                     <div class="social-icons">
@@ -221,9 +234,9 @@
         <button type="button" class="lightbox-close" aria-label="Zavřít">&times;</button>
         <div class="menu-lightbox-content">
             <div class="menu-doc-tabs" role="tablist" aria-label="Výběr dokumentu">
-                <button type="button" class="menu-doc-tab active" data-doc="menu" aria-selected="true">Menu</button>
-                <button type="button" class="menu-doc-tab" data-doc="wine-cz" aria-selected="false">Vinný lístek (CZ)</button>
-                <button type="button" class="menu-doc-tab" data-doc="wine-en" aria-selected="false">Wine List (EN)</button>
+                <button type="button" class="menu-doc-tab active" data-doc="menu" data-i18n="dialogy.menu.zalozka_menu" aria-selected="true">Menu</button>
+                <button type="button" class="menu-doc-tab" data-doc="wine-cz" data-i18n="dialogy.menu.zalozka_vinny_listek_cz" aria-selected="false">Vinný lístek (CZ)</button>
+                <button type="button" class="menu-doc-tab" data-doc="wine-en" data-i18n="dialogy.menu.zalozka_vinny_listek_en" aria-selected="false">Wine List (EN)</button>
             </div>
             <div id="menu-doc-pages" class="menu-doc-pages"></div>
         </div>
@@ -243,34 +256,34 @@
 
                 <div class="wine-detail-info">
                     <div class="wine-info-row">
-                        <span class="wine-info-label">Vinařství:</span>
+                        <span class="wine-info-label" data-i18n="dialogy.detail_vina.vinarstvi">Vinařství:</span>
                         <span class="wine-info-value" id="wine-detail-producer"></span>
                     </div>
                     <div class="wine-info-row">
-                        <span class="wine-info-label">Země původu:</span>
+                        <span class="wine-info-label" data-i18n="dialogy.detail_vina.zeme_puvodu">Země původu:</span>
                         <span class="wine-info-value" id="wine-detail-country"></span>
                     </div>
                     <div class="wine-info-row">
-                        <span class="wine-info-label">Ročník:</span>
+                        <span class="wine-info-label" data-i18n="dialogy.detail_vina.rocnik">Ročník:</span>
                         <span class="wine-info-value" id="wine-detail-year"></span>
                     </div>
                     <div class="wine-info-row">
-                        <span class="wine-info-label">Obsah alkoholu:</span>
+                        <span class="wine-info-label" data-i18n="dialogy.detail_vina.obsah_alkoholu">Obsah alkoholu:</span>
                         <span class="wine-info-value" id="wine-detail-alcohol"></span>
                     </div>
                     <div class="wine-info-row">
-                        <span class="wine-info-label">Charakter:</span>
+                        <span class="wine-info-label" data-i18n="dialogy.detail_vina.charakter">Charakter:</span>
                         <span class="wine-info-value" id="wine-detail-taste"></span>
                     </div>
                 </div>
 
                 <div class="wine-detail-prices">
                     <div class="wine-price-item">
-                        <span class="wine-price-label">0,1l</span>
+                        <span class="wine-price-label" data-i18n="dialogy.detail_vina.cena_sklenka">0,1l</span>
                         <span class="wine-price-value" id="wine-detail-price-glass"></span>
                     </div>
                     <div class="wine-price-item">
-                        <span class="wine-price-label">0,75l</span>
+                        <span class="wine-price-label" data-i18n="dialogy.detail_vina.cena_lahve">0,75l</span>
                         <span class="wine-price-value" id="wine-detail-price-bottle"></span>
                     </div>
                 </div>
@@ -281,7 +294,7 @@
     <div id="kava-lightbox" class="lightbox kava-lightbox">
       <button type="button" class="lightbox-close" aria-label="Zavřít">&times;</button>
       <div class="kava-slideshow">
-        <h2 class="kava-slideshow-title">Výběrová káva</h2>
+        <h2 class="kava-slideshow-title" data-i18n="dialogy.kava.nadpis">Výběrová káva</h2>
         <div class="kava-slide-wrapper">
           <button type="button" class="kava-arrow kava-arrow-prev" aria-label="Předchozí">&#8592;</button>
           <img id="kava-slide-img" src="" alt="" class="kava-slide-img">
