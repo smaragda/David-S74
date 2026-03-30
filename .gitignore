@@ -1,2 +1,20 @@
+.DS_Store
+.claude/
 .idea/
 .playwright-mcp/
+tmp_pdf_test/
+
+# Local experiments and exports
+*.log
+*.tmp
+check_widget.html
+WhatsApp Image*.jpeg
+
+# Working screenshots and reference captures
+*-test.png
+scroll-*.png
+events-section-*.png
+events-with-widget.png
+full-page-sections.png
+contact-section-new.png
+gemini-navrh.jpg
