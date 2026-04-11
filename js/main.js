@@ -621,10 +621,10 @@ function initTebiReservations() {
 // Kava slideshow lightbox
 (function () {
     const photos = [
-        'images/kava-3-druhy.jpg',
-        'images/kava-costarica.webp',
-        'images/kava-guatemala.webp',
-        'images/kava-mexiko.webp'
+        'images/kava/kava-3-druhy.jpg',
+        'images/kava/kava-costarica.webp',
+        'images/kava/kava-guatemala.webp',
+        'images/kava/kava-mexiko.webp'
     ];
     const alts = ['3 druhy kávy', 'Costa Rica', 'Guatemala', 'Mexiko'];
 

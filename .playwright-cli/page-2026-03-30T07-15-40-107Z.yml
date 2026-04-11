@@ -1,0 +1,90 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - navigation [ref=e3]:
+      - generic [ref=e4]:
+        - link "S74 wine&café" [ref=e6] [cursor=pointer]:
+          - /url: "#home"
+          - img "S74 wine&café" [ref=e7]
+        - generic [ref=e8]:
+          - list [ref=e9]:
+            - listitem [ref=e10]:
+              - link "Domů" [ref=e11] [cursor=pointer]:
+                - /url: "#home"
+            - listitem [ref=e12]:
+              - link "Menu" [ref=e13] [cursor=pointer]:
+                - /url: "#menu"
+            - listitem [ref=e14]:
+              - link "O nás" [ref=e15] [cursor=pointer]:
+                - /url: "#about"
+            - listitem [ref=e16]:
+              - link "Vína" [ref=e17] [cursor=pointer]:
+                - /url: "#wine"
+            - listitem [ref=e18]:
+              - link "Akce" [ref=e19] [cursor=pointer]:
+                - /url: "#events"
+            - listitem [ref=e20]:
+              - link "Kontakt" [ref=e21] [cursor=pointer]:
+                - /url: "#contact"
+          - generic "Rezervace"
+  - generic [ref=e25]:
+    - heading "S74 wine&café" [level=1] [ref=e26]
+    - button "Podívejte se na menu" [ref=e27] [cursor=pointer]
+  - generic [ref=e30]:
+    - generic [ref=e31]:
+      - heading "O nás" [level=2] [ref=e32]
+      - paragraph [ref=e33]: Místo, kde se potkává výběrová káva a autentická, pečlivě vybraná vína - pro klidná rána a živá večerní setkání.
+    - generic [ref=e35]:
+      - heading "Dezerty" [level=3] [ref=e38]
+      - button "Výběrová káva" [ref=e39]:
+        - heading "Výběrová káva" [level=3] [ref=e41]
+      - heading "Vybraná vína" [level=3] [ref=e44]
+      - generic [ref=e47]:
+        - heading "Atmosféra" [level=3] [ref=e48]
+        - paragraph [ref=e49]: Od ranního espressa až k pozdním večerním rozhovorům.
+  - generic [ref=e52]:
+    - generic [ref=e54]:
+      - heading "Akce" [level=2] [ref=e55]
+      - paragraph [ref=e56]: Rezervace míst v kavárně — postaráme se o vás prostřednictvím rezervačního systému Tebi.
+    - generic "Rezervace" [ref=e59]:
+      - iframe [ref=e60]:
+        
+  - generic [ref=e62]:
+    - heading "Kontakt" [level=2] [ref=e63]
+    - generic [ref=e64]:
+      - generic [ref=e65]:
+        - generic [ref=e66]:
+          - generic [ref=e67]: 📍
+          - heading "Adresa" [level=3] [ref=e68]
+          - paragraph [ref=e69]:
+            - text: Slezská 856/74
+            - text: 130 00 Praha 3-Vinohrady
+        - generic [ref=e70]:
+          - generic [ref=e71]: 🕐
+          - heading "Otevírací doba" [level=3] [ref=e72]
+          - paragraph [ref=e73]:
+            - text: Po–Pá 9:30–22
+            - text: So–Ne 15–22
+        - generic [ref=e74]:
+          - generic [ref=e75]: 📅
+          - heading "Rezervace" [level=3] [ref=e76]
+          - paragraph [ref=e77]:
+            - link "Rezervovat stůl" [ref=e78] [cursor=pointer]:
+              - /url: "#events"
+        - generic [ref=e79]:
+          - generic [ref=e80]: 📱
+          - heading "Sledujte nás" [level=3] [ref=e81]
+          - link "@s74_wineandcafe" [ref=e82] [cursor=pointer]:
+            - /url: https://www.instagram.com/s74_wineandcafe/
+      - iframe [ref=e84]:
+        
+  - contentinfo [ref=e85]:
+    - generic [ref=e87]:
+      - generic [ref=e88]: S74 wine&café
+      - generic [ref=e89]: "|"
+      - generic [ref=e90]: Slezská 856/74, 130 00 Praha 3-Vinohrady
+      - generic [ref=e91]: "|"
+      - generic [ref=e92]: Po–Pá 9:30–22, So–Ne 15–22
+      - generic [ref=e93]: "|"
+      - link "Instagram" [ref=e96] [cursor=pointer]:
+        - /url: https://www.instagram.com/s74_wineandcafe/
+        - img [ref=e97]

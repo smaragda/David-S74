@@ -1,0 +1,4 @@
+- generic [ref=e3]:
+  - heading "Chyba aplikace / Application Error" [level=2] [ref=e4]
+  - paragraph [ref=e5]: Došlo k neočekávané chybě. Zkuste stránku obnovit.
+  - paragraph [ref=e6]: An unexpected error occurred. Please reload the page.
