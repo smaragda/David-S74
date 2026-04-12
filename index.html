@@ -61,7 +61,7 @@
                 <div class="about-cards">
                     <div class="card-grid">
                         <!-- Tři menší karty -->
-                        <div class="card card-small">
+                        <div class="card card-small" id="dezerty-card" role="button" tabindex="0" aria-haspopup="dialog" aria-controls="gallery-lightbox">
                             <div class="card-image-placeholder">
                                 <!-- Placeholder pro obrázek espressa -->
                             </div>
@@ -71,7 +71,7 @@
                             </div>
                         </div>
                         
-                        <div class="card card-small" id="kava-card" role="button" tabindex="0">
+                        <div class="card card-small" id="kava-card" role="button" tabindex="0" aria-haspopup="dialog" aria-controls="gallery-lightbox">
                             <div class="card-image-placeholder">
                                 <!-- Placeholder pro obrázek cappuccino -->
                             </div>
@@ -81,7 +81,7 @@
                             </div>
                         </div>
                         
-                        <div class="card card-small">
+                        <div class="card card-small" id="vina-card" role="button" tabindex="0" aria-haspopup="dialog" aria-controls="gallery-lightbox">
                             <div class="card-image-placeholder">
                                 <!-- Placeholder pro obrázek vína -->
                             </div>
@@ -92,7 +92,7 @@
                         </div>
                         
                         <!-- Větší karta vpravo -->
-                        <div class="card card-large">
+                        <div class="card card-large" id="atmosfera-card" role="button" tabindex="0" aria-haspopup="dialog" aria-controls="gallery-lightbox">
                             <div class="card-image-placeholder card-image-large">
                                 <!-- Placeholder pro obrázek atmosféry -->
                             </div>
@@ -291,16 +291,16 @@
         </div>
     </div>
 
-    <div id="kava-lightbox" class="lightbox kava-lightbox">
+    <div id="gallery-lightbox" class="lightbox gallery-lightbox">
       <button type="button" class="lightbox-close" aria-label="Zavřít">&times;</button>
-      <div class="kava-slideshow">
-        <h2 class="kava-slideshow-title" data-i18n="dialogy.kava.nadpis">Výběrová káva</h2>
-        <div class="kava-slide-wrapper">
-          <button type="button" class="kava-arrow kava-arrow-prev" aria-label="Předchozí">&#8592;</button>
-          <img id="kava-slide-img" src="" alt="" class="kava-slide-img">
-          <button type="button" class="kava-arrow kava-arrow-next" aria-label="Další">&#8594;</button>
+      <div class="gallery-slideshow">
+        <h2 class="gallery-slideshow-title" id="gallery-title">Výběrová káva</h2>
+        <div class="gallery-slide-wrapper">
+          <button type="button" class="gallery-arrow gallery-arrow-prev" aria-label="Předchozí">&#8592;</button>
+          <img id="gallery-slide-img" src="" alt="" class="gallery-slide-img">
+          <button type="button" class="gallery-arrow gallery-arrow-next" aria-label="Další">&#8594;</button>
         </div>
-        <div class="kava-dots" id="kava-dots"></div>
+        <div class="gallery-dots" id="gallery-dots"></div>
       </div>
     </div>
 

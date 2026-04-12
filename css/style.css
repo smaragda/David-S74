@@ -301,9 +301,18 @@ h1, h2, h3, h4, h5, .logo {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
+.card[role="button"] {
+    cursor: pointer;
+}
+
 .card:hover {
     transform: translateY(-3px);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+.card[role="button"]:focus-visible {
+    outline: 2px solid var(--color-gold-light);
+    outline-offset: 4px;
 }
 
 .card-small {
@@ -1239,14 +1248,70 @@ h1, h2, h3, h4, h5, .logo {
     }
 }
 
-/* Kava slideshow lightbox */
-.kava-lightbox { align-items: center; justify-content: center; }
-.kava-slideshow { width: min(700px, 95vw); text-align: center; position: relative; }
-.kava-slideshow-title { color: var(--gold); font-family: var(--font-serif); margin-bottom: 1.5rem; }
-.kava-slide-wrapper { display: flex; align-items: center; gap: 1rem; }
-.kava-slide-img { flex: 1; width: 100%; max-height: 70vh; object-fit: contain; border-radius: 8px; }
-.kava-arrow { background: rgba(255,255,255,0.1); border: none; color: #fff; font-size: 2rem; padding: 0.5rem 1rem; cursor: pointer; border-radius: 4px; transition: background 0.2s; }
-.kava-arrow:hover { background: rgba(255,255,255,0.25); }
-.kava-dots { margin-top: 1rem; display: flex; justify-content: center; gap: 0.5rem; }
-.kava-dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.3); border: none; cursor: pointer; transition: background 0.2s; }
-.kava-dot.active { background: var(--gold); }
+/* Shared gallery lightbox */
+.gallery-lightbox {
+    align-items: center;
+    justify-content: center;
+}
+
+.gallery-slideshow {
+    width: min(700px, 95vw);
+    text-align: center;
+    position: relative;
+}
+
+.gallery-slideshow-title {
+    color: var(--color-gold);
+    font-family: var(--font-heading);
+    margin-bottom: 1.5rem;
+}
+
+.gallery-slide-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.gallery-slide-img {
+    flex: 1;
+    width: 100%;
+    max-height: 70vh;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.gallery-arrow {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: var(--color-white);
+    font-size: 2rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.2s ease;
+}
+
+.gallery-arrow:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.gallery-dots {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.gallery-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.gallery-dot.active {
+    background: var(--color-gold);
+}

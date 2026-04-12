@@ -618,81 +618,155 @@ function initTebiReservations() {
     }
 }
 
-// Kava slideshow lightbox
+// Shared gallery lightbox
 (function () {
-    const photos = [
-        'images/kava/kava-3-druhy.jpg',
-        'images/kava/kava-costarica.webp',
-        'images/kava/kava-guatemala.webp',
-        'images/kava/kava-mexiko.webp'
-    ];
-    const alts = ['3 druhy kávy', 'Costa Rica', 'Guatemala', 'Mexiko'];
+    const galleries = {
+        'dezerty-card': {
+            photos: [
+                'images/deserty/desserts.jpg',
+                'images/deserty/jidlo-prkenko.jpg',
+                'images/deserty/limo-1.jpg',
+                'images/deserty/s-malinou.png'
+            ],
+            alts: ['Dezerty', 'Prkenko s občerstvením', 'Limonáda', 'Dezert s malinou']
+        },
+        'kava-card': {
+            photos: [
+                'images/kava/latte-art.jpg',
+                'images/kava/kava-3-druhy.jpg',
+                'images/kava/kava-costarica.webp',
+                'images/kava/kava-guatemala.webp',
+                'images/kava/kava-mexiko.webp'
+            ],
+            alts: ['Latte art', '3 druhy kávy', 'Costa Rica', 'Guatemala', 'Mexiko']
+        },
+        'vina-card': {
+            photos: [
+                'images/vina/vino-luxus.png',
+                'images/vina/vine.jpg',
+                'images/vina/vino-korky.png'
+            ],
+            alts: ['Vybraná vína', 'Nalévání vína', 'Víno a korky']
+        },
+        'atmosfera-card': {
+            photos: [
+                'images/atmosfera/interier-shora.jpg',
+                'images/atmosfera/interier-sloup.jpg',
+                'images/atmosfera/open-tabule.png',
+                'images/atmosfera/pohled-z-ulice.jpg',
+                'images/atmosfera/posezeni-obrazy.jpg',
+                'images/atmosfera/s74-vitrina.png',
+                'images/atmosfera/vino-knihy.png'
+            ],
+            alts: [
+                'Atmosféra interiéru',
+                'Interiér se sloupem',
+                'Otevřená tabule',
+                'Pohled z ulice',
+                'Posezení s obrazy',
+                'Výloha S74',
+                'Víno a knihy'
+            ]
+        }
+    };
 
+    let activeGallery = null;
     let currentIndex = 0;
-    const lightbox = document.getElementById('kava-lightbox');
-    const slideImg = document.getElementById('kava-slide-img');
-    const dotsContainer = document.getElementById('kava-dots');
+    const lightbox = document.getElementById('gallery-lightbox');
+    const title = document.getElementById('gallery-title');
+    const slideImg = document.getElementById('gallery-slide-img');
+    const dotsContainer = document.getElementById('gallery-dots');
 
-    // Build dots
-    photos.forEach((_, i) => {
-        const dot = document.createElement('button');
-        dot.className = 'kava-dot' + (i === 0 ? ' active' : '');
-        dot.setAttribute('aria-label', `Fotka ${i + 1}`);
-        dot.addEventListener('click', () => openKavaSlideshow(i));
-        dotsContainer.appendChild(dot);
-    });
+    if (!lightbox || !title || !slideImg || !dotsContainer) {
+        return;
+    }
 
     function updateDots() {
-        dotsContainer.querySelectorAll('.kava-dot').forEach((dot, i) => {
+        dotsContainer.querySelectorAll('.gallery-dot').forEach((dot, i) => {
             dot.classList.toggle('active', i === currentIndex);
         });
     }
 
-    function openKavaSlideshow(index) {
+    function renderDots() {
+        if (!activeGallery) return;
+
+        dotsContainer.innerHTML = '';
+        activeGallery.photos.forEach((_, i) => {
+            const dot = document.createElement('button');
+            dot.type = 'button';
+            dot.className = 'gallery-dot' + (i === currentIndex ? ' active' : '');
+            dot.setAttribute('aria-label', `Fotka ${i + 1}`);
+            dot.addEventListener('click', () => openGallery(activeGallery.cardId, i));
+            dotsContainer.appendChild(dot);
+        });
+    }
+
+    function openGallery(cardId, index) {
+        const gallery = galleries[cardId];
+        const card = document.getElementById(cardId);
+        if (!gallery || !card) return;
+
+        activeGallery = { ...gallery, cardId };
         currentIndex = index;
-        slideImg.src = photos[currentIndex];
-        slideImg.alt = alts[currentIndex];
+        title.textContent = card.querySelector('.card-title')?.textContent?.trim() || '';
+        slideImg.src = activeGallery.photos[currentIndex];
+        slideImg.alt = activeGallery.alts[currentIndex] || title.textContent;
+        renderDots();
         updateDots();
         lightbox.classList.add('active');
         document.body.style.overflow = 'hidden';
     }
 
-    function closeKava() {
+    function closeGallery() {
         lightbox.classList.remove('active');
         document.body.style.overflow = '';
     }
 
-    // Card click
-    const kavaCard = document.getElementById('kava-card');
-    if (kavaCard) {
-        kavaCard.addEventListener('click', () => openKavaSlideshow(0));
-        kavaCard.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openKavaSlideshow(0); }
+    Object.keys(galleries).forEach((cardId) => {
+        const card = document.getElementById(cardId);
+        if (!card) return;
+
+        card.addEventListener('click', () => openGallery(cardId, 0));
+        card.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                openGallery(cardId, 0);
+            }
         });
-    }
-
-    // Arrows
-    lightbox.querySelector('.kava-arrow-prev').addEventListener('click', () => {
-        openKavaSlideshow((currentIndex - 1 + photos.length) % photos.length);
-    });
-    lightbox.querySelector('.kava-arrow-next').addEventListener('click', () => {
-        openKavaSlideshow((currentIndex + 1) % photos.length);
     });
 
-    // Close button
-    lightbox.querySelector('.lightbox-close').addEventListener('click', closeKava);
+    lightbox.querySelector('.gallery-arrow-prev').addEventListener('click', () => {
+        if (!activeGallery) return;
+        openGallery(
+            activeGallery.cardId,
+            (currentIndex - 1 + activeGallery.photos.length) % activeGallery.photos.length
+        );
+    });
+    lightbox.querySelector('.gallery-arrow-next').addEventListener('click', () => {
+        if (!activeGallery) return;
+        openGallery(activeGallery.cardId, (currentIndex + 1) % activeGallery.photos.length);
+    });
 
-    // Click outside slideshow
+    lightbox.querySelector('.lightbox-close').addEventListener('click', closeGallery);
+
     lightbox.addEventListener('click', (e) => {
-        if (!e.target.closest('.kava-slideshow')) closeKava();
+        if (!e.target.closest('.gallery-slideshow')) closeGallery();
     });
 
-    // Keyboard
     document.addEventListener('keydown', (e) => {
         if (!lightbox.classList.contains('active')) return;
-        if (e.key === 'Escape') closeKava();
-        if (e.key === 'ArrowLeft') openKavaSlideshow((currentIndex - 1 + photos.length) % photos.length);
-        if (e.key === 'ArrowRight') openKavaSlideshow((currentIndex + 1) % photos.length);
+        if (!activeGallery) return;
+
+        if (e.key === 'Escape') closeGallery();
+        if (e.key === 'ArrowLeft') {
+            openGallery(
+                activeGallery.cardId,
+                (currentIndex - 1 + activeGallery.photos.length) % activeGallery.photos.length
+            );
+        }
+        if (e.key === 'ArrowRight') {
+            openGallery(activeGallery.cardId, (currentIndex + 1) % activeGallery.photos.length);
+        }
     });
 }());
 
