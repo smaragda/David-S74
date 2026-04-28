@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Váš voucher | s74.cz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../src/main/resources/static/css/app.css">
+</head>
+<body class="page-shell">
+<main class="voucher-layout">
+    <!-- Levé křídlo: Samotný voucher -->
+    <article class="voucher-sheet">
+        <p class="eyebrow">Platný voucher s74.cz</p>
+        <p class="voucher-value">250 Kč</p>
+        <h1 style="margin-top: 8px;">Káva & Domácí dort</h1>
+        <p class="lead" style="margin-top: 12px;">Tento voucher opravňuje držitele k odběru jedné výběrové kávy a jednoho kusu dortu z naší denní nabídky.</p>
+        
+        <div class="qr-card">
+            <!-- Mock QR kódu (přes placehold.co) -->
+            <img src="https://placehold.co/400x400/b1442f/ffffff?text=VOUCHER-CODE-123" alt="QR kód pro uplatnění">
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+            <p class="microcopy">Kód pro ruční zadání:</p>
+            <div class="code-chip">ABCD-1234-EFGH</div>
+        </div>
+
+        <div style="margin-top: 40px; border-top: 1px dashed var(--line); padding-top: 24px;">
+            <p class="microcopy">Vystaveno: 25. dubna 2026<br>Platnost do: 25. října 2026</p>
+        </div>
+    </article>
+
+    <!-- Pravé křídlo: Instrukce a akce -->
+    <aside class="panel panel--side">
+        <p class="eyebrow">Jak uplatnit?</p>
+        <h2>Stačí ho ukázat obsluze.</h2>
+        <p class="lead lead--compact">Při placení v naší kavárně ukažte tento QR kód baristovi. Ten ho naskenuje a voucher uplatní.</p>
+        
+        <div style="margin-top: 32px; display: grid; gap: 12px;">
+            <button onclick="window.print()" class="ghost-link">🖨️ Vytisknout voucher</button>
+            <button onclick="alert('Zde bude funkce pro stažení PDF')" class="ghost-link">📥 Stáhnout jako PDF</button>
+        </div>
+
+        <div class="detail-card" style="margin-top: 32px; background: rgba(72, 84, 63, 0.05);">
+            <p class="eyebrow" style="color: var(--olive);">Kde nás najdete?</p>
+            <p><strong>s74 | Kavárna & Vinárna</strong><br>Dlouhá 74, Praha 1<br>Po–Ne: 8:00 – 22:00</p>
+        </div>
+    </aside>
+</main>
+
+<footer style="margin-top: 48px; text-align: center;" class="microcopy">
+    <p>Tento voucher je jednorázový. Po naskenování obsluhou zaniká jeho platnost.</p>
+</footer>
+</body>
+</html>

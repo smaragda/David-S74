@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokladna | s74.cz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../src/main/resources/static/css/app.css">
+</head>
+<body class="page-shell page-shell--centered">
+<main class="layout">
+    <section class="panel panel--narrow">
+        <p class="eyebrow">Shrnutí objednávky</p>
+        <h1>Skvělá volba!</h1>
+        
+        <div class="detail-card">
+            <p class="offer-price">250 Kč</p>
+            <h2 id="offer-name">Káva & Domácí dort</h2>
+            <p class="microcopy">Tento voucher vás opravňuje k odběru jedné výběrové kávy a jednoho kusu dortu dle aktuální nabídky.</p>
+        </div>
+
+        <form class="stacked-form" action="order-success.html" method="get">
+            <label>
+                Váš e-mail
+                <input type="email" name="email" placeholder="jan.novak@priklad.cz" required autofocus>
+                <span class="microcopy">Na tento e-mail vám voucher doručíme ihned po zaplacení.</span>
+            </label>
+
+            <div style="margin-top: 12px; display: grid; gap: 8px;">
+                <button type="submit" class="primary-button">Zaplatit kartou</button>
+                <a href="index.html" class="ghost-link">Změnit výběr</a>
+            </div>
+        </form>
+
+        <p class="microcopy" style="margin-top: 24px; text-align: center;">
+            Platba probíhá bezpečně přes šifrovanou bránu <strong>Stripe</strong>.
+        </p>
+    </section>
+</main>
+
+<script>
+    // Jednoduchý skript pro simulaci různých nabídek v prototypu
+    const urlParams = new URLSearchParams(window.location.search);
+    const offer = urlParams.get('offer');
+    if (offer === 'degustace') {
+        document.getElementById('offer-name').innerText = 'Degustační prkénko';
+        document.querySelector('.offer-price').innerText = '480 Kč';
+    } else if (offer === 'open-1000') {
+        document.getElementById('offer-name').innerText = 'Otevřený voucher';
+        document.querySelector('.offer-price').innerText = '1 000 Kč';
+    }
+</script>
+</body>
+</html>

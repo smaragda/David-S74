@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Přihlášení obsluhy | s74.cz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../src/main/resources/static/css/app.css">
+</head>
+<body class="page-shell page-shell--centered">
+<main class="layout">
+    <section class="panel panel--narrow">
+        <p class="eyebrow">Interní systém</p>
+        <h1>Vstup pro baristy.</h1>
+        <p class="lead lead--compact">Pro validaci voucherů se prosím přihlaste svými údaji.</p>
+
+        <form class="stacked-form" action="staff-redeem.html" method="get">
+            <label>
+                Uživatelské jméno
+                <input type="text" name="username" value="obsluha" required>
+            </label>
+            <label>
+                Heslo
+                <input type="password" name="password" placeholder="••••••••" required autofocus>
+            </label>
+
+            <div style="margin-top: 12px; display: grid; gap: 8px;">
+                <button type="submit" class="primary-button">Přihlásit se</button>
+                <a href="index.html" class="ghost-link">Zpět na web</a>
+            </div>
+        </form>
+    </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katalog voucherů | s74.cz</title>
+    <!-- Fonty -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&display=swap" rel="stylesheet">
+    <!-- CSS (relativní cesta k projektu) -->
+    <link rel="stylesheet" href="../src/main/resources/static/css/app.css">
+</head>
+<body class="page-shell">
+<main class="layout">
+    <header class="hero-card">
+        <p class="eyebrow">s74.cz | Kavárno-vinárna</p>
+        <h1>Darujte zážitek z naší kavárny.</h1>
+        <p class="lead">Vyberte si jeden z našich vyladěných voucherů. Po zaplacení vám obratem pošleme kód a QR kód, který stačí ukázat obsluze přímo v mobilu nebo vytisknout.</p>
+        
+        <div class="hero-actions">
+            <a class="ghost-link" href="staff-login.html">Vstup pro obsluhu</a>
+            <span class="status-pill status-pill--ready">Systém je připraven</span>
+        </div>
+    </header>
+
+    <section class="offer-grid">
+        <!-- Voucher 1 -->
+        <article class="offer-card">
+            <div>
+                <p class="offer-price">250 Kč</p>
+                <h2>Káva & Domácí dort</h2>
+                <p>Výběrová káva dle vlastního výběru (Espresso, Cappuccino, V60) a kousek našeho denního dortu z vitríny.</p>
+            </div>
+            <div style="margin-top: 24px;">
+                <a href="checkout.html?offer=kava-dort" class="primary-button-link">Koupit voucher</a>
+            </div>
+        </article>
+
+        <!-- Voucher 2 -->
+        <article class="offer-card">
+            <div>
+                <p class="offer-price">480 Kč</p>
+                <h2>Degustační prkénko</h2>
+                <p>Dvě sklenky naturálního vína a bohaté prkénko se sýry od lokálních farmářů, domácím pestem a kváskovým chlebem.</p>
+            </div>
+            <div style="margin-top: 24px;">
+                <a href="checkout.html?offer=degustace" class="primary-button-link">Koupit voucher</a>
+            </div>
+        </article>
+
+        <!-- Voucher 3 -->
+        <article class="offer-card">
+            <div>
+                <p class="offer-price">1 000 Kč</p>
+                <h2>Otevřený voucher</h2>
+                <p>Ideální jako dárek. Lze využít na cokoli z naší nabídky – od ranní kávy až po večerní láhev vína.</p>
+            </div>
+            <div style="margin-top: 24px;">
+                <a href="checkout.html?offer=open-1000" class="primary-button-link">Koupit voucher</a>
+            </div>
+        </article>
+
+        <!-- Voucher 4 (Coming soon / Sold out style) -->
+        <article class="offer-card" style="opacity: 0.7;">
+            <div>
+                <p class="offer-price">2 500 Kč</p>
+                <h2>Večerní kurz latte artu</h2>
+                <p>Individuální lekce s naším baristou. Naučíte se správně šlehat mléko a malovat srdíčka i rozety.</p>
+            </div>
+            <div style="margin-top: 24px;">
+                <button class="primary-button" disabled style="background: var(--muted); box-shadow: none;">Dočasně vyprodáno</button>
+            </div>
+        </article>
+    </section>
+
+    <footer style="margin-top: 48px; text-align: center;" class="microcopy">
+        <p>&copy; 2026 s74.cz — Vouchery s radostí.</p>
+    </footer>
+</main>
+</body>
+</html>

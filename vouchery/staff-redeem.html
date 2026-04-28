@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validace voucheru | s74.cz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../src/main/resources/static/css/app.css">
+    <style>
+        .scanner-mock {
+            aspect-ratio: 1;
+            background: #000;
+            border-radius: 24px;
+            margin: 24px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .scanner-line {
+            width: 100%;
+            height: 2px;
+            background: var(--accent);
+            position: absolute;
+            top: 50%;
+            left: 0;
+            box-shadow: 0 0 15px var(--accent);
+            animation: scan 2s infinite ease-in-out;
+        }
+        @keyframes scan {
+            0%, 100% { top: 10%; }
+            50% { top: 90%; }
+        }
+    </style>
+</head>
+<body class="page-shell page-shell--centered">
+<main class="layout">
+    <section class="panel panel--narrow">
+        <p class="eyebrow">Validace voucheru</p>
+        <h1>Uplatnit kód.</h1>
+        
+        <!-- Simulace scanneru -->
+        <div class="scanner-mock">
+            <div class="scanner-line"></div>
+            <p style="color: white; font-size: 0.8rem; z-index: 1; opacity: 0.6;">Kamera je aktivní...</p>
+        </div>
+
+        <form class="stacked-form" onsubmit="event.preventDefault(); document.getElementById('result').style.display='block';">
+            <label>
+                Nebo zadejte kód ručně
+                <input type="text" placeholder="ABCD-1234-EFGH" autofocus>
+            </label>
+            <button type="submit" class="primary-button">Ověřit voucher</button>
+        </form>
+
+        <!-- Simulovaný výsledek (skrytý) -->
+        <div id="result" class="detail-card" style="display: none; margin-top: 24px; border-left: 4px solid var(--olive); background: rgba(72, 84, 63, 0.1);">
+            <p class="eyebrow" style="color: var(--olive);">✓ Voucher je platný</p>
+            <h2 style="font-size: 1.2rem;">Káva & Domácí dort</h2>
+            <p class="microcopy">Můžete vydat zboží. Po kliknutí na tlačítko níže bude voucher definitivně uplatněn.</p>
+            <button class="primary-button" style="margin-top: 16px; width: 100%;" onclick="alert('Voucher byl úspěšně uplatněn v systému.')">Potvrdit uplatnění</button>
+        </div>
+
+        <div style="margin-top: 32px; text-align: center;">
+            <a href="staff-login.html" class="microcopy">Odhlásit se</a>
+        </div>
+    </section>
+</main>
+</body>
+</html>
