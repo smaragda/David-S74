@@ -1,0 +1,321 @@
+:root {
+    --ink: #1f1a17;
+    --muted: #6a5a50;
+    --paper: #f8f1e7;
+    --paper-strong: #fffaf3;
+    --accent: #b1442f;
+    --accent-soft: #efd0c5;
+    --olive: #48543f;
+    --line: rgba(31, 26, 23, 0.12);
+    --shadow: 0 24px 80px rgba(60, 38, 24, 0.12);
+    --display: "Fraunces", "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
+    --body: "Avenir Next", "Segoe UI", sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    color: var(--ink);
+    background:
+        radial-gradient(circle at top left, rgba(177, 68, 47, 0.18), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(72, 84, 63, 0.14), transparent 28%),
+        linear-gradient(135deg, #efe3d2, #f9f4ec 42%, #efe0cf);
+    font-family: var(--body);
+}
+
+.page-shell {
+    min-height: 100vh;
+    padding: 32px 20px 56px;
+}
+
+.page-shell--centered {
+    display: grid;
+    place-items: center;
+}
+
+.layout,
+.voucher-layout {
+    width: min(1120px, 100%);
+    margin: 0 auto;
+}
+
+.layout {
+    display: grid;
+    gap: 24px;
+}
+
+.hero-card,
+.panel,
+.offer-card,
+.voucher-sheet,
+.detail-card,
+.qr-card {
+    background: rgba(255, 250, 243, 0.9);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(10px);
+}
+
+.hero-card,
+.panel,
+.voucher-sheet {
+    border-radius: 28px;
+    padding: 32px;
+}
+
+.panel--narrow {
+    width: min(460px, 100%);
+}
+
+.panel--wide {
+    width: min(720px, 100%);
+}
+
+.panel--side {
+    align-self: start;
+}
+
+.eyebrow {
+    margin: 0 0 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    font-size: 0.78rem;
+    color: var(--muted);
+}
+
+h1,
+h2 {
+    font-family: var(--display);
+    font-weight: 600;
+    line-height: 0.98;
+    margin: 0;
+}
+
+h1 {
+    font-size: clamp(2.4rem, 5vw, 4.8rem);
+    max-width: 10ch;
+}
+
+h2 {
+    font-size: clamp(1.4rem, 2vw, 2rem);
+}
+
+.lead {
+    margin: 18px 0 0;
+    max-width: 62ch;
+    font-size: 1.08rem;
+    line-height: 1.65;
+    color: var(--muted);
+}
+
+.lead--compact {
+    max-width: 50ch;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 24px;
+}
+
+.offer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 18px;
+}
+
+.offer-card {
+    border-radius: 24px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 260px;
+}
+
+.offer-price,
+.voucher-value {
+    margin: 0 0 14px;
+    font-size: 0.92rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+}
+
+.primary-button,
+.primary-button-link,
+.ghost-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 0 18px;
+    border-radius: 999px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+}
+
+.primary-button,
+.primary-button-link {
+    border: none;
+    background: linear-gradient(135deg, var(--accent), #8f321f);
+    color: white;
+    box-shadow: 0 14px 28px rgba(177, 68, 47, 0.22);
+    cursor: pointer;
+}
+
+.ghost-link {
+    border: 1px solid var(--line);
+    color: var(--ink);
+    background: rgba(255, 255, 255, 0.45);
+}
+
+.primary-button:hover,
+.primary-button-link:hover,
+.ghost-link:hover {
+    transform: translateY(-1px);
+}
+
+.status-pill,
+.code-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 999px;
+    font-weight: 700;
+}
+
+.status-pill {
+    background: rgba(106, 90, 80, 0.1);
+    color: var(--muted);
+}
+
+.status-pill--ready {
+    background: rgba(72, 84, 63, 0.14);
+    color: var(--olive);
+}
+
+.stacked-form {
+    display: grid;
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.stacked-form label {
+    display: grid;
+    gap: 8px;
+    font-weight: 600;
+}
+
+.stacked-form input {
+    width: 100%;
+    border-radius: 16px;
+    border: 1px solid rgba(31, 26, 23, 0.16);
+    background: rgba(255, 255, 255, 0.65);
+    padding: 14px 16px;
+    font: inherit;
+}
+
+.detail-card {
+    margin-top: 20px;
+    border-radius: 22px;
+    padding: 22px;
+}
+
+.notice,
+.microcopy,
+.url-preview {
+    color: var(--muted);
+}
+
+.voucher-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(280px, 0.8fr);
+    gap: 24px;
+}
+
+.voucher-sheet {
+    position: relative;
+    overflow: hidden;
+}
+
+.voucher-sheet::after {
+    content: "";
+    position: absolute;
+    inset: auto -40px -60px auto;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(177, 68, 47, 0.14), transparent 72%);
+}
+
+.qr-card {
+    width: fit-content;
+    margin: 26px 0 18px;
+    padding: 16px;
+    border-radius: 24px;
+}
+
+.qr-card img {
+    width: min(100%, 320px);
+    display: block;
+    border-radius: 18px;
+}
+
+.code-chip {
+    font-size: 1.15rem;
+    letter-spacing: 0.18em;
+    background: var(--accent-soft);
+    color: var(--accent);
+}
+
+.url-preview {
+    word-break: break-word;
+    padding: 14px 16px;
+    border-radius: 16px;
+    background: rgba(72, 84, 63, 0.08);
+}
+
+@media (max-width: 860px) {
+    .voucher-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-card,
+    .panel,
+    .voucher-sheet {
+        padding: 24px;
+    }
+
+    h1 {
+        max-width: none;
+    }
+}
+
+@media print {
+    body {
+        background: white;
+    }
+
+    .panel--side,
+    .hero-actions,
+    .ghost-link,
+    .primary-button,
+    .primary-button-link {
+        display: none !important;
+    }
+
+    .voucher-sheet,
+    .qr-card {
+        box-shadow: none;
+        background: white;
+    }
+}
