@@ -6,7 +6,7 @@
     <title>Pokladna | s74.cz</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="app.css">
 </head>
 <body class="page-shell page-shell--centered">
@@ -16,9 +16,9 @@
         <h1>Skvělá volba!</h1>
         
         <div class="detail-card">
-            <p class="offer-price">250 Kč</p>
-            <h2 id="offer-name">Káva & Domácí dort</h2>
-            <p class="microcopy">Tento voucher vás opravňuje k odběru jedné výběrové kávy a jednoho kusu dortu dle aktuální nabídky.</p>
+            <p class="offer-price">1 000 Kč</p>
+            <h2 id="offer-name">Voucher v hodnotě 1 000 Kč</h2>
+            <p class="microcopy">Tento voucher lze využít na cokoli z aktuální nabídky s74 do hodnoty uvedené částky.</p>
         </div>
 
         <form class="stacked-form" action="order-success.html" method="get">
@@ -30,7 +30,7 @@
 
             <div style="margin-top: 12px; display: grid; gap: 8px;">
                 <button type="submit" class="primary-button">Zaplatit kartou</button>
-                <a href="index.html" class="ghost-link">Změnit výběr</a>
+                <a href="vouchery.html" class="ghost-link">Změnit výběr</a>
             </div>
         </form>
 
@@ -39,18 +39,5 @@
         </p>
     </section>
 </main>
-
-<script>
-    // Jednoduchý skript pro simulaci různých nabídek v prototypu
-    const urlParams = new URLSearchParams(window.location.search);
-    const offer = urlParams.get('offer');
-    if (offer === 'degustace') {
-        document.getElementById('offer-name').innerText = 'Degustační prkénko';
-        document.querySelector('.offer-price').innerText = '480 Kč';
-    } else if (offer === 'open-1000') {
-        document.getElementById('offer-name').innerText = 'Otevřený voucher';
-        document.querySelector('.offer-price').innerText = '1 000 Kč';
-    }
-</script>
 </body>
 </html>
