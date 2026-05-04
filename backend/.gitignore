@@ -1,0 +1,11 @@
+target/
+
+.env
+.env.*
+!.env.example
+
+*.log
+*.pid
+*.hprof
+
+.DS_Store
