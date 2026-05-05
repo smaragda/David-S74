@@ -1298,6 +1298,7 @@ h1, h2, h3, h4, h5, .logo {
 .gallery-dots {
     margin-top: 1rem;
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     gap: 0.5rem;
 }

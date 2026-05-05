@@ -644,9 +644,41 @@ function initTebiReservations() {
             photos: [
                 'images/vina/vino-luxus.png',
                 'images/vina/vine.jpg',
-                'images/vina/vino-korky.png'
+                'images/vina/vino-korky.png',
+                'images/vina/ryzlink-wachau.png',
+                'images/vina/pecorino-bile.png',
+                'images/vina/italske-bile-vino.png',
+                'images/vina/veltlin-prechtl.png',
+                'images/vina/rocca-montemassi.png',
+                'images/vina/chianti-riserva.png',
+                'images/vina/nero-davola.png',
+                'images/vina/primitivo-manduria.png',
+                'images/vina/rosso-montalcino.png',
+                'images/vina/barolo-le-terre.png',
+                'images/vina/amarone-valpolicella.png',
+                'images/vina/prosecco-spumante.png',
+                'images/vina/sekt-oranzovy.png',
+                'images/vina/sekt-bily.png'
             ],
-            alts: ['Vybraná vína', 'Nalévání vína', 'Víno a korky']
+            alts: [
+                'Vybraná vína',
+                'Nalévání vína',
+                'Víno a korky',
+                'Ryzlink z Wachau',
+                'Bílé Pecorino',
+                'Italské bílé víno',
+                'Veltlín Prechtl',
+                'Rocca di Montemassi',
+                'Chianti Riserva',
+                'Nero d\'Avola',
+                'Primitivo di Manduria',
+                'Rosso di Montalcino',
+                'Barolo Le Terre',
+                'Amarone della Valpolicella',
+                'Prosecco Spumante',
+                'Oranžový sekt',
+                'Bílý sekt'
+            ]
         },
         'atmosfera-card': {
             photos: [
