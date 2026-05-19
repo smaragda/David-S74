@@ -281,6 +281,20 @@ h1, h2, h3, h4, h5, .logo {
     letter-spacing: 0.2px;
 }
 
+.about-copy {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 0.9rem;
+}
+
+.about-copy p {
+    font-size: 0.92rem;
+    font-weight: 300;
+    color: var(--color-text);
+    line-height: 1.6;
+    letter-spacing: 0.2px;
+}
+
 /* Cards Grid */
 .about-cards {
     margin-top: 1rem;
@@ -902,6 +916,7 @@ h1, h2, h3, h4, h5, .logo {
 
 .wine-header {
     margin-bottom: 2rem;
+    max-width: 760px;
 }
 
 .wine-description {
@@ -1061,6 +1076,7 @@ h1, h2, h3, h4, h5, .logo {
 }
 
 .wine-empty {
+    display: none;
     text-align: center;
     color: var(--color-text);
     opacity: 0.7;

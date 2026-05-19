@@ -467,9 +467,6 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// Initialize wines on page load
-document.addEventListener('DOMContentLoaded', loadWines);
-
 // ==========================================
 // Reservations (Tebi widget)
 // ==========================================

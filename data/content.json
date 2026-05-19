@@ -1,6 +1,6 @@
 {
   "web": {
-    "nazev": "S74 wine&café"
+    "nazev": "S74 wine&café | Wine bar a kavárna na Vinohradech, Praha 3"
   },
   "hlavicka": {
     "menu": {
@@ -14,24 +14,26 @@
   },
   "uvod": {
     "nadpis": "S74 wine&café",
-    "podnadpis": "",
+    "podnadpis": "Kavárna a wine bar ve Slezské ulici na Vinohradech",
     "hlavni_tlacitko": "Podívejte se na menu"
   },
   "o_nas": {
     "nadpis": "O nás",
-    "popis": "Místo, kde se potkává výběrová káva a autentická, pečlivě vybraná vína - pro klidná rána a živá večerní setkání.",
+    "popis": "S74 wine&café je kavárna a wine bar na Vinohradech, kousek od Jiřího z Poděbrad a náměstí Míru. Přes den se u nás zastavíte na výběrovou kávu, domácí dezert nebo limonádu, večer na sklenku pečlivě vybraného vína.",
+    "popis_lokalita": "Najdete nás ve Slezské 74 v Praze 3. Stavíme na klidné atmosféře malé kavárny, osobním výběru vín a místě, kam se hodí přijít na ranní espresso, odpolední schůzku i večerní posezení.",
+    "popis_rezervace": "Pokud hledáte kavárnu na Praze 3, wine bar na Vinohradech nebo místo pro rezervaci stolu u vína, jsme tu pro krátkou zastávku i delší setkání.",
     "karty": {
       "dezerty": {
         "nadpis": "Dezerty",
-        "popis": ""
+        "popis": "Dezerty ke kávě, lehké sladké zastavení i něco malého k večernímu posezení."
       },
       "vyberova_kava": {
         "nadpis": "Výběrová káva",
-        "popis": ""
+        "popis": "Espresso, cappuccino a filtrovaná káva pro rána i odpoledne ve Slezské."
       },
       "vybrana_vina": {
         "nadpis": "Vybraná vína",
-        "popis": ""
+        "popis": "Vína na sklenku i lahve pro večer ve wine baru na Vinohradech."
       },
       "atmosfera": {
         "nadpis": "Atmosféra",
@@ -47,7 +49,7 @@
   },
   "kontakt": {
     "nadpis": "Kontakt",
-    "popis": "",
+    "popis": "Rezervace stolů řešíme online přes Tebi. Pro dotazy k návštěvě, voucherům nebo soukromější domluvě nám napište e-mail.",
     "adresa": {
       "nadpis": "Adresa",
       "radek_1": "Slezská 856/74",
@@ -61,6 +63,10 @@
     "rezervace": {
       "nadpis": "Rezervace",
       "odkaz_text": "Rezervovat stůl"
+    },
+    "email": {
+      "nadpis": "E-mail",
+      "adresa": "ahoj@s74.cz"
     },
     "socialni_site": {
       "nadpis": "Sledujte nás",
