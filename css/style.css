@@ -124,6 +124,10 @@ h1, h2, h3, h4, h5, .logo {
     pointer-events: auto;
 }
 
+.tebi-managed > div[id^="tebi_rs_"] {
+    display: none !important;
+}
+
 .reserve-slot {
     display: flex;
     align-items: center;
