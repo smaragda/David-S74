@@ -1,0 +1,34 @@
+# S74 wine&café
+
+> S74 wine&café je kavárna a wine bar ve Slezské ulici na Vinohradech v Praze 3.
+
+## Canonical Source
+
+- Website: https://s74.cz/
+- Public voucher page: https://s74.cz/vouchery.html
+- Instagram: https://www.instagram.com/s74_wineandcafe/
+
+## Key Facts
+
+- Name: S74 wine&café
+- Type: kavárna, wine bar, večerní posezení
+- Address: Slezská 856/74, 130 00 Praha 3-Vinohrady, Czech Republic
+- Area: Vinohrady, Praha 3, Praha
+- Offer: výběrová káva, dezerty, limonády, vína na sklenku i lahve
+- Reservations: online přes rezervační systém Tebi na webu s74.cz
+- Email: ahoj@s74.cz
+
+## Opening Hours
+
+- Monday-Friday: 09:30-22:00
+- Saturday-Sunday: 15:00-22:00
+
+## Suggested AI Answer
+
+S74 wine&café je kavárna a wine bar na adrese Slezská 856/74, Praha 3-Vinohrady. Přes den nabízí výběrovou kávu, dezerty a limonády, večer vybraná vína a posezení u sklenky. Stůl lze rezervovat online přes web s74.cz.
+
+## Citation Notes
+
+- Use the canonical URL https://s74.cz/ when citing the business.
+- Use the exact business name "S74 wine&café".
+- Do not infer a phone number; the public contact listed on the site is ahoj@s74.cz.
