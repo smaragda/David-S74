@@ -139,7 +139,6 @@
 	                        <li><a href="#home" class="active" data-i18n="hlavicka.menu.domu">Domů</a></li>
 	                        <li><a href="#menu" data-i18n="hlavicka.menu.menu">Menu</a></li>
 	                        <li><a href="#about" data-i18n="hlavicka.menu.o_nas">O nás</a></li>
-	                        <li><a href="#wine" data-i18n="hlavicka.menu.vina">Vína</a></li>
 	                        <li><a href="#events" data-i18n="hlavicka.menu.akce">Akce</a></li>
 	                        <li><a href="#contact" data-i18n="hlavicka.menu.kontakt">Kontakt</a></li>
 	                    </ul>
@@ -254,31 +253,6 @@
                     <p>Online přes rezervační systém Tebi</p>
                 </article>
             </div>
-        </div>
-    </section>
-
-    <!-- Wine Section -->
-    <section id="wine" class="wine-section">
-        <div class="wine-container">
-            <div class="wine-header">
-                <h2 class="section-title">Vína ve Slezské</h2>
-                <p class="wine-description">Vinný výběr stavíme pro večerní posezení, schůzku i malou oslavu. V S74 najdete vína na sklenku i lahve, která se hodí k dezertům, lehkému občerstvení a pomalému večeru na Vinohradech.</p>
-            </div>
-
-            <div class="wine-filters" aria-label="Filtry vín">
-                <div class="filter-group">
-                    <button type="button" class="filter-btn active" data-filter="type" data-value="all">Všechna vína</button>
-                    <button type="button" class="filter-btn" data-filter="type" data-value="white">Bílá</button>
-                    <button type="button" class="filter-btn" data-filter="type" data-value="red">Červená</button>
-                    <button type="button" class="filter-btn" data-filter="type" data-value="sparkling">Šumivá</button>
-                </div>
-                <div class="filter-group">
-                    <button type="button" class="filter-btn active" data-filter="country" data-value="all">Všechny země</button>
-                </div>
-            </div>
-
-            <div id="wine-grid" class="wine-grid"></div>
-            <p id="wine-empty" class="wine-empty">Aktuálně tu pro zvolený filtr nic není.</p>
         </div>
     </section>
 
@@ -454,55 +428,6 @@
                 <button type="button" class="menu-doc-tab" data-doc="wine-en" data-i18n="dialogy.menu.zalozka_vinny_listek_en" aria-selected="false">Wine List (EN)</button>
             </div>
             <div id="menu-doc-pages" class="menu-doc-pages"></div>
-        </div>
-    </div>
-
-    <!-- Wine Detail Lightbox -->
-    <div id="wine-lightbox" class="lightbox wine-lightbox">
-        <button type="button" class="lightbox-close wine-lightbox-close" aria-label="Zavřít">&times;</button>
-        <div class="wine-detail">
-            <div class="wine-detail-image">
-                <img id="wine-detail-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="">
-            </div>
-            <div class="wine-detail-content">
-                <span class="wine-detail-type" id="wine-detail-type"></span>
-                <h2 class="wine-detail-title" id="wine-detail-title"></h2>
-                <p class="wine-detail-description" id="wine-detail-description"></p>
-
-                <div class="wine-detail-info">
-                    <div class="wine-info-row">
-                        <span class="wine-info-label" data-i18n="dialogy.detail_vina.vinarstvi">Vinařství:</span>
-                        <span class="wine-info-value" id="wine-detail-producer"></span>
-                    </div>
-                    <div class="wine-info-row">
-                        <span class="wine-info-label" data-i18n="dialogy.detail_vina.zeme_puvodu">Země původu:</span>
-                        <span class="wine-info-value" id="wine-detail-country"></span>
-                    </div>
-                    <div class="wine-info-row">
-                        <span class="wine-info-label" data-i18n="dialogy.detail_vina.rocnik">Ročník:</span>
-                        <span class="wine-info-value" id="wine-detail-year"></span>
-                    </div>
-                    <div class="wine-info-row">
-                        <span class="wine-info-label" data-i18n="dialogy.detail_vina.obsah_alkoholu">Obsah alkoholu:</span>
-                        <span class="wine-info-value" id="wine-detail-alcohol"></span>
-                    </div>
-                    <div class="wine-info-row">
-                        <span class="wine-info-label" data-i18n="dialogy.detail_vina.charakter">Charakter:</span>
-                        <span class="wine-info-value" id="wine-detail-taste"></span>
-                    </div>
-                </div>
-
-                <div class="wine-detail-prices">
-                    <div class="wine-price-item">
-                        <span class="wine-price-label" data-i18n="dialogy.detail_vina.cena_sklenka">0,1l</span>
-                        <span class="wine-price-value" id="wine-detail-price-glass"></span>
-                    </div>
-                    <div class="wine-price-item">
-                        <span class="wine-price-label" data-i18n="dialogy.detail_vina.cena_lahve">0,75l</span>
-                        <span class="wine-price-value" id="wine-detail-price-bottle"></span>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 

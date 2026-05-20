@@ -7,7 +7,6 @@
       "domu": "Domů",
       "menu": "Menu",
       "o_nas": "O nás",
-      "vina": "Vína",
       "akce": "Akce",
       "kontakt": "Kontakt"
     }
@@ -82,15 +81,6 @@
       "zalozka_menu": "Menu",
       "zalozka_vinny_listek_cz": "Vinný lístek (CZ)",
       "zalozka_vinny_listek_en": "Wine List (EN)"
-    },
-    "detail_vina": {
-      "vinarstvi": "Vinařství:",
-      "zeme_puvodu": "Země původu:",
-      "rocnik": "Ročník:",
-      "obsah_alkoholu": "Obsah alkoholu:",
-      "charakter": "Charakter:",
-      "cena_sklenka": "0,1l",
-      "cena_lahve": "0,75l"
     },
     "kava": {
       "nadpis": "Výběrová káva"

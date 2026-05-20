@@ -41,54 +41,34 @@ try:
         page.wait_for_timeout(400)
         shot(page, "02-about")
 
-        # 3. Wine cards
-        try:
-            page.wait_for_selector(".wine-card", timeout=5000)
-            page.locator(".wine-card").first.scroll_into_view_if_needed()
-            page.wait_for_timeout(400)
-            shot(page, "03-wine-cards")
-        except Exception:
-            print("  skipped: .wine-card not found within 5s")
-
-        # 4. Events (rezervační panel je na desktopu přímo viditelný)
+        # 3. Events (rezervační panel je na desktopu přímo viditelný)
         page.evaluate("document.querySelector('#events').scrollIntoView()")
         page.wait_for_timeout(600)
-        shot(page, "04-events")
+        shot(page, "03-events")
 
-        # 5. Contact
+        # 4. Contact
         page.evaluate("document.querySelector('#contact').scrollIntoView()")
         page.wait_for_timeout(400)
-        shot(page, "05-contact")
+        shot(page, "04-contact")
 
-        # 6. Footer
+        # 5. Footer
         page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
         page.wait_for_timeout(400)
-        shot(page, "06-footer")
+        shot(page, "05-footer")
 
-        # 7. Menu lightbox
+        # 6. Menu lightbox
         page.evaluate("document.querySelector('#menu-btn').click()")
         page.wait_for_timeout(800)
-        shot(page, "07-menu-lightbox")
+        shot(page, "06-menu-lightbox")
         page.keyboard.press("Escape")
         page.wait_for_timeout(300)
 
-        # 8. Kava lightbox
+        # 7. Kava lightbox
         page.evaluate("document.querySelector('#kava-card').click()")
         page.wait_for_timeout(800)
-        shot(page, "08-kava-lightbox")
+        shot(page, "07-kava-lightbox")
         page.keyboard.press("Escape")
         page.wait_for_timeout(300)
-
-        # 9. Wine lightbox
-        try:
-            wine_card = page.locator(".wine-card").first
-            wine_card.click()
-            page.wait_for_timeout(800)
-            shot(page, "09-wine-lightbox")
-            page.keyboard.press("Escape")
-            page.wait_for_timeout(300)
-        except Exception:
-            print("  skipped: wine lightbox")
 
         browser.close()
 
