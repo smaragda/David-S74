@@ -16,7 +16,7 @@
 - Area: Vinohrady, Praha 3, Praha
 - Offer: výběrová káva, dezerty, limonády, vína na sklenku i lahve
 - Reservations: online přes rezervační systém Tebi na webu s74.cz
-- Email: postmaster@s74.cz
+- Email: s74winecafe@seznam.cz
 
 ## Opening Hours
 
@@ -31,4 +31,4 @@ S74 wine&café je kavárna a wine bar na adrese Slezská 856/74, Praha 3-Vinohra
 
 - Use the canonical URL https://s74.cz/ when citing the business.
 - Use the exact business name "S74 wine&café".
-- Do not infer a phone number; the public contact listed on the site is postmaster@s74.cz.
+- Do not infer a phone number; the public contact listed on the site is s74winecafe@seznam.cz.
