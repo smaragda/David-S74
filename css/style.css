@@ -106,53 +106,6 @@ h1, h2, h3, h4, h5, .logo {
     background-color: var(--color-white);
 }
 
-/* ==========================================
-   Reservations (Tebi)
-   ========================================== */
-
-/* The Tebi script injects an iframe with id like "tebi_rs_01". */
-.tebi-managed iframe[id^="tebi_rs_"],
-.tebi-managed iframe[src*="live.tebi.co/api/widget/"] {
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 160ms ease;
-}
-
-.tebi-mounted iframe[id^="tebi_rs_"],
-.tebi-mounted iframe[src*="live.tebi.co/api/widget/"] {
-    opacity: 1;
-    pointer-events: auto;
-}
-
-.tebi-managed > div[id^="tebi_rs_"] {
-    display: none !important;
-}
-
-.reserve-slot {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.reserve-slot-header iframe[id^="tebi_rs_"],
-.reserve-slot-header iframe[src*="live.tebi.co/api/widget/"] {
-    /* Keep the original size; just let it sit inline in the header. */
-    position: static !important;
-    inset: auto !important;
-    z-index: auto !important;
-    transform: none !important;
-    margin-left: 0.25rem;
-}
-
-.reserve-slot-events iframe[id^="tebi_rs_"],
-.reserve-slot-events iframe[src*="live.tebi.co/api/widget/"] {
-    position: static !important;
-    inset: auto !important;
-    z-index: auto !important;
-    transform: none !important;
-    margin-top: 0.75rem;
-}
-
 /* Hero Section */
 .hero {
     position: relative;
@@ -598,21 +551,13 @@ h1, h2, h3, h4, h5, .logo {
 }
 
 .events-layout {
-    display: grid;
-    grid-template-columns: minmax(260px, 420px) 1fr;
-    gap: 2rem;
-    align-items: start;
+    max-width: 620px;
 }
 
 .events-left {
     display: flex;
     flex-direction: column;
     gap: 1rem;
-}
-
-.events-right {
-    display: flex;
-    justify-content: center;
 }
 
 .events-header {
@@ -637,33 +582,6 @@ h1, h2, h3, h4, h5, .logo {
 
 .btn-reserve {
     padding: 0.85rem 1.6rem;
-}
-
-.events-hint {
-    font-size: 0.9rem;
-    opacity: 0.8;
-    max-width: 28rem;
-}
-
-.events-panel {
-    width: min(560px, 100%);
-    background: linear-gradient(180deg, rgba(58, 58, 58, 0.7) 0%, rgba(45, 45, 45, 0.7) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 12px;
-    padding: 1.25rem;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
-    display: flex;
-    justify-content: center;
-}
-
-/* Fix pro widget - skrýt grid sloupec když je panel hidden */
-.events-layout:has(#reserve-panel[hidden]) {
-    grid-template-columns: 1fr;
-}
-
-/* Fallback pro browsery bez :has() podpory */
-.events-right[data-hidden="true"] {
-    display: none;
 }
 
 /* FAQ Section */
@@ -822,10 +740,6 @@ h1, h2, h3, h4, h5, .logo {
         letter-spacing: 0.3px;
     }
 
-    .reserve-slot-header {
-        display: none;
-    }
-    
     .hero {
         min-height: 500px;
     }
@@ -845,15 +759,6 @@ h1, h2, h3, h4, h5, .logo {
 
     .events-section {
         padding: 3.5rem 1.5rem;
-    }
-
-    .events-layout {
-        grid-template-columns: 1fr;
-        gap: 1.25rem;
-    }
-
-    .events-right {
-        justify-content: flex-start;
     }
 
     .contact-content {

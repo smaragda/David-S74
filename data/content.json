@@ -43,8 +43,7 @@
   "akce": {
     "nadpis": "Akce",
     "popis": "Rezervace míst v kavárně - postaráme se o vás prostřednictvím rezervačního systému Tebi.",
-    "tlacitko_rezervace": "Rezervovat stůl",
-    "napoveda_pod_tlacitkem": "Kliknutím zobrazíte rezervační widget."
+    "tlacitko_rezervace": "Rezervovat stůl"
   },
   "kontakt": {
     "nadpis": "Kontakt",

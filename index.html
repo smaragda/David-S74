@@ -143,8 +143,6 @@
 	                        <li><a href="#contact" data-i18n="hlavicka.menu.kontakt">Kontakt</a></li>
 	                    </ul>
 
-	                    <!-- Tebi widget launcher will be moved here in "header" mode -->
-	                    <div id="reserve-slot-header" class="reserve-slot reserve-slot-header" aria-label="Rezervace"></div>
 	                </div>
 	            </div>
 	        </nav>
@@ -257,38 +255,28 @@
     </section>
 
     <!-- Events / Reservations -->
-	    <section id="events" class="events-section">
-	        <div class="events-container">
-	            <div class="events-layout">
-	                <div class="events-left">
-	                    <div class="events-header">
-	                        <h2 class="section-title" data-i18n="akce.nadpis">Akce</h2>
-	                        <p class="events-description" data-i18n="akce.popis">Rezervace míst v kavárně — postaráme se o vás prostřednictvím rezervačního systému Tebi.</p>
-	                    </div>
+    <section id="events" class="events-section">
+        <div class="events-container">
+            <div class="events-layout">
+                <div class="events-left">
+                    <div class="events-header">
+                        <h2 class="section-title" data-i18n="akce.nadpis">Akce</h2>
+                        <p class="events-description" data-i18n="akce.popis">Rezervace míst v kavárně — postaráme se o vás prostřednictvím rezervačního systému Tebi.</p>
+                    </div>
 
-	                    <div class="events-actions">
-	                        <button
-	                          type="button"
-	                          class="btn-primary btn-reserve"
-	                          id="reserve-toggle-btn"
-                              data-i18n="akce.tlacitko_rezervace"
-	                          aria-controls="reserve-panel"
-	                          aria-expanded="false">
-	                            Rezervovat stůl
-	                        </button>
-	                        <p class="events-hint" id="reserve-hint" data-i18n="akce.napoveda_pod_tlacitkem">Kliknutím zobrazíte rezervační widget.</p>
-	                    </div>
-	                </div>
-
-		                <div class="events-right">
-		                    <div id="reserve-panel" class="events-panel" hidden>
-		                        <!-- Tebi widget launcher will be moved here in "events" / "button" mode -->
-		                        <div id="reserve-slot-events" class="reserve-slot reserve-slot-events" aria-label="Rezervace"></div>
-		                    </div>
-		                </div>
-	            </div>
-	        </div>
-	    </section>
+                    <div class="events-actions">
+                        <a
+                            href="#tebi-reservations"
+                            class="btn-primary btn-reserve"
+                            id="reserve-open-link"
+                            data-i18n="akce.tlacitko_rezervace">
+                            Rezervovat stůl
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- FAQ Section -->
     <section id="faq" class="faq-section" aria-labelledby="faq-title">
@@ -347,7 +335,7 @@
                         <div class="contact-icon">📅</div>
                         <h3 class="contact-card-title" data-i18n="kontakt.rezervace.nadpis">Rezervace</h3>
                         <p class="contact-card-text">
-                            <a href="#events" class="contact-link" data-i18n="kontakt.rezervace.odkaz_text">Rezervovat stůl</a>
+                            <a href="#tebi-reservations" class="contact-link" data-i18n="kontakt.rezervace.odkaz_text">Rezervovat stůl</a>
                         </p>
                     </div>
 
