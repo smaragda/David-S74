@@ -175,15 +175,23 @@ h1, h2, h3, h4, h5, .logo {
     letter-spacing: 1px;
 }
 
+.hero-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+}
+
 [hidden] {
     display: none !important;
 }
 
-.btn-primary {
+.btn-primary,
+.btn-secondary {
     display: inline-block;
     padding: 1rem 2.5rem;
     border: 1px solid var(--color-gold-light);
-    background-color: rgba(42, 42, 42, 0.7);
     color: var(--color-white);
     text-decoration: none;
     font-family: var(--font-body);
@@ -194,7 +202,17 @@ h1, h2, h3, h4, h5, .logo {
     cursor: pointer;
 }
 
-.btn-primary:hover {
+.btn-primary {
+    background-color: rgba(42, 42, 42, 0.7);
+}
+
+.btn-secondary {
+    background-color: rgba(26, 26, 26, 0.45);
+    border-color: rgba(232, 213, 163, 0.65);
+}
+
+.btn-primary:hover,
+.btn-secondary:hover {
     background-color: rgba(212, 175, 55, 0.2);
     border-color: var(--color-gold);
     transform: translateY(-2px);

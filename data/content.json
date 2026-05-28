@@ -6,6 +6,7 @@
     "menu": {
       "domu": "Domů",
       "menu": "Menu",
+      "eshop": "E-shop",
       "o_nas": "O nás",
       "akce": "Akce",
       "kontakt": "Kontakt"
@@ -14,7 +15,8 @@
   "uvod": {
     "nadpis": "S74 wine&café",
     "podnadpis": "Kavárna a wine bar ve Slezské ulici na Vinohradech",
-    "hlavni_tlacitko": "Podívejte se na menu"
+    "hlavni_tlacitko": "Podívejte se na menu",
+    "eshop_tlacitko": "Víno domů"
   },
   "o_nas": {
     "nadpis": "O nás",
