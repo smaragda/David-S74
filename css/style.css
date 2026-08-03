@@ -653,6 +653,80 @@ h1, h2, h3, h4, h5, .logo {
     line-height: 1.6;
 }
 
+/* Theatre Link */
+.theatre-section {
+    background-color: var(--color-dark-gray);
+    padding: 3.5rem 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.theatre-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: minmax(240px, 0.8fr) minmax(360px, 1.2fr);
+    align-items: center;
+    gap: clamp(2rem, 5vw, 4.5rem);
+}
+
+.theatre-copy .section-title {
+    margin-bottom: 0.65rem;
+}
+
+.theatre-copy > p:last-child {
+    color: var(--color-text);
+    font-size: 0.95rem;
+    font-weight: 300;
+    line-height: 1.6;
+}
+
+.theatre-eyebrow {
+    color: var(--color-gold-light);
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+}
+
+.theatre-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: clamp(1.5rem, 4vw, 2.25rem);
+    background-color: #f4efe9;
+    border: 1px solid var(--color-gold-light);
+    border-radius: 8px;
+    color: var(--color-dark);
+    text-decoration: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.theatre-link img {
+    width: min(100%, 460px);
+    height: auto;
+}
+
+.theatre-link > span {
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+}
+
+.theatre-link:hover,
+.theatre-link:focus-visible {
+    color: var(--color-dark);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+.theatre-link:focus-visible {
+    outline: 3px solid var(--color-gold);
+    outline-offset: 3px;
+}
+
 /* Footer */
 .footer {
     background-color: var(--color-footer);
@@ -740,6 +814,10 @@ h1, h2, h3, h4, h5, .logo {
     .faq-list {
         grid-template-columns: 1fr;
     }
+
+    .theatre-container {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media (max-width: 768px) {
@@ -777,6 +855,10 @@ h1, h2, h3, h4, h5, .logo {
 
     .events-section {
         padding: 3.5rem 1.5rem;
+    }
+
+    .theatre-section {
+        padding: 3rem 1.5rem;
     }
 
     .contact-content {
