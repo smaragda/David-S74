@@ -14,51 +14,51 @@
   },
   "uvod": {
     "nadpis": "S74 wine&café",
-    "podnadpis": "Kavárna a wine bar ve Slezské ulici na Vinohradech",
-    "hlavni_tlacitko": "Podívejte se na menu",
+    "podnadpis": "Výběrová káva přes den. Vybraná vína večer.",
+    "hlavni_tlacitko": "Prohlédnout menu",
     "eshop_tlacitko": "Víno domů"
   },
   "o_nas": {
-    "nadpis": "O nás",
-    "popis": "S74 wine&café je kavárna a wine bar na Vinohradech, kousek od Jiřího z Poděbrad a náměstí Míru. Přes den se u nás zastavíte na výběrovou kávu, domácí dezert nebo limonádu, večer na sklenku pečlivě vybraného vína.",
-    "popis_lokalita": "Najdete nás ve Slezské 74. Stavíme na klidné atmosféře malé kavárny, osobním výběru vín a místě, kam se hodí přijít na ranní espresso, odpolední schůzku i večerní posezení.",
-    "popis_rezervace": "Přijďte na krátkou zastávku po cestě, pomalejší kávu s dezertem nebo delší večer u sklenky. Když chcete mít jistotu místa, stůl si můžete rezervovat online.",
+    "nadpis": "Na kávu i na víno",
+    "popis": "S74 je komorní kavárna a wine bar na Vinohradech, kousek od Jiřího z Poděbrad. Přes den podáváme výběrovou kávu, limonády a dezerty; večer vína na sklenku i lahve.",
+    "popis_lokalita": "Najdete nás ve Slezské 856/74 v Praze 3–Vinohradech.",
+    "popis_rezervace": "Stůl si můžete rezervovat online.",
     "karty": {
       "dezerty": {
         "nadpis": "Dezerty",
-        "popis": "Dezerty ke kávě, lehké sladké zastavení i něco malého k večernímu posezení."
+        "popis": "Sladké ke kávě."
       },
       "vyberova_kava": {
         "nadpis": "Výběrová káva",
-        "popis": "Espresso, cappuccino a filtrovaná káva pro rána i odpoledne ve Slezské."
+        "popis": "Espresso, cappuccino i filtr."
       },
       "vybrana_vina": {
         "nadpis": "Vybraná vína",
-        "popis": "Vína na sklenku i lahve pro večer ve wine baru na Vinohradech."
+        "popis": "Na sklenku i po lahvích."
       },
       "atmosfera": {
         "nadpis": "Atmosféra",
-        "popis": "Od ranního espressa až k pozdním večerním rozhovorům."
+        "popis": "Klidná rána, dlouhé večery."
       }
     }
   },
   "akce": {
-    "nadpis": "Akce",
-    "popis": "Rezervace míst v kavárně - postaráme se o vás prostřednictvím rezervačního systému Tebi.",
+    "nadpis": "Akce & rezervace",
+    "popis": "Novinky a chystané akce sdílíme na Instagramu. Chcete mít jisté místo? Rezervujte si stůl online.",
     "tlacitko_rezervace": "Rezervovat stůl"
   },
   "kontakt": {
-    "nadpis": "Kontakt",
-    "popis": "Rezervace stolů řešíme online přes Tebi. Pro dotazy k návštěvě, voucherům nebo soukromější domluvě nám napište e-mail.",
+    "nadpis": "Najdete nás na Vinohradech",
+    "popis": "Slezská 856/74, Praha 3–Vinohrady.",
     "adresa": {
       "nadpis": "Adresa",
       "radek_1": "Slezská 856/74",
-      "radek_2": "130 00 Praha 3-Vinohrady"
+      "radek_2": "130 00 Praha 3–Vinohrady"
     },
     "oteviraci_doba": {
       "nadpis": "Otevírací doba",
-      "radek_1": "Po-Pá 9:30-22",
-      "radek_2": "So-Ne 15-22"
+      "radek_1": "Po–Pá 9:30–22:00",
+      "radek_2": "So–Ne 15:00–22:00"
     },
     "rezervace": {
       "nadpis": "Rezervace",
@@ -75,7 +75,7 @@
   },
   "paticka": {
     "nazev": "S74 wine&café",
-    "adresa": "Slezská 856/74, 130 00 Praha 3-Vinohrady"
+    "adresa": "Slezská 856/74, 130 00 Praha 3–Vinohrady"
   },
   "dialogy": {
     "menu": {
