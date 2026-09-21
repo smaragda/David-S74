@@ -134,6 +134,115 @@ document.addEventListener('keydown', event => {
     }
 });
 
+const TEBI_SCRIPT_SRC = 'https://live.tebi.co/ecom/widget-manager.js';
+const TEBI_WIDGET_TOKEN = '516094_b60d2375756aa69730e6dd7521b41bf3ec933587a0ad7b5c01cd5a093c9435cd';
+const reservationLinks = Array.from(document.querySelectorAll('a[href="#tebi-reservations"]'));
+const reservationStatus = document.getElementById('reservation-status');
+let tebiState = 'idle';
+let tebiLoadPromise = null;
+let pendingReservationTrigger = null;
+
+function parseTebiMessage(data) {
+    try {
+        return typeof data === 'string' ? JSON.parse(data) : data;
+    } catch (_error) {
+        return null;
+    }
+}
+
+function setReservationLoading(isLoading) {
+    reservationLinks.forEach(link => {
+        if (isLoading) {
+            link.setAttribute('aria-busy', 'true');
+        } else {
+            link.removeAttribute('aria-busy');
+        }
+    });
+}
+
+function showReservationError() {
+    if (!reservationStatus) return;
+
+    reservationStatus.replaceChildren();
+    reservationStatus.append('Rezervační systém se nepodařilo načíst. Napište nám na ');
+    const emailLink = document.createElement('a');
+    emailLink.href = 'mailto:s74winecafe@seznam.cz';
+    emailLink.textContent = 's74winecafe@seznam.cz';
+    reservationStatus.append(emailLink, '.');
+    reservationStatus.hidden = false;
+    reservationStatus.setAttribute('role', 'alert');
+}
+
+function loadTebiWidget() {
+    if (tebiLoadPromise) return tebiLoadPromise;
+
+    tebiLoadPromise = new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        let readyTimer = null;
+
+        const cleanup = () => {
+            window.clearTimeout(readyTimer);
+            window.removeEventListener('message', handleTebiReady);
+        };
+
+        const fail = () => {
+            cleanup();
+            reject(new Error('Tebi widget se nepodařilo načíst.'));
+        };
+
+        const handleTebiReady = event => {
+            if (event.origin !== 'https://live.tebi.co') return;
+
+            const message = parseTebiMessage(event.data);
+            if (message?.type !== 'appear') return;
+
+            cleanup();
+            resolve();
+        };
+
+        window.addEventListener('message', handleTebiReady);
+        script.id = 'tebi';
+        script.src = TEBI_SCRIPT_SRC;
+        script.dataset.widgetToken = TEBI_WIDGET_TOKEN;
+        script.async = true;
+        script.addEventListener('error', fail, { once: true });
+        document.body.appendChild(script);
+
+        readyTimer = window.setTimeout(fail, 15000);
+    });
+
+    return tebiLoadPromise;
+}
+
+function handleReservationClick(event) {
+    if (tebiState === 'ready') return;
+
+    event.preventDefault();
+    pendingReservationTrigger = event.currentTarget;
+    if (tebiState === 'loading') return;
+
+    tebiState = 'loading';
+    setReservationLoading(true);
+    if (reservationStatus) reservationStatus.hidden = true;
+
+    loadTebiWidget()
+        .then(() => {
+            tebiState = 'ready';
+            setReservationLoading(false);
+            const trigger = pendingReservationTrigger;
+            pendingReservationTrigger = null;
+            window.requestAnimationFrame(() => trigger?.click());
+        })
+        .catch(() => {
+            tebiState = 'failed';
+            setReservationLoading(false);
+            pendingReservationTrigger = null;
+            showReservationError();
+        });
+}
+
+reservationLinks.forEach(link => link.addEventListener('click', handleReservationClick));
+
 // Smooth scrolling for in-page navigation. Tebi handles its own reservation links.
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (event) {

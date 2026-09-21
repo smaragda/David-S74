@@ -1020,6 +1020,133 @@ h3 {
     letter-spacing: 0.04em;
 }
 
+.footer-meta a {
+    color: #cbbdb3;
+    text-underline-offset: 0.25rem;
+}
+
+.reservation-status {
+    position: fixed;
+    right: 1rem;
+    bottom: calc(1rem + env(safe-area-inset-bottom));
+    z-index: 10020;
+    width: min(28rem, calc(100% - 2rem));
+    padding: 1rem 1.15rem;
+    border: 1px solid rgba(255, 250, 243, 0.28);
+    border-radius: 0.75rem;
+    background: var(--color-wine-dark);
+    box-shadow: var(--shadow-soft);
+    color: var(--color-paper-light);
+    font-size: 0.9rem;
+}
+
+.reservation-status a {
+    font-weight: 700;
+    text-underline-offset: 0.25rem;
+}
+
+/* Privacy page */
+.privacy-page {
+    min-height: 100vh;
+    background: var(--color-paper);
+}
+
+.privacy-header {
+    padding-block: 1.5rem;
+    border-bottom: 1px solid var(--color-line);
+    background: var(--color-paper-light);
+}
+
+.privacy-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+}
+
+.privacy-brand {
+    font-family: var(--font-display);
+    font-size: clamp(1.7rem, 3vw, 2.4rem);
+    line-height: 1;
+    text-decoration: none;
+}
+
+.privacy-back {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-underline-offset: 0.3rem;
+}
+
+.privacy-main {
+    padding-block: clamp(4rem, 8vw, 7rem);
+}
+
+.privacy-shell {
+    width: min(100%, 57rem);
+}
+
+.privacy-title {
+    max-width: 12ch;
+    margin-top: 1rem;
+    color: var(--color-ink);
+    font-size: clamp(3rem, 7vw, 5.8rem);
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+}
+
+.privacy-lead {
+    max-width: 45rem;
+    margin-top: 1.75rem;
+    color: var(--color-muted);
+    font-size: clamp(1.1rem, 2vw, 1.35rem);
+}
+
+.privacy-content {
+    display: grid;
+    gap: 3rem;
+    margin-top: clamp(4rem, 8vw, 6rem);
+}
+
+.privacy-content section {
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-line);
+}
+
+.privacy-content h2 {
+    color: var(--color-ink);
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1.08;
+}
+
+.privacy-content h3 {
+    margin-top: 1.75rem;
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.privacy-content p,
+.privacy-content ul {
+    max-width: 48rem;
+    margin: 1rem 0 0;
+}
+
+.privacy-content li + li {
+    margin-top: 0.6rem;
+}
+
+.privacy-content a {
+    color: var(--color-wine);
+    font-weight: 600;
+    text-underline-offset: 0.25rem;
+}
+
+.privacy-updated {
+    color: var(--color-muted);
+    font-size: 0.85rem;
+}
+
 /* Lightboxes */
 .lightbox {
     position: fixed;
@@ -1569,6 +1696,12 @@ h3 {
     .footer-meta {
         flex-direction: column;
         gap: 0.4rem;
+    }
+
+    .privacy-nav {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 1rem;
     }
 
     .lightbox {

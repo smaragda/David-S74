@@ -34,6 +34,19 @@ body {
 .page-shell--centered {
     display: grid;
     place-items: center;
+    grid-template-rows: minmax(0, 1fr) auto;
+}
+
+.legal-footer {
+    width: 100%;
+    margin-top: 32px;
+    text-align: center;
+}
+
+.legal-footer a,
+footer.microcopy a {
+    color: inherit;
+    text-underline-offset: 0.25em;
 }
 
 .layout,

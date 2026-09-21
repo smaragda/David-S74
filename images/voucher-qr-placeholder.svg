@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-labelledby="title desc">
+  <title id="title">Ukázkový QR kód voucheru</title>
+  <desc id="desc">Dekorativní zástupný QR kód pro prototyp voucheru.</desc>
+  <rect width="400" height="400" fill="#fffaf3"/>
+  <g fill="#b1442f">
+    <path d="M32 32h104v104H32zm20 20v64h64V52zM264 32h104v104H264zm20 20v64h64V52zM32 264h104v104H32zm20 20v64h64v-64z"/>
+    <path d="M72 72h24v24H72zm232 0h24v24h-24zM72 304h24v24H72z"/>
+    <path d="M168 32h32v32h-32zm48 0h24v72h-24zm-56 64h40v24h-40zm16 48h24v40h-24zm48-16h32v32h-32zm48 32h32v24h-32zm48-8h48v32h-48zM32 168h32v48H32zm48-8h24v24H80zm32 40h40v24h-40zm-80 40h80v16H32zm112-32h24v48h-24zm40 8h56v24h-56zm72-16h24v56h-24zm40 16h72v24h-72zM160 272h24v24h-24zm40-16h40v56h-40zm56 16h24v24h-24zm40-16h72v24h-72zm-136 72h56v40h-56zm80-8h24v48h-24zm48 8h32v40h-32zm48-32h72v72h-24v-24h-48z"/>
+  </g>
+  <text x="200" y="392" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#6a5a50">VOUCHER-1000 · UKÁZKA</text>
+</svg>
