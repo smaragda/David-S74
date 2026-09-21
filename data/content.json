@@ -80,8 +80,7 @@
   "dialogy": {
     "menu": {
       "zalozka_menu": "Menu",
-      "zalozka_vinny_listek_cz": "Vinný lístek (CZ)",
-      "zalozka_vinny_listek_en": "Wine List (EN)"
+      "zalozka_vinny_listek_cz": "Vinný lístek (CZ)"
     },
     "kava": {
       "nadpis": "Výběrová káva"

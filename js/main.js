@@ -424,15 +424,6 @@ const MENU_DOCS = {
             'images/menu-docs/wine-cz-02.jpg',
             'images/menu-docs/wine-cz-03.jpg'
         ]
-    },
-    'wine-en': {
-        alt: 'Wine list S74 (EN)',
-        pages: [
-            'images/menu-docs/wine-en-00.jpg',
-            'images/menu-docs/wine-en-01.jpg',
-            'images/menu-docs/wine-en-02.jpg',
-            'images/menu-docs/wine-en-03.jpg'
-        ]
     }
 };
 
