@@ -413,7 +413,7 @@ const MENU_DOCS = {
     menu: {
         alt: 'Menu S74 wine&café',
         pages: [
-            'images/menu-docs/menu-00.jpg'
+            'images/menu-docs/menu-2026-10.jpg'
         ]
     },
     'wine-cz': {
