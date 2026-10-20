@@ -60,12 +60,18 @@
         {
           "@type": "OpeningHoursSpecification",
           "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-          "opens": "09:30",
-          "closes": "22:00"
+          "opens": "07:30",
+          "closes": "23:00"
         },
         {
           "@type": "OpeningHoursSpecification",
-          "dayOfWeek": ["Saturday", "Sunday"],
+          "dayOfWeek": "Saturday",
+          "opens": "15:00",
+          "closes": "23:00"
+        },
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": "Sunday",
           "opens": "15:00",
           "closes": "22:00"
         }
@@ -83,7 +89,7 @@
       "url": "https://s74.cz/",
       "name": "Časté otázky k S74 wine&café",
       "inLanguage": "cs-CZ",
-      "dateModified": "2026-08-04",
+      "dateModified": "2026-10-20",
       "about": {
         "@id": "https://s74.cz/#business"
       },
@@ -109,7 +115,7 @@
           "name": "Kdy máte otevřeno?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Po–Pá 9:30–22:00, So–Ne 15:00–22:00."
+            "text": "Po–Pá 7:30–23:00, So 15:00–23:00, Ne 15:00–22:00."
           }
         },
         {
@@ -188,10 +194,12 @@
                 </a>
                 <div>
                     <span class="quick-info-label">Po–Pá</span>
-                    <strong>9:30–22:00</strong>
+                    <strong>7:30–23:00</strong>
                 </div>
                 <div>
-                    <span class="quick-info-label">So–Ne</span>
+                    <span class="quick-info-label">So</span>
+                    <strong>15:00–23:00</strong>
+                    <span class="quick-info-label">Ne</span>
                     <strong>15:00–22:00</strong>
                 </div>
                 <a href="#tebi-reservations">
@@ -304,7 +312,7 @@
                         </div>
                         <div class="contact-detail">
                             <h3 data-i18n="kontakt.oteviraci_doba.nadpis">Otevírací doba</h3>
-                            <p data-i18n-lines="kontakt.oteviraci_doba" data-i18n-line-keys="radek_1,radek_2">Po–Pá 9:30–22:00<br>So–Ne 15:00–22:00</p>
+                            <p data-i18n-lines="kontakt.oteviraci_doba" data-i18n-line-keys="radek_1,radek_2,radek_3">Po–Pá 7:30–23:00<br>So 15:00–23:00<br>Ne 15:00–22:00</p>
                         </div>
                         <div class="contact-detail">
                             <h3 data-i18n="kontakt.email.nadpis">E-mail</h3>
@@ -359,7 +367,7 @@
                     </details>
                     <details class="faq-item">
                         <summary>Kdy máte otevřeno?</summary>
-                        <p>Po–Pá 9:30–22:00, So–Ne 15:00–22:00.</p>
+                        <p>Po–Pá 7:30–23:00, So 15:00–23:00, Ne 15:00–22:00.</p>
                     </details>
                     <details class="faq-item">
                         <summary>Jak rezervovat stůl?</summary>
@@ -393,7 +401,7 @@
             <a class="footer-brand" href="#home" data-i18n="paticka.nazev">S74 wine&amp;café</a>
             <div class="footer-details">
                 <span data-i18n="paticka.adresa">Slezská 856/74, 130 00 Praha 3–Vinohrady</span>
-                <span data-i18n-join="kontakt.oteviraci_doba" data-i18n-join-keys="radek_1,radek_2" data-i18n-join-separator=" · ">Po–Pá 9:30–22:00 · So–Ne 15:00–22:00</span>
+                <span data-i18n-join="kontakt.oteviraci_doba" data-i18n-join-keys="radek_1,radek_2,radek_3" data-i18n-join-separator=" · ">Po–Pá 7:30–23:00 · So 15:00–23:00 · Ne 15:00–22:00</span>
             </div>
             <a href="https://www.instagram.com/s74_wineandcafe/" class="footer-social" target="_blank" rel="noopener noreferrer" aria-label="Instagram S74 wine&amp;café">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">

@@ -57,8 +57,9 @@
     },
     "oteviraci_doba": {
       "nadpis": "Otevírací doba",
-      "radek_1": "Po–Pá 9:30–22:00",
-      "radek_2": "So–Ne 15:00–22:00"
+      "radek_1": "Po–Pá 7:30–23:00",
+      "radek_2": "So 15:00–23:00",
+      "radek_3": "Ne 15:00–22:00"
     },
     "rezervace": {
       "nadpis": "Rezervace",

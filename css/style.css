@@ -562,6 +562,10 @@ h3 {
     text-transform: uppercase;
 }
 
+.quick-info strong + .quick-info-label {
+    margin-top: 0.65rem;
+}
+
 .quick-info strong {
     color: var(--color-ink);
     font-size: 0.95rem;
