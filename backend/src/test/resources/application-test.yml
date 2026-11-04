@@ -9,6 +9,8 @@ s74:
   public-base-url: http://localhost:8080
   frontend-base-url: http://localhost:8000
   cors-allowed-origins: http://localhost:8000
+  scheduling:
+    enabled: false
   stripe:
     api-key: sk_test_placeholder
     webhook-secret: whsec_testsecret
