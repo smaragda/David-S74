@@ -1131,6 +1131,22 @@ h3 {
     font-size: 0.85rem;
 }
 
+.draft-notice {
+    margin: 1.5rem 0 0;
+    padding: 1rem 1.25rem;
+    border: 2px solid var(--color-wine);
+    border-radius: 0.75rem;
+    background: rgba(116, 38, 61, 0.08);
+    color: var(--color-wine-dark);
+    line-height: 1.55;
+}
+
+.draft-notice strong {
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+
 /* Lightboxes */
 .lightbox {
     position: fixed;

@@ -18,39 +18,48 @@
     <meta property="og:image" content="https://s74.cz/images/og-s74.jpg">
     <meta name="twitter:card" content="summary_large_image">
     <link rel="stylesheet" href="fonts/fonts.css?v=20260805">
-    <!-- CSS (relativní cesta k projektu) -->
     <link rel="stylesheet" href="app.css">
 </head>
-<body class="page-shell">
+<body class="page-shell" data-page="offers">
 <main class="layout">
     <header class="hero-card">
         <p class="eyebrow">S74 wine&amp;café | kavárna a wine bar</p>
         <h1>Darujte částku na návštěvu s74.</h1>
-        <p class="lead">Vyberte částkový voucher. Po zaplacení vám obratem pošleme kód a QR kód, který stačí ukázat obsluze přímo v mobilu nebo vytisknout.</p>
-        
+        <p class="lead">Vyberte částkový voucher. Po zaplacení vám obratem pošleme e-mailem kód a QR kód, který stačí ukázat obsluze v mobilu nebo vytisknout.</p>
         <div class="hero-actions">
-            <a class="ghost-link" href="staff-login.html">Vstup pro obsluhu</a>
-            <span class="status-pill status-pill--ready">Systém je připraven</span>
+            <a class="ghost-link" href="index.html">Zpět na web</a>
         </div>
     </header>
 
-    <section class="offer-grid">
-        <article class="offer-card">
-            <div>
-                <p class="offer-price">1 000 Kč</p>
-                <h2>Voucher v hodnotě 1 000 Kč</h2>
-                <p>Ideální jako dárek. Lze využít na cokoli z naší nabídky – od ranní kávy až po večerní láhev vína.</p>
-            </div>
-            <div style="margin-top: 24px;">
-                <a href="checkout.html?offer=open-1000" class="primary-button-link">Koupit voucher</a>
-            </div>
-        </article>
+    <section aria-labelledby="offers-heading">
+        <h2 id="offers-heading" class="visually-hidden">Dostupné vouchery</h2>
+        <div class="offer-grid" id="offer-grid" aria-live="polite" aria-busy="true">
+            <p class="form-message form-message--info" id="offers-loading">Načítám nabídku…</p>
+        </div>
+        <p class="form-message form-message--error" id="offers-error" role="alert" hidden>Prodej voucherů je teď dočasně nedostupný, zkuste to prosím později.</p>
+        <noscript><p class="form-message form-message--error">Pro nákup voucheru je potřeba povolit JavaScript.</p></noscript>
     </section>
 
-    <footer style="margin-top: 48px; text-align: center;" class="microcopy">
-        <p>&copy; 2026 s74.cz — Vouchery s radostí.</p>
-        <a href="soukromi.html">Soukromí a cookies</a>
+    <section class="conditions" aria-labelledby="conditions-heading">
+        <h2 id="conditions-heading">Podmínky voucheru</h2>
+        <p>Přečtěte si je prosím před nákupem.</p>
+        <ul>
+            <li>Voucher lze uplatnit <strong>jednorázově</strong>, najednou v plné hodnotě.</li>
+            <li>Je-li útrata <strong>nižší</strong> než hodnota voucheru, <strong>nevyužitý rozdíl propadá</strong>.</li>
+            <li>Je-li útrata <strong>vyšší</strong>, rozdíl doplatíte.</li>
+            <li>Platnost voucheru je <span id="validity-months">12</span> měsíců od vystavení.</li>
+            <li>Voucher nelze směnit za hotovost.</li>
+            <li>Voucher je <strong>na doručitele</strong>: kdo zná kód, může jej uplatnit. Chraňte ho jako hotovost.</li>
+        </ul>
+        <p>Plné znění najdete v <a href="obchodni-podminky-vouchery.html">obchodních podmínkách voucherů</a>.</p>
+    </section>
+
+    <footer class="site-footer microcopy">
+        <p>&copy; 2026 S74 wine&amp;café, s.r.o.</p>
+        <p><a href="obchodni-podminky-vouchery.html">Obchodní podmínky voucherů</a> · <a href="soukromi.html">Soukromí a cookies</a></p>
     </footer>
 </main>
+<script src="js/vouchers-config.js"></script>
+<script src="js/vouchers.js" defer></script>
 </body>
 </html>

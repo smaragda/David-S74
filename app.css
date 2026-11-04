@@ -332,3 +332,190 @@ h2 {
         background: white;
     }
 }
+
+/* --- Doplňky pro nákup voucherů (vouchery.html, checkout.html, order-success.html) --- */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.offer-actions {
+    margin-top: 24px;
+}
+
+.conditions {
+    margin-top: 28px;
+    border-radius: 28px;
+    padding: 28px 32px;
+    background: rgba(255, 250, 243, 0.9);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow);
+}
+
+.conditions ul {
+    margin: 14px 0 0;
+    padding-left: 1.2rem;
+    line-height: 1.7;
+}
+
+.conditions li + li {
+    margin-top: 4px;
+}
+
+.conditions p {
+    margin: 14px 0 0;
+    color: var(--muted);
+}
+
+.conditions a,
+.site-footer a,
+.form-note a,
+.panel a.text-link {
+    color: inherit;
+    text-underline-offset: 0.25em;
+}
+
+.site-footer {
+    margin-top: 48px;
+    text-align: center;
+    display: grid;
+    gap: 6px;
+}
+
+.form-message {
+    margin: 18px 0 0;
+    padding: 14px 16px;
+    border-radius: 16px;
+    font-weight: 600;
+    line-height: 1.45;
+}
+
+.form-message--error {
+    background: rgba(177, 68, 47, 0.12);
+    color: #8f321f;
+}
+
+.form-message--info {
+    background: rgba(106, 90, 80, 0.1);
+    color: var(--muted);
+}
+
+.form-message--ok {
+    background: rgba(72, 84, 63, 0.14);
+    color: var(--olive);
+}
+
+.field-hint {
+    font-weight: 400;
+    font-size: 0.9rem;
+    color: var(--muted);
+}
+
+.field-error {
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: #8f321f;
+}
+
+.checkbox-row {
+    display: flex !important;
+    grid-template-columns: none !important;
+    gap: 12px !important;
+    align-items: flex-start;
+    font-weight: 500 !important;
+    line-height: 1.5;
+}
+
+.stacked-form .checkbox-row input {
+    width: 24px;
+    height: 24px;
+    margin: 2px 0 0;
+    padding: 0;
+    flex: none;
+}
+
+.button-stack {
+    margin-top: 12px;
+    display: grid;
+    gap: 8px;
+}
+
+.primary-button[disabled] {
+    opacity: 0.6;
+    cursor: progress;
+    transform: none;
+}
+
+.form-note {
+    margin-top: 24px;
+    text-align: center;
+    color: var(--muted);
+}
+
+.panel--center {
+    text-align: center;
+}
+
+.panel--center .lead {
+    margin-inline: auto;
+}
+
+.status-icon {
+    font-size: 3.4rem;
+    line-height: 1;
+    margin-bottom: 12px;
+}
+
+.spinner {
+    width: 44px;
+    height: 44px;
+    margin: 0 auto 16px;
+    border-radius: 50%;
+    border: 4px solid var(--accent-soft);
+    border-top-color: var(--accent);
+    animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .spinner { animation-duration: 3s; }
+}
+
+.order-ref {
+    margin-top: 18px;
+    color: var(--muted);
+}
+
+.order-ref strong {
+    font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    letter-spacing: 0.08em;
+    color: var(--ink);
+}
+
+@media (max-width: 560px) {
+    .conditions {
+        padding: 22px 20px;
+    }
+
+    .page-shell {
+        padding: 20px 16px 40px;
+    }
+}
+
+.offer-title {
+    margin: 0 0 12px;
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: clamp(1.4rem, 2vw, 2rem);
+    line-height: 1.05;
+}

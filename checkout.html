@@ -3,43 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pokladna | s74.cz</title>
+    <title>Objednávka voucheru | S74 wine&amp;café</title>
     <meta name="robots" content="noindex, nofollow">
+    <meta name="referrer" content="no-referrer">
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <link rel="stylesheet" href="fonts/fonts.css?v=20260805">
     <link rel="stylesheet" href="app.css">
 </head>
-<body class="page-shell page-shell--centered">
+<body class="page-shell page-shell--centered" data-page="checkout">
 <main class="layout">
     <section class="panel panel--narrow">
         <p class="eyebrow">Shrnutí objednávky</p>
         <h1>Skvělá volba!</h1>
-        
-        <div class="detail-card">
-            <p class="offer-price">1 000 Kč</p>
-            <h2 id="offer-name">Voucher v hodnotě 1 000 Kč</h2>
-            <p class="microcopy">Tento voucher lze využít na cokoli z aktuální nabídky s74 do hodnoty uvedené částky.</p>
+
+        <p class="form-message form-message--info" id="cancelled-note" role="status" hidden>Platba nebyla dokončena. Můžete to zkusit znovu.</p>
+        <p class="form-message form-message--info" id="loading-note" role="status">Načítám nabídku…</p>
+        <div class="form-message form-message--error" id="offer-error" role="alert" hidden>
+            <span id="offer-error-text">Vybraný voucher se nepodařilo načíst.</span>
+            <a class="text-link" href="vouchery.html">Zpět na výběr voucheru</a>
         </div>
 
-        <form class="stacked-form" action="order-success.html" method="get">
-            <label>
-                Váš e-mail
-                <input type="email" name="email" placeholder="jan.novak@priklad.cz" required autofocus>
-                <span class="microcopy">Na tento e-mail vám voucher doručíme ihned po zaplacení.</span>
-            </label>
-
-            <div style="margin-top: 12px; display: grid; gap: 8px;">
-                <button type="submit" class="primary-button">Zaplatit kartou</button>
-                <a href="vouchery.html" class="ghost-link">Změnit výběr</a>
+        <div id="checkout-content" hidden>
+            <div class="detail-card">
+                <p class="offer-price" id="offer-price">1&nbsp;000&nbsp;Kč</p>
+                <h2 id="offer-name">Voucher</h2>
+                <p class="microcopy">Voucher lze využít na cokoli z nabídky S74 wine&amp;café. Platnost <span id="validity-months">12</span> měsíců od vystavení.</p>
             </div>
-        </form>
 
-        <p class="microcopy" style="margin-top: 24px; text-align: center;">
-            Platba probíhá bezpečně přes šifrovanou bránu <strong>Stripe</strong>.
-        </p>
+            <form class="stacked-form" id="checkout-form" novalidate>
+                <label for="email">
+                    Váš e-mail
+                    <input type="email" id="email" name="email" placeholder="jan.novak@priklad.cz" autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false" required>
+                    <span class="field-hint">Na tuto adresu vám voucher pošleme ihned po zaplacení.</span>
+                </label>
+                <label for="email2">
+                    E-mail znovu
+                    <input type="email" id="email2" name="email2" autocomplete="off" inputmode="email" autocapitalize="none" spellcheck="false" required>
+                    <span class="field-error" id="email-error" role="alert" hidden></span>
+                </label>
+
+                <label class="checkbox-row" for="terms">
+                    <input type="checkbox" id="terms" name="terms" required>
+                    <span>Souhlasím s <a class="text-link" id="terms-link" href="obchodni-podminky-vouchery.html" target="_blank" rel="noopener">obchodními podmínkami</a> a beru na vědomí, že voucher je jednorázový a nevyužitý rozdíl hodnoty propadá.</span>
+                </label>
+
+                <p class="form-message form-message--error" id="form-error" role="alert" hidden></p>
+
+                <div class="button-stack">
+                    <button type="submit" class="primary-button" id="submit-button">Zaplatit kartou</button>
+                    <a href="vouchery.html" class="ghost-link">Změnit výběr</a>
+                </div>
+            </form>
+        </div>
+
+        <p class="form-note">Platba probíhá bezpečně přes šifrovanou bránu <strong>Stripe</strong>. Údaje o kartě se k nám nedostanou.</p>
     </section>
 </main>
-<footer class="legal-footer microcopy"><a href="soukromi.html">Soukromí a cookies</a></footer>
+<footer class="legal-footer microcopy"><a href="obchodni-podminky-vouchery.html">Obchodní podmínky voucherů</a> · <a href="soukromi.html">Soukromí a cookies</a></footer>
+<script src="js/vouchers-config.js"></script>
+<script src="js/vouchers.js" defer></script>
 </body>
 </html>

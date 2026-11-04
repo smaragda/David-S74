@@ -3,31 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Platba úspěšná | s74.cz</title>
+    <title>Stav objednávky | S74 wine&amp;café</title>
     <meta name="robots" content="noindex, nofollow">
+    <meta name="referrer" content="no-referrer">
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <link rel="stylesheet" href="fonts/fonts.css?v=20260805">
     <link rel="stylesheet" href="app.css">
 </head>
-<body class="page-shell page-shell--centered">
+<body class="page-shell page-shell--centered" data-page="order-status">
 <main class="layout">
-    <section class="panel panel--narrow" style="text-align: center;">
-        <div style="font-size: 4rem; margin-bottom: 12px;">☕️</div>
-        <p class="eyebrow">Děkujeme!</p>
-        <h1>Platba proběhla v pořádku.</h1>
-        <p class="lead lead--compact" style="margin-inline: auto;">Voucher jsme vám právě odeslali na e-mail. Můžete si ho ale zobrazit a uložit i přímo zde.</p>
-        
-        <div style="margin-top: 32px; display: grid; gap: 12px;">
-            <a href="voucher-detail.html" class="primary-button-link">Zobrazit můj voucher</a>
+    <section class="panel panel--narrow panel--center" aria-live="polite">
+        <div class="spinner" id="status-spinner" aria-hidden="true"></div>
+        <div class="status-icon" id="status-icon" aria-hidden="true" hidden></div>
+        <p class="eyebrow" id="status-eyebrow">Objednávka</p>
+        <h1 id="status-title">Čekáme na potvrzení platby…</h1>
+        <p class="lead lead--compact" id="status-text">Stránku prosím nezavírejte, potvrzení obvykle trvá několik sekund.</p>
+        <p class="order-ref" id="order-ref" hidden>Číslo objednávky: <strong id="order-ref-value"></strong></p>
+
+        <div class="button-stack" id="status-actions" hidden>
+            <a href="vouchery.html" class="ghost-link" id="status-retry" hidden>Zpět na vouchery</a>
             <a href="index.html" class="ghost-link">Zpět na úvod</a>
         </div>
-        
-        <p class="microcopy" style="margin-top: 24px;">
-            V případě jakýchkoli dotazů nás kontaktujte na <a href="mailto:s74winecafe@seznam.cz" style="color: inherit;">s74winecafe@seznam.cz</a>.
+
+        <p class="microcopy form-note">
+            V případě dotazů nás kontaktujte na <a class="text-link" href="mailto:s74winecafe@seznam.cz">s74winecafe@seznam.cz</a>.
         </p>
     </section>
 </main>
-<footer class="legal-footer microcopy"><a href="soukromi.html">Soukromí a cookies</a></footer>
+<footer class="legal-footer microcopy"><a href="obchodni-podminky-vouchery.html">Obchodní podmínky voucherů</a> · <a href="soukromi.html">Soukromí a cookies</a></footer>
+<script src="js/vouchers-config.js"></script>
+<script src="js/vouchers.js" defer></script>
 </body>
 </html>
