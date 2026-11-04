@@ -2,21 +2,18 @@ package cz.s74.vouchers.order;
 
 import cz.s74.vouchers.audit.AuditService;
 import cz.s74.vouchers.common.ApiException;
+import cz.s74.vouchers.common.EmailAddresses;
 import cz.s74.vouchers.common.Money;
 import cz.s74.vouchers.config.RateLimits;
 import cz.s74.vouchers.config.S74Properties;
 import cz.s74.vouchers.offer.OfferService;
 import cz.s74.vouchers.stripe.CheckoutGateway;
 import cz.s74.vouchers.stripe.PaymentProviderException;
-import jakarta.mail.internet.AddressException;
-import jakarta.mail.internet.InternetAddress;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
-import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -27,7 +24,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 public class CheckoutService {
 
     private static final Logger log = LoggerFactory.getLogger(CheckoutService.class);
-    private static final Pattern EMAIL = Pattern.compile("^[^@\\s]+@[^@\\s]+\\.[^@\\s]{2,}$");
 
     private final S74Properties props;
     private final OfferService offers;
@@ -130,20 +126,8 @@ public class CheckoutService {
     }
 
     static String normalizeEmail(String raw) {
-        String invalid = "Zadejte platnou e-mailovou adresu.";
-        if (raw == null) {
-            throw new ApiException(HttpStatus.BAD_REQUEST, "INVALID_EMAIL", invalid);
-        }
-        String email = raw.trim();
-        int at = email.lastIndexOf('@');
-        if (email.isEmpty() || email.length() > 254 || at < 1 || !EMAIL.matcher(email).matches()) {
-            throw new ApiException(HttpStatus.BAD_REQUEST, "INVALID_EMAIL", invalid);
-        }
-        try {
-            new InternetAddress(email, true).validate();
-        } catch (AddressException e) {
-            throw new ApiException(HttpStatus.BAD_REQUEST, "INVALID_EMAIL", invalid);
-        }
-        return email.substring(0, at) + "@" + email.substring(at + 1).toLowerCase(Locale.ROOT);
+        return EmailAddresses.normalize(raw)
+                .orElseThrow(() -> new ApiException(
+                        HttpStatus.BAD_REQUEST, "INVALID_EMAIL", "Zadejte platnou e-mailovou adresu."));
     }
 }

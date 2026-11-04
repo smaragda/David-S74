@@ -98,7 +98,7 @@ public class SecurityConfig {
                         .permitAll())
                 .logout(l -> l.logoutUrl("/logout").logoutSuccessUrl("/login?logout").deleteCookies("S74SESSION"))
                 .requestCache(rc -> rc.requestCache(requestCache))
-                .sessionManagement(s -> s.maximumSessions(3).sessionRegistry(sessionRegistry))
+                .sessionManagement(s -> s.maximumSessions(3).sessionRegistry(sessionRegistry).expiredUrl("/login?expired"))
                 .headers(h -> h.contentSecurityPolicy(csp -> csp.policyDirectives(CSP))
                         .referrerPolicy(r -> r.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.NO_REFERRER))
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::deny))

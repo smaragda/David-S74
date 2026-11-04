@@ -10,6 +10,7 @@
 
         <p class="flash flash--error" th:if="${param.error}">Přihlášení se nezdařilo. Zkontrolujte jméno a heslo.</p>
         <p class="flash flash--error" th:if="${param.locked}">Příliš mnoho pokusů, zkuste to za 15 minut.</p>
+        <p class="flash flash--info" th:if="${param.expired}">Relace skončila nebo byla ukončena. Přihlaste se znovu.</p>
         <p class="flash flash--ok" th:if="${param.logout}">Byli jste odhlášeni.</p>
 
         <form class="stacked-form" th:action="@{/login}" method="post">

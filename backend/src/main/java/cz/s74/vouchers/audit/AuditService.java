@@ -83,5 +83,19 @@ public class AuditService {
                 orderId);
     }
 
+    /** Poslední události daných typů (bezpečnostní události pro vedoucího). */
+    public List<AuditEntry> recent(List<String> actions, int limit) {
+        String in = String.join(",", actions.stream().map(a -> "?").toList());
+        List<Object> args = new java.util.ArrayList<>(actions);
+        args.add(limit);
+        return jdbc.query(
+                "select a.occurred_at, a.actor_type, s.display_name, a.action, cast(a.details as varchar)"
+                        + " from audit_log a left join staff_user s on s.id = a.actor_id"
+                        + " where a.action in (" + in + ") order by a.occurred_at desc, a.id desc limit ?",
+                (rs, i) -> new AuditEntry(
+                        rs.getTimestamp(1).toInstant(), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5)),
+                args.toArray());
+    }
+
     public record AuditEntry(Instant at, String actorType, String actorName, String action, String details) {}
 }
