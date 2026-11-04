@@ -40,6 +40,7 @@ jobs:
           cp -R js _site/ || true
           cp -R images _site/ || true
           cp -R data _site/ || true
+          cp -R fonts _site/ || true
           touch _site/.nojekyll
 
       - name: Upload Pages artifact

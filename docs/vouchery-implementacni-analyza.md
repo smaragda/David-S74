@@ -34,7 +34,7 @@
 
 ### 1.1 Tento repozitář (`David-S74`)
 
-- Statický web `https://s74.cz` na GitHub Pages, nasazuje se z `main` workflowem `.github/workflows/deploy-pages.yml` (kopíruje `*.html`, `*.css`, `css/`, `js/`, `images/`, `data/`, `fonts/` se **nekopíruje**). Ověřeno 4. 11. 2026: `https://s74.cz/fonts/fonts.css` vrací **404**, přestože ho načítá `index.html` i voucherové stránky → do workflow doplnit `cp -R fonts _site/` (samostatná oprava, ideálně ještě před F7).
+- Statický web `https://s74.cz` na GitHub Pages, nasazuje se z `main` workflowem `.github/workflows/deploy-pages.yml` (kopíruje `*.html`, `*.css`, `css/`, `js/`, `images/`, `data/`, `fonts/` se **nekopíruje**). Ověřeno 4. 11. 2026: `https://s74.cz/fonts/fonts.css` vrací **404**, přestože ho načítá `index.html` i voucherové stránky → opraveno doplněním `cp -R fonts _site/` do workflow (commit `fix(deploy): publish fonts directory`).
 - Pravidlo z `README.md`: `main` obsahuje jen deployovatelný web. Backend proto **nepatří do tohoto repozitáře** (dřívější scaffold byl ze stejného důvodu smazán commitem `fb7ea25`).
 - Statické prototypy (jen HTML, žádná logika):
   - `vouchery.html` – nabídka (jediná karta 1 000 Kč), odkaz „Vstup pro obsluhu“, pilulka „Systém je připraven“.
@@ -684,7 +684,7 @@ Logika v `js/vouchers.js` (vanilla JS, bez knihoven, stejný styl jako `js/main.
 | `soukromi.html` | Nová sekce „Nákup dárkových voucherů“: jaké údaje (e-mail, údaje o objednávce a platbě; údaje karty zpracovává jen Stripe), účel (plnění smlouvy, účetní povinnosti), příjemci (Stripe Payments Europe, e-mailová služba, DigitalOcean jako hosting), doba uložení, práva. Aktualizovat datum. |
 | `data/content.json`, `index.html` / `js/main.js` | Přidat položku menu „Vouchery“ → `vouchery.html` (zjistit, jak `main.js` menu vykresluje – přidat klíč do `hlavicka.menu` a odpovídající odkaz). Volitelně tlačítko v hero sekci „Darovat voucher“. |
 | `sitemap.xml` | Přidat `obchodni-podminky-vouchery.html`. |
-| `.github/workflows/deploy-pages.yml` | Doplnit `cp -R fonts _site/` (dnes chybí, viz 1.1), pokud to mezitím neopravila samostatná oprava. |
+| `.github/workflows/deploy-pages.yml` | Bez změny – kopíruje `*.html` i `js/`; `fonts/` už publikuje (viz 1.1). |
 
 Frontend nesmí obsahovat žádný Stripe klíč (ani publishable – hostovaný Checkout ho nepotřebuje).
 
