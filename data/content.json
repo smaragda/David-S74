@@ -6,7 +6,6 @@
     "menu": {
       "domu": "Domů",
       "menu": "Menu",
-      "eshop": "E-shop",
       "o_nas": "O nás",
       "akce": "Akce",
       "kontakt": "Kontakt"
@@ -15,8 +14,7 @@
   "uvod": {
     "nadpis": "S74 wine&café",
     "podnadpis": "Výběrová káva přes den. Vybraná vína večer.",
-    "hlavni_tlacitko": "Prohlédnout menu",
-    "eshop_tlacitko": "Víno domů"
+    "hlavni_tlacitko": "Prohlédnout menu"
   },
   "o_nas": {
     "nadpis": "Na kávu i na víno",

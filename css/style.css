@@ -465,26 +465,6 @@ h3 {
     background: var(--color-wine-dark);
 }
 
-.hero-shop-link {
-    display: inline-flex;
-    min-height: 2.75rem;
-    align-items: center;
-    gap: 0.5rem;
-    margin-top: 1rem;
-    color: #d8c3af;
-    font-size: 0.875rem;
-    font-weight: 600;
-    text-underline-offset: 0.35rem;
-}
-
-.hero-shop-link::after {
-    content: "↗";
-}
-
-.hero-shop-link:hover {
-    color: var(--color-paper-light);
-}
-
 .hero-media {
     position: relative;
     min-height: 42rem;
