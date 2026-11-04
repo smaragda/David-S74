@@ -527,16 +527,16 @@ document.addEventListener('keydown', (e) => {
         'dezerty-card': {
             photos: [
                 'images/deserty/desserts.jpg',
-                'images/deserty/jidlo-prkenko.jpg',
-                'images/deserty/limo-1.jpg',
-                'images/deserty/s-malinou.png'
+                'images/deserty/jidlo-prkenko.webp',
+                'images/deserty/limo-1.webp',
+                'images/deserty/s-malinou.webp'
             ],
             alts: ['Dezerty', 'Prkénko s občerstvením', 'Limonáda', 'Dezert s malinou']
         },
         'kava-card': {
             photos: [
-                'images/kava/kava-malina-limo.jpg',
-                'images/kava/kava-3-druhy.jpg',
+                'images/kava/kava-malina-limo.webp',
+                'images/kava/kava-3-druhy.webp',
                 'images/kava/kava-costarica.webp',
                 'images/kava/kava-guatemala.webp',
                 'images/kava/kava-mexiko.webp'
@@ -545,23 +545,23 @@ document.addEventListener('keydown', (e) => {
         },
         'vina-card': {
             photos: [
-                'images/vina/vino-luxus.png',
+                'images/vina/vino-luxus.webp',
                 'images/vina/vine.jpg',
-                'images/vina/vino-korky.png',
-                'images/vina/ryzlink-wachau.png',
-                'images/vina/pecorino-bile.png',
-                'images/vina/italske-bile-vino.png',
-                'images/vina/veltlin-prechtl.png',
-                'images/vina/rocca-montemassi.png',
-                'images/vina/chianti-riserva.png',
-                'images/vina/nero-davola.png',
-                'images/vina/primitivo-manduria.png',
-                'images/vina/rosso-montalcino.png',
-                'images/vina/barolo-le-terre.png',
-                'images/vina/amarone-valpolicella.png',
-                'images/vina/prosecco-spumante.png',
-                'images/vina/sekt-oranzovy.png',
-                'images/vina/sekt-bily.png'
+                'images/vina/vino-korky.webp',
+                'images/vina/ryzlink-wachau.webp',
+                'images/vina/pecorino-bile.webp',
+                'images/vina/italske-bile-vino.webp',
+                'images/vina/veltlin-prechtl.webp',
+                'images/vina/rocca-montemassi.webp',
+                'images/vina/chianti-riserva.webp',
+                'images/vina/nero-davola.webp',
+                'images/vina/primitivo-manduria.webp',
+                'images/vina/rosso-montalcino.webp',
+                'images/vina/barolo-le-terre.webp',
+                'images/vina/amarone-valpolicella.webp',
+                'images/vina/prosecco-spumante.webp',
+                'images/vina/sekt-oranzovy.webp',
+                'images/vina/sekt-bily.webp'
             ],
             alts: [
                 'Vybraná vína',
@@ -585,13 +585,13 @@ document.addEventListener('keydown', (e) => {
         },
         'atmosfera-card': {
             photos: [
-                'images/atmosfera/interier-shora.jpg',
-                'images/atmosfera/interier-sloup.jpg',
-                'images/atmosfera/open-tabule.png',
-                'images/atmosfera/pohled-z-ulice.jpg',
-                'images/atmosfera/posezeni-obrazy.jpg',
-                'images/atmosfera/s74-vitrina.png',
-                'images/atmosfera/vino-knihy.png'
+                'images/atmosfera/interier-shora.webp',
+                'images/atmosfera/interier-sloup.webp',
+                'images/atmosfera/open-tabule.webp',
+                'images/atmosfera/pohled-z-ulice.webp',
+                'images/atmosfera/posezeni-obrazy.webp',
+                'images/atmosfera/s74-vitrina.webp',
+                'images/atmosfera/vino-knihy.webp'
             ],
             alts: [
                 'Atmosféra interiéru',
