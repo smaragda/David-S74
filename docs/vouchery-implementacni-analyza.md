@@ -82,6 +82,12 @@ Zadání nechává několik věcí otevřených. Implementace **nesmí čekat** 
 | R10 | Zobrazit kód na návratové stránce po platbě | Ne – jen stav a maskovaný e-mail. Kód je poukaz na doručitele, URL návratové stránky může uniknout (historie, sdílení). | – |
 | R11 | Odložené platební metody | V Dashboardu vypnout (jen karty + Apple Pay / Google Pay / Link), kód je přesto obslouží správně. | Stripe Dashboard |
 | R12 | PDF příloha voucheru | Mimo v1 (kap. 19); e-mail lze vytisknout | – |
+| R13 | Umístění backendu (odchylka od R4, potvrzeno uživatelem) | Backend je v podadresáři `backend/` na větvi `claude/vouchery-impl-4001ac` tohoto repozitáře, ne v separátním repozitáři. Na `main` se bez rozhodnutí nemerguje (README: `main` = jen web); později `git subtree split -P backend` do `s74-vouchers`. CI workflow leží v `backend/.github/workflows/ci.yml`, takže je v tomto repozitáři neaktivní. | – |
+| R14 | Rate limiting | Vlastní in-memory klouzavá okna (`SlidingWindowLimiter`) místo Bucket4j – kap. 4 povoluje „Caffeine čítače“, závislost se tím ušetří. Lockout přihlášení trvá, dokud nejstarší neúspěch nevypadne z 15min okna (nejdéle 15 min). | kód |
+| R15 | Čtení webhooku | Podpis ověřuje `Webhook.constructEvent`; z těla události se čtou jen potřebná pole z `data.object` (surový JSON přes Jackson), stav platby se vždy dočte z API (`retrieve`). Nezávisí tak na shodě API verze endpointu a SDK. | kód |
+| R16 | Lokální adresa backendu | `http://127.0.0.1:8080` (ne `localhost`): na vývojovém stroji na portu 8080 poslouchala jiná služba na `*:8080`, která zachytávala `localhost`. Platí pro `js/vouchers-config.js`, `S74_PUBLIC_BASE_URL` (QR kódy) a `stripe listen --forward-to`. | `js/vouchers-config.js`, `.env` |
+| R17 | Healthcheck | Mail health indikátor je vypnutý (`management.health.mail.enabled=false`): výpadek SMTP nesmí shodit `/actuator/health` a tím deploy; e-maily jdou přes outbox s opakováním. | `application.yml` |
+| R18 | `expires_at` Checkout Session | `now + 30 min + 60 s` rezerva (Stripe odmítá hodnotu těsně pod 30 min kvůli latenci požadavku). | kód |
 
 ---
 

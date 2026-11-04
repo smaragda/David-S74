@@ -68,6 +68,19 @@ class StaffFlowTest extends AbstractIT {
     }
 
     @Test
+    void staticAssetsArePublicAndNeverBecomeTheSavedLoginTarget() throws Exception {
+        for (String asset : new String[] {"/app.css", "/staff-ui.css", "/fonts/fonts.css"}) {
+            mvc.perform(get(asset)).andExpect(status().isOk());
+        }
+        MockHttpSession session = new MockHttpSession();
+        String path = "/staff/v/" + voucher.getCode();
+        mvc.perform(get(path).session(session)).andExpect(status().isFound());
+        mvc.perform(get("/staff-ui.css").session(session)).andExpect(status().isOk());
+        assertThat(loginResult(session, "barista", "correct-horse-battery").getResponse().getRedirectedUrl())
+                .isEqualTo("http://localhost" + path);
+    }
+
+    @Test
     void loginWithBadPasswordIsGenericError() throws Exception {
         MockHttpSession session = new MockHttpSession();
         MvcResult bad = loginResult(session, "barista", "wrong");

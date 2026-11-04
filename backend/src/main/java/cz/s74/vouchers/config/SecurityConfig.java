@@ -81,7 +81,7 @@ public class SecurityConfig {
                 .csrf(c -> c.ignoringRequestMatchers("/api/public/**", "/api/stripe/webhook"))
                 .authorizeHttpRequests(a -> a.requestMatchers("/api/public/**", "/api/stripe/webhook", "/login")
                         .permitAll()
-                        .requestMatchers("/app.css", "/fonts/**", "/error", "/favicon.ico")
+                        .requestMatchers("/app.css", "/staff-ui.css", "/fonts/**", "/error", "/favicon.ico")
                         .permitAll()
                         .requestMatchers("/actuator/health", "/actuator/health/**")
                         .permitAll()
