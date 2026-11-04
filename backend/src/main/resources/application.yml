@@ -1,0 +1,72 @@
+spring:
+  application:
+    name: s74-voucher-backend
+  profiles:
+    default: local
+  config:
+    import: optional:file:.env[.properties]
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  mail:
+    properties:
+      mail.smtp.connectiontimeout: 10000
+      mail.smtp.timeout: 10000
+      mail.smtp.writetimeout: 10000
+  thymeleaf:
+    cache: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
+
+s74:
+  public-base-url: ${S74_PUBLIC_BASE_URL:}
+  frontend-base-url: ${S74_FRONTEND_BASE_URL:https://s74.cz}
+  cors-allowed-origins: ${S74_CORS_ALLOWED_ORIGINS:https://s74.cz,https://www.s74.cz}
+  zone: Europe/Prague
+  voucher:
+    validity-months: 12
+    terms-version: "2026-11"
+    terms-path: /obchodni-podminky-vouchery.html
+    offers:
+      - id: CZK_500
+        amount-czk: 500
+      - id: CZK_1000
+        amount-czk: 1000
+      - id: CZK_2000
+        amount-czk: 2000
+  stripe:
+    api-key: ${STRIPE_API_KEY:}
+    webhook-secret: ${STRIPE_WEBHOOK_SECRET:}
+    expected-livemode: ${STRIPE_LIVEMODE:false}
+    checkout-expiry-minutes: 30
+  mail:
+    from: ${S74_MAIL_FROM:S74 wine&café <vouchery@s74.cz>}
+    reply-to: ${S74_MAIL_REPLY_TO:s74winecafe@seznam.cz}
+    max-attempts: 5
+  bootstrap-admin:
+    username: ${S74_BOOTSTRAP_ADMIN_USERNAME:}
+    password: ${S74_BOOTSTRAP_ADMIN_PASSWORD:}
+
+server:
+  port: ${SERVER_PORT:8080}
+  address: ${SERVER_ADDRESS:127.0.0.1}
+  forward-headers-strategy: native
+  servlet:
+    session:
+      timeout: 12h
+      cookie:
+        http-only: true
+        secure: ${S74_COOKIE_SECURE:true}
+        same-site: lax
+        name: S74SESSION

@@ -1,0 +1,22 @@
+spring:
+  mail:
+    host: localhost
+    port: 3025
+  thymeleaf:
+    cache: false
+
+s74:
+  public-base-url: http://localhost:8080
+  frontend-base-url: http://localhost:8000
+  cors-allowed-origins: http://localhost:8000
+  stripe:
+    api-key: sk_test_placeholder
+    webhook-secret: whsec_testsecret
+  mail:
+    from: S74 wine&café <vouchers@s74.test>
+
+server:
+  servlet:
+    session:
+      cookie:
+        secure: false

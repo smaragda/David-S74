@@ -1,0 +1,26 @@
+# Lokální vývojové služby: PostgreSQL a Mailpit (zachytává odeslané e-maily).
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: s74_vouchers
+      POSTGRES_USER: s74_vouchers
+      POSTGRES_PASSWORD: s74_vouchers
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U s74_vouchers -d s74_vouchers"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  mailpit:
+    image: axllent/mailpit:latest
+    ports:
+      - "127.0.0.1:1025:1025"   # SMTP
+      - "127.0.0.1:8025:8025"   # webové UI + API
+
+volumes:
+  pgdata:
