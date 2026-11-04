@@ -3,6 +3,9 @@ package cz.s74.vouchers.support;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import cz.s74.vouchers.config.RateLimits;
+import cz.s74.vouchers.staff.StaffRole;
+import cz.s74.vouchers.staff.StaffUser;
+import cz.s74.vouchers.staff.StaffUserRepository;
 import cz.s74.vouchers.voucher.Voucher;
 import cz.s74.vouchers.voucher.VoucherRepository;
 import java.nio.charset.StandardCharsets;
@@ -16,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 
 @IntegrationTest
@@ -30,6 +34,8 @@ public abstract class AbstractIT extends PostgresSupport {
     @Autowired protected FakeCheckoutGateway gateway;
     @Autowired protected RateLimits limits;
     @Autowired protected VoucherRepository vouchers;
+    @Autowired protected StaffUserRepository staffUsers;
+    @Autowired protected PasswordEncoder passwordEncoder;
 
     @BeforeEach
     void cleanState() {
@@ -88,6 +94,11 @@ public abstract class AbstractIT extends PostgresSupport {
         mac.init(new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), "HmacSHA256"));
         String sig = HexFormat.of().formatHex(mac.doFinal((t + "." + payload).getBytes(StandardCharsets.UTF_8)));
         return "t=" + t + ",v1=" + sig;
+    }
+
+    protected StaffUser createStaff(String username, String password, StaffRole role) {
+        return staffUsers.saveAndFlush(new StaffUser(
+                UUID.randomUUID(), username, "Jméno " + username, passwordEncoder.encode(password), role, Instant.now()));
     }
 
     protected int count(String table) {

@@ -28,6 +28,9 @@ management:
   endpoint:
     health:
       show-details: never
+  health:
+    mail:
+      enabled: false   # výpadek SMTP nesmí shodit healthcheck (e-maily jdou přes outbox s opakováním)
 
 s74:
   public-base-url: ${S74_PUBLIC_BASE_URL:}

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="cs" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: head('Voucher')}"></head>
+<body class="page-shell page-shell--top">
+<header th:replace="~{fragments/base :: topbar(${user})}"></header>
+<main>
+    <section class="panel panel--stack">
+        <p class="eyebrow">Voucher <span class="mono" th:text="${v.maskedCode}">****-****-AB12</span></p>
+
+        <p class="flash flash--error" th:if="${error}" th:text="${error}">Chyba</p>
+        <p class="flash flash--info" th:if="${info}" th:text="${info}">Info</p>
+
+        <div class="big-confirm" th:if="${v.justRedeemedByMe}" role="status">
+            <p class="big-confirm__title">UPLATNĚNO – odečtěte <span th:text="${v.amount}">1 000 Kč</span> v pokladně</p>
+            <p>Uplatněno <strong th:text="${v.redeemedAtLabel}">dnes 12:00</strong>, obsluha <strong th:text="${v.redeemedByName}">Jméno</strong>.</p>
+            <p th:if="${v.note}">Poznámka: <span th:text="${v.note}"></span></p>
+        </div>
+
+        <div class="amount" th:text="${v.amount}">1 000 Kč</div>
+        <span class="badge" th:classappend="${v.badgeClass}" th:text="${v.statusLabel}">Platný</span>
+
+        <dl class="kv">
+            <dt>Platí do</dt><dd th:text="${v.validUntil}">4. 11. 2027</dd>
+            <dt>Vystaveno</dt><dd th:text="${v.issuedAt}">4. 11. 2026</dd>
+            <dt th:if="${v.redeemedAtLabel != null and !v.justRedeemedByMe}">Uplatněno</dt>
+            <dd th:if="${v.redeemedAtLabel != null and !v.justRedeemedByMe}"><span th:text="${v.redeemedAtLabel}">dnes</span>, <span th:text="${v.redeemedByName}">obsluha</span></dd>
+            <dt th:if="${v.cancelReason != null}">Důvod zrušení</dt>
+            <dd th:if="${v.cancelReason != null}" th:text="${v.cancelReason}">REFUND</dd>
+        </dl>
+
+        <p class="blocked-note" th:if="${!v.redeemable and !v.justRedeemedByMe}">
+            Voucher nelze uplatnit. V případě sporu předejte věc vedoucímu.
+        </p>
+
+        <form class="stacked-form redeem-form" th:if="${v.redeemable}" th:action="@{/staff/v/{code}/redeem(code=${v.code})}" method="post">
+            <label class="check-row">
+                <input type="checkbox" name="acknowledged" value="true">
+                <span>Zákazníka jsem upozornil(a), že je-li útrata nižší než <span th:text="${v.amount}">1 000 Kč</span>, nevyužitý rozdíl propadá.</span>
+            </label>
+            <label>
+                Číslo účtenky / poznámka (volitelné)
+                <input type="text" name="note" maxlength="255" autocomplete="off">
+            </label>
+            <button type="submit" class="primary-button" th:text="|Uplatnit voucher ${v.amount}|">Uplatnit voucher</button>
+        </form>
+
+        <p class="section-gap"><a class="ghost-link" th:href="@{/staff}">Ověřit další kód</a></p>
+    </section>
+</main>
+</body>
+</html>

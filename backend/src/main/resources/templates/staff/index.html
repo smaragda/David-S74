@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="cs" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: head('Ověření voucheru')}"></head>
+<body class="page-shell page-shell--top">
+<header th:replace="~{fragments/base :: topbar(${user})}"></header>
+<main>
+    <section class="panel panel--stack">
+        <p class="eyebrow">Ověření voucheru</p>
+        <h1 class="h1--compact">Kód voucheru</h1>
+
+        <p class="flash flash--error" th:if="${error}" th:text="${error}">Chyba</p>
+
+        <form class="stacked-form" th:action="@{/staff/lookup}" method="post">
+            <label>
+                Zadejte kód z e-mailu nebo z vytištěného voucheru
+                <input class="code-input" type="text" name="code" placeholder="ABCD-1234-EFGH" inputmode="text"
+                       autocapitalize="characters" autocomplete="off" autocorrect="off" spellcheck="false" required autofocus>
+            </label>
+            <button type="submit" class="primary-button">Ověřit</button>
+        </form>
+        <p class="notice">Tip: QR kód načtěte fotoaparátem telefonu, otevře se rovnou detail voucheru.</p>
+        <p class="notice">Zadání kódu voucher nespotřebuje, uplatnění se potvrzuje zvlášť.</p>
+    </section>
+</main>
+</body>
+</html>

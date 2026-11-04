@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="cs" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: head('Přihlášení')}"></head>
+<body class="page-shell page-shell--centered">
+<main class="layout">
+    <section class="panel panel--narrow">
+        <p class="eyebrow">Interní systém</p>
+        <h1 class="h1--compact">Přihlášení obsluhy</h1>
+        <p class="lead lead--compact">Pro ověření a uplatnění voucherů se přihlaste svým účtem.</p>
+
+        <p class="flash flash--error" th:if="${param.error}">Přihlášení se nezdařilo. Zkontrolujte jméno a heslo.</p>
+        <p class="flash flash--error" th:if="${param.locked}">Příliš mnoho pokusů, zkuste to za 15 minut.</p>
+        <p class="flash flash--ok" th:if="${param.logout}">Byli jste odhlášeni.</p>
+
+        <form class="stacked-form" th:action="@{/login}" method="post">
+            <label>
+                Uživatelské jméno
+                <input type="text" name="username" autocomplete="username" autocapitalize="none" required autofocus>
+            </label>
+            <label>
+                Heslo
+                <input type="password" name="password" autocomplete="current-password" required>
+            </label>
+            <button type="submit" class="primary-button">Přihlásit se</button>
+        </form>
+
+        <p class="notice">Jste zákazník? Voucher ukažte obsluze, nic dalšího dělat nemusíte.</p>
+    </section>
+</main>
+</body>
+</html>
