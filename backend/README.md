@@ -95,7 +95,8 @@ backend/
   src/main/java/cz/s74/vouchers/
     config  offer  order  stripe  voucher  email  staff  admin  audit  common
   src/main/resources/  application*.yml  db/migration/V1__init.sql  templates/  static/
-  deploy/        nepoužité podklady pro F8 (nginx, systemd, deploy.sh, backup.sh) – viz deploy/README.md
+  Dockerfile  .dockerignore
+  deploy/        podklady pro F8 pro droplet 1 GB v Dockeru (compose, nginx, deploy.sh, backup.sh) – viz deploy/README.md; native/ = stará varianta bez Dockeru
   .github/workflows/ci.yml  scripts/check-secrets.sh
 ```
 
@@ -165,5 +166,5 @@ Endpoint webhooku musí mít v ostrém provozu stejnou API verzi jako SDK (admin
 
 ### Mimo rozsah této fáze
 
-F8 (nasazení na DigitalOcean) a F9 (ostrý provoz) se nedělaly. `deploy/` obsahuje jen nepoužité podklady (kontrolovány `bash -n`, nespuštěny).
+F8 (nasazení na DigitalOcean) a F9 (ostrý provoz) se nedělaly. `deploy/` obsahuje podklady pro nový 1GB droplet s Dockerem: produkční compose stack jsem lokálně spustil a změřil (app ≈ 280 MiB, Postgres ≈ 30 MiB), skripty a nginx na serveru neběžely (`bash -n` jen syntax).
 Texty `obchodni-podminky-vouchery.html` (návrh!) a doplnění `soukromi.html` musí zkontrolovat právník; DPH u voucherů konzultovat s účetní (analýza kap. 20).

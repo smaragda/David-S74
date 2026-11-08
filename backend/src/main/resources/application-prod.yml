@@ -1,8 +1,13 @@
 spring:
+  main:
+    banner-mode: off
   datasource:
     url: ${DATABASE_URL}
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
+    hikari:
+      maximum-pool-size: 5     # malý provoz, malá paměť (PostgreSQL má max_connections=20)
+      minimum-idle: 1
   mail:
     host: ${SMTP_HOST}
     port: ${SMTP_PORT:587}
@@ -14,6 +19,14 @@ spring:
           auth: true
           starttls:
             enable: true
+
+server:
+  tomcat:
+    threads:
+      max: 16
+      min-spare: 2
+    accept-count: 50
+    max-connections: 256
 
 logging:
   level:

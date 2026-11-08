@@ -1,0 +1,81 @@
+# Produkční stack pro droplet s 1 GB RAM: PostgreSQL + aplikace. NEPOUŽITÝ PODKLAD (F8) – lokálně ověřen, na serveru ne.
+# Nginx + certbot běží na hostu a proxují na 127.0.0.1:${APP_PORT:-8080}. Postgres se nikam nepublikuje (jen vnitřní síť).
+# Umístění na serveru: /opt/s74-vouchers/docker-compose.yml vedle souboru .env (viz env.prod.example).
+name: s74-vouchers
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-s74_vouchers}
+      POSTGRES_USER: ${DB_USER:-s74_vouchers}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD musí být nastaveno v .env}
+    # Malé nároky na paměť: málo spojení, malé buffery (aplikace má pool 5).
+    command:
+      - postgres
+      - -c
+      - shared_buffers=48MB
+      - -c
+      - max_connections=20
+      - -c
+      - work_mem=2MB
+      - -c
+      - maintenance_work_mem=32MB
+      - -c
+      - effective_cache_size=128MB
+      - -c
+      - wal_buffers=2MB
+      - -c
+      - max_wal_size=128MB
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    mem_limit: 200m
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+    logging:
+      driver: json-file
+      options: {max-size: "10m", max-file: "3"}
+
+  app:
+    image: s74-vouchers:${IMAGE_TAG:-current}
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:${APP_PORT:-8080}:8080"
+    env_file: .env
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SERVER_ADDRESS: 0.0.0.0   # uvnitř kontejneru; zvenku je port dostupný jen na 127.0.0.1 hostitele
+      DATABASE_URL: jdbc:postgresql://postgres:5432/${DB_NAME:-s74_vouchers}
+      DATABASE_USERNAME: ${DB_USER:-s74_vouchers}
+      DATABASE_PASSWORD: ${DB_PASSWORD}
+      # Přiškrcená JVM pro 1 GB droplet: halda 256 MB, SerialGC, jen C1 kompilátor, malé zásobníky.
+      JAVA_TOOL_OPTIONS: >-
+        -Xms96m -Xmx256m -XX:MaxMetaspaceSize=128m -XX:ReservedCodeCacheSize=48m
+        -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -Xss512k -XX:+ExitOnOutOfMemoryError
+        -Dfile.encoding=UTF-8
+    mem_limit: 520m
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8080/actuator/health | grep -q '\"status\":\"UP\"'"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 90s
+    logging:
+      driver: json-file
+      options: {max-size: "10m", max-file: "3"}
+
+volumes:
+  pgdata:

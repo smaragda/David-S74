@@ -209,6 +209,11 @@ Když místo toho použiješ současnou doménu serveru, nic v DNS neměň – j
 
 ## 4. Server DigitalOcean
 
+> **Aktualizace (R19):** backend poběží na **novém samostatném dropletu s 1 GB RAM** a v **Dockeru** (PostgreSQL + aplikace). Postup serveru
+> (aktualizace, swap, firewall, Docker, nginx, certbot, nasazení, zálohy) je krok za krokem v `backend/deploy/README.md` a nahrazuje
+> kap. 4.1–4.7 níže, která popisují původní variantu s nativní Javou a sdíleným serverem (zachováno jako podklad k bezpečnostním zásadám).
+> Zásady z kap. 4.2 (snapshot, SSH jen klíčem, firewall, porty 8080/5432 zavřené) platí dál.
+
 Příkazy jsou pro Ubuntu/Debian. Pokud server běží na něčem jiném nebo místo nginx používá Apache, postup je obdobný – dej vědět implementujícímu LLM, ať upraví `deploy/` soubory.
 
 ### 4.1 Zjisti stav (před vývojem F8)

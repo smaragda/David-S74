@@ -88,6 +88,8 @@ Zadání nechává několik věcí otevřených. Implementace **nesmí čekat** 
 | R16 | Lokální adresa backendu | `http://127.0.0.1:8080` (ne `localhost`): na vývojovém stroji na portu 8080 poslouchala jiná služba na `*:8080`, která zachytávala `localhost`. Platí pro `js/vouchers-config.js`, `S74_PUBLIC_BASE_URL` (QR kódy) a `stripe listen --forward-to`. | `js/vouchers-config.js`, `.env` |
 | R17 | Healthcheck | Mail health indikátor je vypnutý (`management.health.mail.enabled=false`): výpadek SMTP nesmí shodit `/actuator/health` a tím deploy; e-maily jdou přes outbox s opakováním. | `application.yml` |
 | R18 | `expires_at` Checkout Session | `now + 30 min + 60 s` rezerva (Stripe odmítá hodnotu těsně pod 30 min kvůli latenci požadavku). | kód |
+| R19 | Server a způsob nasazení | **Nový samostatný droplet 1 GB RAM** (statický web je na GitHub Pages, žádný WordPress se nesdílí), Ubuntu 24.04. V **Dockeru** běží PostgreSQL 16 a aplikace (JRE 21 Alpine), nginx + certbot na hostu. Podklady: `backend/deploy/` (`docker-compose.prod.yml`, `deploy.sh`, `backup.sh`); původní systemd varianta je v `backend/deploy/native/` a nepoužívá se. Přepis backendu do Node/Pythonu zamítnut (úspora ≈ 6 USD/měsíc nestojí za ztrátu prověřených testů). | `backend/deploy/` |
+| R20 | Přiškrcení pro 1 GB | JVM `-Xmx256m -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -Xss512k`, metaspace 128 MB, Hikari pool 5, Tomcat max 16 vláken, Postgres `shared_buffers=48MB`, `max_connections=20`, limity kontejnerů (app 520 MB, db 200 MB), swap 2 GB. Změřeno lokálně: app ≈ 280 MiB, Postgres ≈ 30 MiB po 600 požadavcích. Při tlaku na paměť resize na 2 GB. | `docker-compose.prod.yml`, `application-prod.yml` |
 
 ---
 
