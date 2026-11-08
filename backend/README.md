@@ -107,7 +107,7 @@ Stav k 4. 11. 2026. **Ověřeno** = skutečně spuštěno a výsledek viděn; **
 
 Viz výše – celá tabulka 17.1 analýzy včetně testu souběžného uplatnění, duplicitního webhooku a souběhu vystavení.
 
-### Ověřeno ručně lokálně (Docker PostgreSQL + Mailpit + prohlížeč, **bez** Stripe)
+### Ověřeno ručně lokálně (Docker PostgreSQL + Mailpit + prohlížeč)
 
 - Backend nastartuje proti docker Postgresu, Flyway migrace + `ddl-auto: validate` projdou (F0 AK).
 - Statický web načte nabídku z API přes CORS (`localhost:8000` → `127.0.0.1:8080`), 3 karty, bez horizontálního posunu na šířce 360 px.
@@ -117,34 +117,45 @@ Viz výše – celá tabulka 17.1 analýzy včetně testu souběžného uplatně
   Při tom se našla a opravila chyba: `staff-ui.css` nebylo veřejné, takže se jeho 403 uložilo jako cíl po přihlášení (test přidán).
 - Voucher pro tento test byl do lokální DB vložen ručně (SQL), ne přes Stripe.
 
-### Neověřeno – vyžaduje sandbox klíč v `backend/.env` (postup níže)
+### Ověřeno ve Stripe sandboxu (8. 11. 2026, `sk_test_…`, `stripe listen`, Stripe CLI 1.42.1)
 
-Scénáře z kap. 17.2 analýzy, které se ve skutečném Stripe sandboxu ještě **nespouštěly**:
+| Scénář | Výsledek |
+|---|---|
+| Úspěšná platba `4242…` (500 Kč) | objednávka `PAID`, právě 1 voucher, platnost +12 měsíců, e-mail v Mailpitu (HTML + text, QR dekódovaný `zbarimg` na `/staff/v/<kód>`) |
+| Skutečný Checkout | česky, částka 500,00 Kč, text „Voucher je jednorázový. Nevyužitý rozdíl hodnoty propadá.“, předvyplněný e-mail, `integration_identifier` a `locale=cs` přijaty |
+| Návratová stránka | po platbě `PAID`, maskovaný e-mail `d***@e***.com`, číslo objednávky; kód se nezobrazuje |
+| Duplicitní webhook | `stripe events resend <evt_…>` → HTTP 200, počet voucherů beze změny |
+| Zamítnutá karta `4000 0000 0000 0002` | Stripe: „Vaše kreditní karta byla odmítnuta“, objednávka zůstala `PENDING_PAYMENT`, voucher nevznikl |
+| Opuštěná session | `stripe checkout sessions expire` → webhook `checkout.session.expired` → `EXPIRED` |
+| Výpadek SMTP (Mailpit zastaven) | po platbě voucher vznikl, e-mail 5× neodeslán (backoff; čekání mezi pokusy zkráceno ručním posunem `next_attempt_at`) → `FAILED`, objednávka v `/admin/attention`; po spuštění Mailpitu „odeslat znovu“ z detailu v administraci → e-mail dorazil |
+| Souběžné uplatnění | dvě relace ve stejný okamžik → právě 1× `VOUCHER_REDEEMED`, 1× `REDEMPTION_REJECTED` |
+| Refund (`stripe refunds create`) | skutečný `charge.refunded` → objednávka `REFUNDED`, voucher `CANCELLED` (důvod `REFUND`) |
+| Webhooky ostatních typů (`charge.succeeded`, `payment_intent.*`) | přijaty, `IGNORED`, HTTP 200 |
+| Úniky do logu | v logu backendu nebyl API klíč, webhook secret ani celý voucherový kód; audit neobsahuje celý kód |
+
+### Zbývá neověřit
 
 | Scénář | Stav |
 |---|---|
-| Úspěšná platba `4242…` → 1 voucher → e-mail v Mailpitu → uplatnění | neověřeno (části za Stripe ověřeny testy s atrapou) |
-| Skutečný Checkout: čeština, částka, text o propadnutí, přijetí `integration_identifier` a `customer_email` | neověřeno |
-| Zamítnutá karta `4000 0000 0000 0002`, opuštění a expirace session | neověřeno |
-| Zavření okna po platbě (webhook vystaví voucher sám) | neověřeno |
-| Duplicitní webhook skutečně přes `stripe events resend <id>` | neověřeno (duplicita ověřena testem s podepsaným payloadem) |
-| Refund v Dashboardu / `stripe refunds create` → voucher `CANCELLED` | neověřeno (logika ověřena testem) |
-| Čtení skutečného `charge.refunded` / spor payloadu s API verzí účtu | neověřeno |
-| 3D Secure | neověřeno |
-| Selhání SMTP s opakováním na skutečném Mailpitu (v testech GreenMail se zastaveným serverem) | neověřeno proti Mailpitu |
-| QR naskenovaný iPhonem a Androidem, Safari iOS / Chrome Android | neověřeno (dekódováno jen `zbarimg`, vzhled jen v emulaci 360 px) |
+| 3D Secure `4000 0027 6000 3184` | neověřeno |
+| Zavření okna po platbě bez návratu na web | neověřeno ručně (webhook vystavuje voucher sám; pokryto testem a pořadím událostí) |
+| QR naskenovaný iPhonem a Androidem, Safari iOS / Chrome Android | neověřeno (QR dekódován `zbarimg`, vzhled jen v emulaci 360 px) |
+| Restricted key `rk_test_…` s minimálními právy místo `sk_test_…` | neověřeno (E2E běželo se secret key) |
+| Odložené platební metody (Klarna se v sandboxu v Checkoutu nabízí) | neověřeno; podle R11 je v Dashboardu vypnout, kód je obslouží |
 
-Poznámka k API verzi: SDK `stripe-java 34.0.0` posílá API verzi `2026-09-30.endive`; účet / CLI může mít jinou výchozí verzi.
-Endpoint webhooku musí mít stejnou verzi jako SDK (admin návod 2.5). Kód čte z události jen několik polí z surového JSON, takže nesoulad tolerují, ale doporučujeme ji sladit.
+Pozorování: webhooky ze `stripe listen` měly API verzi `2026-10-28.endive`, zatímco SDK `stripe-java 34.0.0` používá `2026-09-30.endive`. Zpracování
+(čtení několika polí ze surového JSON + `retrieve` přes API) s tím bez problému fungovalo.
 
-### Jak dokončit ověření ve Stripe sandboxu
+Endpoint webhooku musí mít v ostrém provozu stejnou API verzi jako SDK (admin návod 2.5); kód nesoulad toleruje, ale doporučujeme verze sladit.
+
+### Jak scénáře zopakovat
 
 1. Ve Stripe Dashboardu (přepnuto na **sandbox / testovací režim**) vytvořte restricted key `rk_test_…` s právy z kroku 2 a vložte ho do `backend/.env` jako `STRIPE_API_KEY`.
    Klíč nikdy nevkládejte do chatu, gitu ani logu.
 2. `stripe listen --forward-to 127.0.0.1:8080/api/stripe/webhook` → `whsec_…` do `.env` jako `STRIPE_WEBHOOK_SECRET`, backend restartovat.
-3. Projděte tabulku výše: nákup na http://localhost:8000/vouchery.html, e-mail v Mailpitu, uplatnění; zamítnutá karta; `stripe events resend <evt_…>` (nesmí vzniknout druhý voucher);
+3. Projděte tabulku „Ověřeno ve Stripe sandboxu“: nákup na http://localhost:8000/vouchery.html, e-mail v Mailpitu, uplatnění; zamítnutá karta; `stripe events resend <evt_…>` (nesmí vzniknout druhý voucher);
    zastavte Mailpit (`docker compose stop mailpit`) a nakupte → po pokusech `FAILED` na `/admin/attention`, pak ho spusťte a pošlete znovu z detailu; refund (`stripe refunds create --payment-intent pi_…`) → voucher `CANCELLED`.
-4. Výsledky doplňte do této tabulky.
+4. Zbývající body (3D Secure, restricted key, mobilní zařízení) doplňte do tabulky výše.
 
 ### Mimo rozsah této fáze
 
