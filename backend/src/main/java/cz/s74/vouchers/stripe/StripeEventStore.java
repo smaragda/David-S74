@@ -27,14 +27,15 @@ public class StripeEventStore {
     }
 
     /** @return true, pokud jde o první doručení (řádek byl vložen). */
-    public boolean tryInsert(String eventId, String type, boolean livemode) {
+    public boolean tryInsert(String eventId, String type, boolean livemode, String account) {
         return jdbc.update(
-                        "insert into stripe_event (event_id, type, livemode, status, received_at)"
-                                + " values (?, ?, ?, 'RECEIVED', ?) on conflict (event_id) do nothing",
+                        "insert into stripe_event (event_id, type, livemode, status, received_at, account)"
+                                + " values (?, ?, ?, 'RECEIVED', ?, ?) on conflict (event_id) do nothing",
                         eventId,
                         type,
                         livemode,
-                        Timestamp.from(Instant.now(clock)))
+                        Timestamp.from(Instant.now(clock)),
+                        account)
                 > 0;
     }
 

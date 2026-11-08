@@ -32,7 +32,8 @@ public class LoginProtectionFilter extends OncePerRequestFilter {
         String username = normalize(request.getParameter("username"));
         String ip = request.getRemoteAddr();
         if (limits.loginFailuresPerUser.isBlocked(username) || limits.loginFailuresPerIp.isBlocked(ip)) {
-            audit.record(AuditService.Actor.SYSTEM, null, "LOGIN_LOCKED", null, null, ip, Map.of("username", username));
+            audit.record(audit.tenantOfUsername(username), AuditService.Actor.SYSTEM, null, "LOGIN_LOCKED", null, null, ip,
+                    Map.of("username", username));
             response.sendRedirect(request.getContextPath() + "/login?locked");
             return;
         }

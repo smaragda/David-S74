@@ -14,6 +14,10 @@ s74:
   stripe:
     api-key: sk_test_placeholder
     webhook-secret: whsec_testsecret
+    connect-webhook-secret: whsec_connectsecret
+    account-events-webhook-secret: whsec_accountevents
+  connect:
+    enabled: true
   mail:
     from: S74 wine&café <vouchers@s74.test>
 

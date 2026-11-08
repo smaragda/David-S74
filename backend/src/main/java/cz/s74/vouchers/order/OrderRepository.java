@@ -20,8 +20,9 @@ public interface OrderRepository extends JpaRepository<VoucherOrder, UUID> {
     @Query("select o from VoucherOrder o where o.id = :id")
     Optional<VoucherOrder> lockById(@Param("id") UUID id);
 
-    List<VoucherOrder> findByAttentionRequiredTrueOrderByUpdatedAtDesc();
+    Optional<VoucherOrder> findByIdAndTenantId(UUID id, UUID tenantId);
 
-    @Query("select o from VoucherOrder o where upper(substring(cast(o.id as string), 1, 8)) = :ref")
-    List<VoucherOrder> findByOrderRef(@Param("ref") String ref);
+    List<VoucherOrder> findByTenantIdAndAttentionRequiredTrueOrderByUpdatedAtDesc(UUID tenantId);
+
+    long countByTenantIdAndStatus(UUID tenantId, OrderStatus status);
 }

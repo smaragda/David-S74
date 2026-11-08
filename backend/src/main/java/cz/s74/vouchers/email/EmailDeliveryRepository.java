@@ -23,6 +23,7 @@ public interface EmailDeliveryRepository extends JpaRepository<EmailDelivery, UU
     @Query("update EmailDelivery d set d.status = 'PENDING' where d.status = 'SENDING' and d.nextAttemptAt < :before")
     int resetStuck(@Param("before") Instant before);
 
-    @Query("select d from EmailDelivery d where d.status = 'FAILED' order by d.createdAt desc")
-    List<EmailDelivery> findFailed();
+    @Query("select d from EmailDelivery d where d.status = 'FAILED' and d.voucherId in"
+            + " (select v.id from Voucher v where v.tenantId = :tenantId) order by d.createdAt desc")
+    List<EmailDelivery> findFailed(@Param("tenantId") UUID tenantId);
 }

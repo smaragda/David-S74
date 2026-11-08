@@ -23,7 +23,9 @@ public record S74Properties(
         @Valid @NotNull Voucher voucher,
         @Valid @NotNull Stripe stripe,
         @Valid @NotNull Mail mail,
-        @Valid BootstrapAdmin bootstrapAdmin) {
+        @Valid BootstrapAdmin bootstrapAdmin,
+        @Valid BootstrapAdmin bootstrapPlatformAdmin,
+        @Valid @DefaultValue Connect connect) {
 
     public String publicBaseUrlNoSlash() {
         return stripTrailingSlash(publicBaseUrl);
@@ -56,7 +58,18 @@ public record S74Properties(
             @NotBlank(message = "STRIPE_WEBHOOK_SECRET must be set (whsec_… from `stripe listen`)")
                     String webhookSecret,
             boolean expectedLivemode,
-            @DefaultValue("30") @Min(30) int checkoutExpiryMinutes) {
+            @DefaultValue("30") @Min(30) int checkoutExpiryMinutes,
+            /** Secret endpointu pro události připojených účtů (Connect); prázdné = endpoint vypnutý. */
+            @DefaultValue("") String connectWebhookSecret,
+            /** Secret endpointu pro v2 (thin) události účtů; prázdné = endpoint vypnutý. */
+            @DefaultValue("") String accountEventsWebhookSecret,
+            /** Jen pro lokální vývoj: adresa atrapy Stripe API (backend/dev/stripe-mock). Prázdné = api.stripe.com. */
+            @DefaultValue("") String apiBase) {
+
+        @AssertTrue(message = "S74_STRIPE_API_BASE (Stripe mock) must not be used with STRIPE_LIVEMODE=true")
+        public boolean isApiBaseOnlyInTestMode() {
+            return !expectedLivemode || apiBase == null || apiBase.isBlank();
+        }
 
         /** Chrání před záměnou testu a ostrého provozu: live klíč jen s STRIPE_LIVEMODE=true a naopak. */
         @AssertTrue(message = "STRIPE_API_KEY does not match STRIPE_LIVEMODE (live keys need STRIPE_LIVEMODE=true,"
@@ -70,6 +83,14 @@ public record S74Properties(
             return expectedLivemode ? liveKey : testKey;
         }
     }
+
+    /**
+     * Stripe Connect (více podniků). {@code enabled=false}: zakládání připojených účtů je vypnuté, výchozí podnik
+     * platí přes platformní účet jako dřív.
+     */
+    public record Connect(
+            @DefaultValue("false") boolean enabled,
+            @DefaultValue("CZ") @NotBlank String country) {}
 
     public record Mail(
             @NotBlank String from,

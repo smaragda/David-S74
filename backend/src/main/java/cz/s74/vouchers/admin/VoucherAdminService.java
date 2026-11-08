@@ -27,7 +27,10 @@ import java.util.regex.Pattern;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
-/** Zásahy vedoucího. Každý vyžaduje důvod a zapisuje audit; oprávnění (MANAGER) hlídá Security. */
+/**
+ * Zásahy vedoucího. Každý vyžaduje důvod a zapisuje audit; oprávnění (MANAGER) hlídá Security.
+ * Všechny operace jsou omezené na podnik vedoucího ({@code tenantId}) – voucher jiného podniku „neexistuje“.
+ */
 @Service
 public class VoucherAdminService {
 
@@ -65,7 +68,7 @@ public class VoucherAdminService {
             List<AuditService.AuditEntry> history) {}
 
     /** Hledání podle kódu (normalizovaného), e-mailu (case-insensitive) nebo čísla objednávky (8 znaků). */
-    public List<Voucher> search(String query) {
+    public List<Voucher> search(UUID tenantId, String query) {
         if (query == null || query.isBlank()) {
             return List.of();
         }
@@ -73,25 +76,25 @@ public class VoucherAdminService {
         Map<UUID, Voucher> found = new LinkedHashMap<>();
         Optional<String> code = VoucherCodes.normalize(q);
         if (q.contains("@")) {
-            vouchers.searchByCodeOrEmail("-", q.toLowerCase(Locale.ROOT)).forEach(v -> found.put(v.getId(), v));
+            vouchers.searchByEmail(tenantId, q.toLowerCase(Locale.ROOT)).forEach(v -> found.put(v.getId(), v));
         }
-        code.flatMap(vouchers::findByCode).ifPresent(v -> found.put(v.getId(), v));
+        code.flatMap(c -> vouchers.findByTenantIdAndCode(tenantId, c)).ifPresent(v -> found.put(v.getId(), v));
         if (ORDER_REF.matcher(q).matches()) {
-            vouchers.searchByOrderRef(q.toUpperCase(Locale.ROOT)).forEach(v -> found.put(v.getId(), v));
+            vouchers.searchByOrderRef(tenantId, q.toUpperCase(Locale.ROOT)).forEach(v -> found.put(v.getId(), v));
         }
         return new ArrayList<>(found.values());
     }
 
-    public Detail detail(UUID voucherId) {
-        Voucher v = vouchers.findById(voucherId).orElseThrow(() -> new BusinessRuleException("Voucher neexistuje."));
+    public Detail detail(UUID tenantId, UUID voucherId) {
+        Voucher v = load(tenantId, voucherId);
         VoucherOrder order = orders.findById(v.getOrderId()).orElseThrow();
         return new Detail(v, order, deliveries.findByVoucherIdOrderByCreatedAtAsc(v.getId()), audit.forVoucher(v.getId(), order.getId()));
     }
 
-    public void resend(UUID actor, UUID voucherId, String newEmail, String reason, String ip) {
+    public void resend(UUID actor, UUID tenantId, UUID voucherId, String newEmail, String reason, String ip) {
         String why = requireReason(reason);
         tx.executeWithoutResult(s -> {
-            Voucher v = load(voucherId);
+            Voucher v = load(tenantId, voucherId);
             VoucherOrder order = orders.lockById(v.getOrderId()).orElseThrow();
             String recipient = order.getCustomerEmail();
             Map<String, Object> details = new LinkedHashMap<>();
@@ -113,10 +116,10 @@ public class VoucherAdminService {
         });
     }
 
-    public void cancel(UUID actor, UUID voucherId, String reason, String ip) {
+    public void cancel(UUID actor, UUID tenantId, UUID voucherId, String reason, String ip) {
         String why = requireReason(reason);
         tx.executeWithoutResult(s -> {
-            Voucher v = load(voucherId);
+            Voucher v = load(tenantId, voucherId);
             if (v.getStatus() != VoucherStatus.ACTIVE) {
                 throw new BusinessRuleException("Zrušit lze jen platný (neuplatněný) voucher.");
             }
@@ -126,10 +129,10 @@ public class VoucherAdminService {
         });
     }
 
-    public void reactivate(UUID actor, UUID voucherId, String reason, String ip) {
+    public void reactivate(UUID actor, UUID tenantId, UUID voucherId, String reason, String ip) {
         String why = requireReason(reason);
         tx.executeWithoutResult(s -> {
-            Voucher v = load(voucherId);
+            Voucher v = load(tenantId, voucherId);
             if (v.getStatus() != VoucherStatus.CANCELLED) {
                 throw new BusinessRuleException("Reaktivovat lze jen zrušený voucher.");
             }
@@ -140,10 +143,10 @@ public class VoucherAdminService {
     }
 
     /** Oprava chyby mezi uplatněním a pokladnou: REDEEMED → ACTIVE. */
-    public void revertRedemption(UUID actor, UUID voucherId, String reason, String ip) {
+    public void revertRedemption(UUID actor, UUID tenantId, UUID voucherId, String reason, String ip) {
         String why = requireReason(reason);
         tx.executeWithoutResult(s -> {
-            Voucher v = load(voucherId);
+            Voucher v = load(tenantId, voucherId);
             if (v.getStatus() != VoucherStatus.REDEEMED) {
                 throw new BusinessRuleException("Vrátit lze jen uplatněný voucher.");
             }
@@ -153,13 +156,13 @@ public class VoucherAdminService {
         });
     }
 
-    public void extendValidity(UUID actor, UUID voucherId, LocalDate newValidUntil, String reason, String ip) {
+    public void extendValidity(UUID actor, UUID tenantId, UUID voucherId, LocalDate newValidUntil, String reason, String ip) {
         String why = requireReason(reason);
         if (newValidUntil == null) {
             throw new BusinessRuleException("Vyplňte nové datum platnosti.");
         }
         tx.executeWithoutResult(s -> {
-            Voucher v = load(voucherId);
+            Voucher v = load(tenantId, voucherId);
             if (newValidUntil.isBefore(LocalDate.now(clock))) {
                 throw new BusinessRuleException("Nové datum platnosti nesmí být v minulosti.");
             }
@@ -171,10 +174,12 @@ public class VoucherAdminService {
         });
     }
 
-    public void resolveAttention(UUID actor, UUID orderId, String note, String ip) {
+    public void resolveAttention(UUID actor, UUID tenantId, UUID orderId, String note, String ip) {
         String why = requireReason(note);
         tx.executeWithoutResult(s -> {
-            VoucherOrder order = orders.lockById(orderId).orElseThrow(() -> new BusinessRuleException("Objednávka neexistuje."));
+            orders.findByIdAndTenantId(orderId, tenantId)
+                    .orElseThrow(() -> new BusinessRuleException("Objednávka neexistuje."));
+            VoucherOrder order = orders.lockById(orderId).orElseThrow();
             String previous = order.getAttentionReason();
             order.resolveAttention(Instant.now(clock));
             orders.save(order);
@@ -183,8 +188,9 @@ public class VoucherAdminService {
         });
     }
 
-    private Voucher load(UUID id) {
-        return vouchers.findById(id).orElseThrow(() -> new BusinessRuleException("Voucher neexistuje."));
+    private Voucher load(UUID tenantId, UUID id) {
+        return vouchers.findByIdAndTenantId(id, tenantId)
+                .orElseThrow(() -> new BusinessRuleException("Voucher neexistuje."));
     }
 
     static String requireReason(String reason) {

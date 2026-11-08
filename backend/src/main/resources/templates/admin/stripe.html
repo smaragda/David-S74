@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="cs" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: head('Vedoucí – platby')}"></head>
+<body class="page-shell page-shell--top">
+<header th:replace="~{fragments/base :: topbar(${user})}"></header>
+<main>
+    <section class="panel panel--admin">
+        <p class="eyebrow">Vedoucí</p>
+        <h1 class="h1--compact">Platby (Stripe)</h1>
+        <nav th:replace="~{fragments/base :: adminnav}"></nav>
+        <p class="flash flash--error" th:if="${error}" th:text="${error}"></p>
+        <p class="flash flash--info" th:if="${info}" th:text="${info}"></p>
+
+        <dl class="kv">
+            <dt>Prodej voucherů</dt>
+            <dd><span class="badge" th:classappend="${s.salesEnabled} ? 'badge--ok' : 'badge--warn'"
+                      th:text="${s.salesEnabled} ? 'Běží' : 'Neběží'">Běží</span></dd>
+            <dt>Kam jdou peníze</dt>
+            <dd th:text="${t.paymentMode.name() == 'CONNECT'} ? 'Přímo na váš Stripe účet (jste prodávající)' : 'Na Stripe účet provozovatele platformy'">…</dd>
+            <dt>Stripe účet</dt>
+            <dd class="mono" th:text="${t.stripeAccountId} ?: 'zatím nepřipojen'">acct_…</dd>
+            <dt>Přijímání karet</dt>
+            <dd th:switch="${t.stripeCardPayments}">
+                <span th:case="'active'" class="badge badge--ok">Aktivní</span>
+                <span th:case="'pending'" class="badge badge--warn">Stripe ověřuje údaje</span>
+                <span th:case="'restricted'" class="badge badge--bad">Omezeno – doplňte údaje</span>
+                <span th:case="'disconnected'" class="badge badge--bad">Účet odpojen od platformy</span>
+                <span th:case="'closed'" class="badge badge--bad">Účet uzavřen</span>
+                <span th:case="*" class="badge badge--muted">Nenastaveno</span>
+            </dd>
+            <dt>Chybějící údaje</dt>
+            <dd th:text="${t.stripeRequirementsDue}">0</dd>
+        </dl>
+
+        <div th:if="${connectEnabled}">
+            <p class="lead lead--compact" th:if="${t.stripeAccountId == null}">
+                Vouchery prodáváte vlastním jménem a peníze chodí přímo vám. Údaje o firmě, bankovní účet a ověření
+                totožnosti vyplníte na zabezpečené stránce Stripe (zhruba 10 minut).
+            </p>
+            <form th:action="@{/admin/stripe/onboard}" method="post">
+                <button type="submit" class="primary-button"
+                        th:text="${t.stripeAccountId == null} ? 'Připojit Stripe účet' : 'Doplnit údaje ve Stripe'">Připojit Stripe účet</button>
+            </form>
+            <p class="notice" th:if="${t.stripeAccountId != null}">
+                Výplaty, refundy, spory a faktury spravujete ve <a th:href="${dashboardUrl}" target="_blank" rel="noopener">Stripe Dashboardu</a>.
+            </p>
+        </div>
+        <p class="notice" th:unless="${connectEnabled}">Připojení vlastního Stripe účtu zatím provozovatel platformy nezapnul.</p>
+    </section>
+</main>
+</body>
+</html>

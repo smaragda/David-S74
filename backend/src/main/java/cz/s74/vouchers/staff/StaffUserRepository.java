@@ -11,7 +11,13 @@ public interface StaffUserRepository extends JpaRepository<StaffUser, UUID> {
 
     boolean existsByRoleAndEnabledTrue(StaffRole role);
 
-    long countByRoleAndEnabledTrue(StaffRole role);
+    boolean existsByTenantIdAndRoleAndEnabledTrue(UUID tenantId, StaffRole role);
 
-    List<StaffUser> findAllByOrderByUsernameAsc();
+    long countByTenantIdAndRoleAndEnabledTrue(UUID tenantId, StaffRole role);
+
+    List<StaffUser> findAllByTenantIdOrderByUsernameAsc(UUID tenantId);
+
+    List<StaffUser> findAllByRoleOrderByUsernameAsc(StaffRole role);
+
+    Optional<StaffUser> findByIdAndTenantId(UUID id, UUID tenantId);
 }

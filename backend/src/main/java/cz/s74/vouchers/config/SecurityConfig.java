@@ -2,8 +2,8 @@ package cz.s74.vouchers.config;
 
 import cz.s74.vouchers.audit.AuditService;
 import cz.s74.vouchers.staff.StaffPrincipal;
+import cz.s74.vouchers.tenant.TenantService;
 import jakarta.servlet.http.HttpServletRequest;
-import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -25,15 +25,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
-import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 public class SecurityConfig {
 
+    /** form-action platí i pro přesměrování po odeslání formuláře (hostovaný nákup → Stripe Checkout, onboarding). */
     static final String CSP = "default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self';"
-            + " frame-ancestors 'none'; form-action 'self'";
+            + " frame-ancestors 'none'; form-action 'self' https://checkout.stripe.com https://connect.stripe.com";
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -50,18 +49,10 @@ public class SecurityConfig {
         return new HttpSessionEventPublisher();
     }
 
-    /** CORS jen pro veřejné API a jen pro přesné originy z konfigurace. CORS není autorizace. */
+    /** CORS jen pro veřejné API: originy výchozího webu z konfigurace, u podniků z jejich nastavení. */
     @Bean
-    public CorsConfigurationSource corsConfigurationSource(S74Properties props) {
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(props.corsAllowedOrigins());
-        config.setAllowedMethods(List.of("GET", "POST", "OPTIONS"));
-        config.setAllowedHeaders(List.of("Content-Type"));
-        config.setAllowCredentials(false);
-        config.setMaxAge(3600L);
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/api/public/**", config);
-        return source;
+    public CorsConfigurationSource corsConfigurationSource(S74Properties props, TenantService tenants) {
+        return new TenantCorsConfigurationSource(props, tenants);
     }
 
     @Bean
@@ -70,7 +61,8 @@ public class SecurityConfig {
             @Qualifier("corsConfigurationSource") CorsConfigurationSource cors,
             SessionRegistry sessionRegistry,
             RateLimits limits,
-            AuditService audit)
+            AuditService audit,
+            S74Properties props)
             throws Exception {
         HttpSessionRequestCache requestCache = new HttpSessionRequestCache();
         // Po přihlášení zpět na původní adresu (QR → /staff/v/{kód}); bez parametru "continue".
@@ -78,10 +70,20 @@ public class SecurityConfig {
         requestCache.setRequestMatcher(request -> HttpMethod.GET.matches(request.getMethod()));
 
         http.cors(c -> c.configurationSource(cors))
-                .csrf(c -> c.ignoringRequestMatchers("/api/public/**", "/api/stripe/webhook"))
-                .authorizeHttpRequests(a -> a.requestMatchers("/api/public/**", "/api/stripe/webhook", "/login")
+                // Hostovaný nákup (/v/{slug}/checkout) jen zakládá platbu za anonymního zákazníka – bez CSRF a bez
+                // session cookie (zákazník nedostane žádnou cookie).
+                .csrf(c -> c.ignoringRequestMatchers(
+                        "/api/public/**", "/api/stripe/**", "/v/*/checkout"))
+                .authorizeHttpRequests(a -> a.requestMatchers(
+                                "/api/public/**",
+                                "/api/stripe/webhook",
+                                "/api/stripe/connect-webhook",
+                                "/api/stripe/account-events",
+                                "/login")
                         .permitAll()
-                        .requestMatchers("/app.css", "/staff-ui.css", "/fonts/**", "/error", "/favicon.ico")
+                        .requestMatchers("/v/**")
+                        .permitAll()
+                        .requestMatchers("/app.css", "/staff-ui.css", "/hosted.css", "/fonts/**", "/error", "/favicon.ico")
                         .permitAll()
                         .requestMatchers("/actuator/health", "/actuator/health/**")
                         .permitAll()
@@ -89,6 +91,8 @@ public class SecurityConfig {
                         .hasAnyRole("STAFF", "MANAGER")
                         .requestMatchers("/admin/**")
                         .hasRole("MANAGER")
+                        .requestMatchers("/platform/**")
+                        .hasRole("PLATFORM_ADMIN")
                         .anyRequest()
                         .denyAll())
                 .formLogin(f -> f.loginPage("/login")
@@ -99,11 +103,21 @@ public class SecurityConfig {
                 .logout(l -> l.logoutUrl("/logout").logoutSuccessUrl("/login?logout").deleteCookies("S74SESSION"))
                 .requestCache(rc -> rc.requestCache(requestCache))
                 .sessionManagement(s -> s.maximumSessions(3).sessionRegistry(sessionRegistry).expiredUrl("/login?expired"))
-                .headers(h -> h.contentSecurityPolicy(csp -> csp.policyDirectives(CSP))
+                .headers(h -> h.contentSecurityPolicy(csp -> csp.policyDirectives(csp(props)))
                         .referrerPolicy(r -> r.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.NO_REFERRER))
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::deny))
                 .addFilterBefore(new LoginProtectionFilter(limits, audit), UsernamePasswordAuthenticationFilter.class);
         return http.build();
+    }
+
+    /** Při lokální atrapě Stripe (jen test režim) smí formuláře přesměrovat i na ni. */
+    static String csp(S74Properties props) {
+        String mock = props.stripe().apiBase();
+        if (mock == null || mock.isBlank()) {
+            return CSP;
+        }
+        java.net.URI uri = java.net.URI.create(mock.trim());
+        return CSP + " " + uri.getScheme() + "://" + uri.getAuthority();
     }
 
     private AuthenticationSuccessHandler successHandler(
@@ -115,6 +129,12 @@ public class SecurityConfig {
             limits.loginFailuresPerUser.reset(LoginProtectionFilter.normalize(auth.getName()));
             StaffPrincipal principal = (StaffPrincipal) auth.getPrincipal();
             audit.staff(principal.getId(), "LOGIN_SUCCESS", null, null, request.getRemoteAddr(), Map.of());
+            if (principal.isPlatformAdmin()) {
+                // Správce platformy nemá obsluhu ani vedoucí podniku – vždy na přehled podniků.
+                requestCache.removeRequest(request, response);
+                response.sendRedirect(request.getContextPath() + "/platform");
+                return;
+            }
             delegate.onAuthenticationSuccess(request, response, auth);
         };
     }
@@ -125,8 +145,8 @@ public class SecurityConfig {
             limits.loginFailuresPerUser.hit(username);
             limits.loginFailuresPerIp.hit(request.getRemoteAddr());
             audit.record(
-                    AuditService.Actor.SYSTEM, null, "LOGIN_FAILED", null, null, request.getRemoteAddr(),
-                    Map.of("username", username));
+                    audit.tenantOfUsername(username), AuditService.Actor.SYSTEM, null, "LOGIN_FAILED", null, null,
+                    request.getRemoteAddr(), Map.of("username", username));
             response.sendRedirect(request.getContextPath() + "/login?error");
         };
     }

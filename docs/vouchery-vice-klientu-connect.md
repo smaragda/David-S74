@@ -1,6 +1,8 @@
 # Vouchery pro více podniků (Stripe Connect) – rozhodovací dokument
 
-> **Stav:** návrh k rozhodnutí, nic z toho není implementováno. Současné řešení je jednoklientské (S74 wine&café).
+> **Stav (8. 11. 2026):** varianta C je implementovaná v backendu (větev `claude/practical-hamilton-aox8eq`), ověřená testy
+> a lokálně proti atrapě Stripe – viz kap. 9. Se skutečným Stripe Connect sandboxem zatím neověřeno (chyběl klíč).
+> Mimo kód (kap. 5: Stripe schválení, smlouvy, GDPR, DPH) zůstává otevřené.
 > Datum: 2026-11-08. Údaje o Stripe Connect (dostupnost pro ČR, poplatky, schválení platformy) je nutné ověřit v Dashboardu a na stripe.com/pricing.
 
 ## 1. Cíl
@@ -138,3 +140,43 @@ potřebují jinak.
 3. Společná odesílací doména e-mailů, nebo vlastní doména každého klienta?
 4. Má platforma vidět zákaznická data klientů (podpora), nebo jen na vyžádání a s auditem?
 5. Jak řešit klienta, který skončí: export dat, platnost už prodaných voucherů, lhůty.
+
+## 9. Stav implementace a přijatá rozhodnutí
+
+Implementováno podle kap. 3 a 4 (kód v `backend/`, migrace `V2__tenants_and_connect.sql`). Otevřené otázky z kap. 8 a další
+volby byly rozhodnuty takto (vše jde později změnit):
+
+| # | Otázka | Rozhodnutí v implementaci |
+|---|---|---|
+| D1 | Paušál nebo provize (8.1) | Obojí možné: provize per podnik (`application_fee` = pevná částka + %), výchozí 0 → paušál fakturovaný mimo Stripe. Provize max. 20 % a vždy menší než platba. |
+| D2 | Hostované stránky nebo skript (8.2) | **Obojí.** Hostovaná stránka `/v/{slug}` (server-side, bez JS, bez cookies, generované vzorové podmínky) + stávající `js/vouchers.js` s `S74_VOUCHER_TENANT`. Návrat po platbě: na web podniku, pokud ho má, jinak na hostovanou stránku. |
+| D3 | Odesílací doména (8.3) | Společná ověřená doména platformy (`S74_MAIL_FROM`), jméno odesílatele = název podniku, `Reply-To` = e-mail podniku. Vlastní doména podniku zatím ne. |
+| D4 | Přístup platformy k zákaznickým datům (8.4) | **Ne.** Správce platformy vidí jen podniky, stav Stripe a souhrnná čísla (zaplacené objednávky, aktivní vouchery) a audit správy podniku. |
+| D5 | Konec podniku (8.5) | Pozastavení (`SUSPENDED`) zastaví jen **nový prodej**; prodané vouchery obsluha dál uplatňuje. Export/smazání dat podniku jako nástroj zatím není (měsíční CSV export vedoucího funguje). |
+| D6 | Výchozí podnik S74 | Zůstává na platformním účtu (`payment_mode = PLATFORM`), prázdná nastavení se berou z `application.yml` → dosavadní nasazení beze změny. Po připojení vlastního účtu ho správce přepne na `CONNECT`; staré objednávky si drží účet, na kterém vznikly (`voucher_order.stripe_account_id`), takže jejich refundy/spory dál chodí z platformy. |
+| D7 | Typ účtů | Accounts v2: `dashboard=full`, `fees_collector=stripe`, `losses_collector=stripe`, `configuration.merchant.capabilities.card_payments.requested=true`, země CZ, měna CZK. Onboarding přes v2 account link (`configurations: [merchant]`), účet se zakládá s idempotency klíčem podle podniku. |
+| D8 | Kdy smí podnik prodávat | `status=ACTIVE` a `card_payments=active` (u `PLATFORM` vždy) a neprázdný ceník. Stav se obnovuje: návrat z onboardingu, `account.updated` (Connect webhook), v2 thin události `v2.core.account*` (`/api/stripe/account-events`), ruční tlačítko a hodinová kontrola nedokončených účtů. `account.application.deauthorized` prodej okamžitě zastaví. |
+| D9 | Webhooky | Tři endpointy s vlastními secrety: platforma, Connect, v2 události účtů. Účet z události určuje, ze kterého účtu se čte session a které objednávce smí patřit – session z jiného účtu se ignoruje (bez příznaku k řešení, aby cizí podnik nemohl zaplavit frontu). Idempotence zůstává přes globálně unikátní `event_id` (ID událostí jsou ve Stripe unikátní napříč účty); ukládá se i `account`. |
+| D10 | Kód voucheru | Globálně unikátní, QR dál vede na `/staff/v/{kód}`. Obsluha najde jen vouchery svého podniku; cizí kód se chová jako neexistující a počítá se do limitu hádání. |
+| D11 | Uživatelé | Uživatelské jméno globálně unikátní (přihlášení beze změny, bez pole „podnik“). Účet patří právě jednomu podniku, správce platformy žádnému (kontrola v DB). Role `PLATFORM_ADMIN` nemá přístup k `/staff` ani `/admin`. |
+| D12 | Izolace dat | Filtrování `tenant_id` v repository a službách (žádný „globální“ dotaz v obsluze/vedoucím/exportu) + integrační testy izolace. Postgres RLS jako druhá pojistka zatím **ne** (aplikace používá jednoho DB uživatele; doplnit při růstu). |
+| D13 | Audit | `audit_log.tenant_id` se doplní automaticky z objednávky / voucheru / účtu aktéra; události přihlášení podle uživatelského jména. |
+| D14 | Ceník | Tabulka `tenant_offer` (kód `CZK_{částka}`, 50–100 000 Kč, max. 8 hodnot); odebraná hodnota se jen deaktivuje. |
+| D15 | Lokální vývoj | Atrapa Stripe `backend/dev/stripe-mock` + `S74_STRIPE_API_BASE` (aplikace ho s ostrým režimem odmítne). `stripe-mock` od Stripe v2 API nepodporuje, proto vlastní atrapa. |
+
+### Ověřeno
+
+- `mvn verify`: 118 testů zelených (88 původních + 30 nových), 1 volitelný test proti sandboxu přeskočen.
+- Lokálně (PostgreSQL, Mailpit, atrapa Stripe, Playwright): správce založí podnik a vedoucího → vedoucí projde onboardingem →
+  zákazník koupí na `/v/{slug}` (bez cookie) → webhook z účtu podniku → voucher na stránce výsledku i v e-mailu (odesílatel
+  „název podniku“, Reply-To podniku), provize 2,5 % uložena → obsluha podniku voucher najde, obsluha S74 ne.
+
+### Neověřeno / zbývá
+
+| Co | Proč / jak |
+|---|---|
+| Skutečný Stripe Connect sandbox | V prostředí nebyl testovací klíč. `STRIPE_SMOKE=1 mvn test -Dtest=StripeSandboxSmokeTest` (README backendu). Ověřit hlavně v2 account link (`configurations` jde jako extra parametr – SDK 34 nemá typovaný setter) a že `account.updated` chodí i pro v2 účty. |
+| Dostupnost Connect pro platformu v ČR, schválení platformy, poplatky | Admin ve Stripe Dashboardu (kap. 5). |
+| Smlouva o zpracování, podmínky platformy, vzorové podmínky `/v/{slug}/podminky` | Právník – text je jen návrh. |
+| Export / smazání všech dat jednoho podniku | Nástroj zatím není (kap. 4.6). |
+| Embedded komponenty Stripe (`account_onboarding`, `notification_banner`) | Použit hostovaný onboarding (bez JS v administraci); banner požadavků nahrazuje stav na `/admin/stripe`. |

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="cs" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{hosted/layout :: head('Dárkový voucher')}"></head>
+<body class="page-shell page-shell--top">
+<p th:replace="~{hosted/layout :: testbanner}"></p>
+<main class="layout">
+    <section class="panel panel--stack">
+        <p class="eyebrow" th:text="${tenant.displayName}">Podnik</p>
+        <h1 class="h1--compact">Dárkový voucher</h1>
+        <p class="lead lead--compact">
+            Voucher přijde e-mailem hned po zaplacení. Platí
+            <strong th:text="${tenant.validityMonths} + ' měsíců'">12 měsíců</strong> a uplatňuje se jednorázově.
+        </p>
+
+        <p class="flash flash--info" th:if="${cancelled}">Platba byla zrušena. Můžete to zkusit znovu.</p>
+        <p class="flash flash--error" th:if="${error}" th:text="${error}">Chyba</p>
+
+        <div th:if="${!tenant.salesEnabled}">
+            <p class="flash flash--info">Prodej voucherů je teď pozastaven. Zkuste to prosím později.</p>
+        </div>
+
+        <form th:if="${tenant.salesEnabled}" class="stacked-form" method="post"
+              th:attr="action=@{/v/{slug}/checkout(slug=${tenant.slug})}">
+            <fieldset class="offer-choice">
+                <legend>Hodnota voucheru</legend>
+                <label class="offer-option" th:each="o : ${tenant.offers}">
+                    <input type="radio" name="offerId" th:value="${o.id}" th:checked="${o.id == selectedOffer}" required>
+                    <span class="offer-price" th:text="${@formats.money(o.amountMinor)}">1 000 Kč</span>
+                </label>
+            </fieldset>
+            <label>
+                E-mail, kam voucher pošleme
+                <input type="email" name="email" autocomplete="email" maxlength="254" th:value="${email}" required>
+            </label>
+            <label>
+                E-mail znovu (pro kontrolu)
+                <input type="email" name="emailConfirm" autocomplete="off" maxlength="254" required>
+            </label>
+            <label class="check-row">
+                <input type="checkbox" name="termsAccepted" value="true" required>
+                <span>Souhlasím s <a th:href="${tenant.termsUrl}" target="_blank" rel="noopener">obchodními podmínkami voucherů</a>
+                    a beru na vědomí, že nevyužitý rozdíl hodnoty propadá.</span>
+            </label>
+            <input type="hidden" name="termsVersion" th:value="${tenant.termsVersion}">
+            <button type="submit" class="primary-button">Pokračovat k platbě</button>
+            <p class="notice">Platba kartou, Apple Pay nebo Google Pay proběhne na zabezpečené stránce Stripe.</p>
+        </form>
+    </section>
+</main>
+<footer th:replace="~{hosted/layout :: footer}"></footer>
+</body>
+</html>

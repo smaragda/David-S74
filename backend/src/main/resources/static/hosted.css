@@ -1,0 +1,72 @@
+/* Hostované prodejní stránky podniků (/v/{slug}); barva podniku přichází z /v/{slug}/brand.css. */
+.test-banner {
+    margin: 0;
+    padding: 10px 16px;
+    background: #8a4b05;
+    color: #fff;
+    text-align: center;
+    font-size: 0.95rem;
+}
+
+.offer-choice {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
+}
+
+.offer-choice legend {
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.offer-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--paper-strong);
+    cursor: pointer;
+}
+
+.offer-option:has(input:checked) {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--accent);
+}
+
+.offer-option .offer-price {
+    font-size: 1.4rem;
+}
+
+.hosted-footer {
+    max-width: 720px;
+    margin: 24px auto;
+    padding: 0 16px;
+    text-align: center;
+}
+
+.hosted-voucher {
+    margin-top: 16px;
+    text-align: center;
+}
+
+.terms h2 {
+    margin-top: 22px;
+    font-size: 1.1rem;
+}
+
+.terms ul {
+    padding-left: 20px;
+    line-height: 1.55;
+}
+
+@media print {
+    .test-banner,
+    .hosted-footer {
+        display: none;
+    }
+}

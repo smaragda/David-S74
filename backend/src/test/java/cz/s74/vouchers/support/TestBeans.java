@@ -21,4 +21,10 @@ public class TestBeans {
     public FakeCheckoutGateway fakeCheckoutGateway() {
         return new FakeCheckoutGateway();
     }
+
+    @Bean
+    @Primary
+    public FakeConnectGateway fakeConnectGateway() {
+        return new FakeConnectGateway();
+    }
 }

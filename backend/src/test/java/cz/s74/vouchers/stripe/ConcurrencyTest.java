@@ -39,7 +39,7 @@ class ConcurrencyTest extends AbstractIT {
                         case 0 -> sendWebhook("evt_race_" + n, "checkout.session.completed",
                                 "{\"id\":\"" + sid + "\"}", false);
                         case 1 -> mvc.perform(get("/api/public/orders/status").param("session_id", sid));
-                        default -> fulfillment.fulfill(sid);
+                        default -> fulfillment.fulfill(null, sid);
                     }
                     return null;
                 }));

@@ -11,6 +11,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +32,8 @@ public class ExportService {
         this.zone = props.zone();
     }
 
-    public byte[] csv(YearMonth month, LocalDate today) {
+    /** Export jednoho podniku – každý dotaz filtrovaný {@code tenant_id}. */
+    public byte[] csv(UUID tenantId, YearMonth month, LocalDate today) {
         Timestamp from = Timestamp.from(month.atDay(1).atStartOfDay(zone).toInstant());
         Timestamp to = Timestamp.from(month.plusMonths(1).atDay(1).atStartOfDay(zone).toInstant());
         List<String[]> rows = new ArrayList<>();
@@ -39,40 +41,40 @@ public class ExportService {
 
         jdbc.query(
                 "select o.paid_at, o.id, v.code, v.amount_minor, o.stripe_payment_intent_id from voucher v"
-                        + " join voucher_order o on o.id = v.order_id where o.paid_at >= ? and o.paid_at < ? order by o.paid_at",
+                        + " join voucher_order o on o.id = v.order_id where o.tenant_id = ? and o.paid_at >= ? and o.paid_at < ? order by o.paid_at",
                 rs -> {
                     rows.add(row("PRODANÝ", instant(rs.getTimestamp(1)), ref(rs.getString(2)), Masking.code(rs.getString(3)),
                             rs.getLong(4), rs.getString(5), "", ""));
                 },
-                from, to);
+                tenantId, from, to);
         jdbc.query(
                 "select v.redeemed_at, o.id, v.code, v.amount_minor, o.stripe_payment_intent_id, s.display_name,"
                         + " v.redemption_note from voucher v join voucher_order o on o.id = v.order_id"
                         + " left join staff_user s on s.id = v.redeemed_by"
-                        + " where v.status = 'REDEEMED' and v.redeemed_at >= ? and v.redeemed_at < ? order by v.redeemed_at",
+                        + " where v.tenant_id = ? and v.status = 'REDEEMED' and v.redeemed_at >= ? and v.redeemed_at < ? order by v.redeemed_at",
                 rs -> {
                     rows.add(row("UPLATNĚNÝ", instant(rs.getTimestamp(1)), ref(rs.getString(2)), Masking.code(rs.getString(3)),
                             rs.getLong(4), rs.getString(5), rs.getString(6), rs.getString(7)));
                 },
-                from, to);
+                tenantId, from, to);
         jdbc.query(
                 "select v.cancelled_at, o.id, v.code, v.amount_minor, o.stripe_payment_intent_id, v.cancel_reason"
                         + " from voucher v join voucher_order o on o.id = v.order_id"
-                        + " where v.status = 'CANCELLED' and v.cancelled_at >= ? and v.cancelled_at < ? order by v.cancelled_at",
+                        + " where v.tenant_id = ? and v.status = 'CANCELLED' and v.cancelled_at >= ? and v.cancelled_at < ? order by v.cancelled_at",
                 rs -> {
                     rows.add(row("ZRUŠENÝ", instant(rs.getTimestamp(1)), ref(rs.getString(2)), Masking.code(rs.getString(3)),
                             rs.getLong(4), rs.getString(5), "", rs.getString(6)));
                 },
-                from, to);
+                tenantId, from, to);
         jdbc.query(
                 "select o.updated_at, o.id, o.amount_minor, o.refunded_amount_minor, o.stripe_payment_intent_id"
-                        + " from voucher_order o where o.refunded_amount_minor > 0 and o.updated_at >= ? and o.updated_at < ?"
+                        + " from voucher_order o where o.tenant_id = ? and o.refunded_amount_minor > 0 and o.updated_at >= ? and o.updated_at < ?"
                         + " order by o.updated_at",
                 rs -> {
                     rows.add(row("VRÁCENÁ PLATBA", instant(rs.getTimestamp(1)), ref(rs.getString(2)), "", rs.getLong(4),
                             rs.getString(5), "", "vráceno z " + rs.getLong(3) / 100 + " Kč"));
                 },
-                from, to);
+                tenantId, from, to);
         LocalDate first = month.atDay(1);
         LocalDate last = month.atEndOfMonth();
         if (!last.isBefore(today)) {
@@ -82,12 +84,12 @@ public class ExportService {
         jdbc.query(
                 "select v.valid_until, o.id, v.code, v.amount_minor, o.stripe_payment_intent_id from voucher v"
                         + " join voucher_order o on o.id = v.order_id"
-                        + " where v.status = 'ACTIVE' and v.valid_until >= ? and v.valid_until <= ? order by v.valid_until",
+                        + " where v.tenant_id = ? and v.status = 'ACTIVE' and v.valid_until >= ? and v.valid_until <= ? order by v.valid_until",
                 rs -> {
                     rows.add(row("VYPRŠELÝ", rs.getDate(1).toString(), ref(rs.getString(2)), Masking.code(rs.getString(3)),
                             rs.getLong(4), rs.getString(5), "", ""));
                 },
-                java.sql.Date.valueOf(first), java.sql.Date.valueOf(lastExpiry));
+                tenantId, java.sql.Date.valueOf(first), java.sql.Date.valueOf(lastExpiry));
 
         StringBuilder sb = new StringBuilder();
         for (String[] r : rows) {

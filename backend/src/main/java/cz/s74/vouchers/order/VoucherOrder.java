@@ -15,6 +15,16 @@ import org.hibernate.type.SqlTypes;
 @Table(name = "voucher_order")
 public class VoucherOrder extends BaseEntity {
 
+    @Column(name = "tenant_id", nullable = false, updatable = false)
+    private UUID tenantId;
+
+    /** Stripe účet, na kterém se platí (null = platformní účet). Snímek z doby objednávky. */
+    @Column(name = "stripe_account_id", updatable = false)
+    private String stripeAccountId;
+
+    @Column(name = "application_fee_minor", nullable = false, updatable = false)
+    private long applicationFeeMinor;
+
     @Column(name = "offer_id", nullable = false)
     private String offerId;
 
@@ -65,8 +75,19 @@ public class VoucherOrder extends BaseEntity {
     protected VoucherOrder() {}
 
     public VoucherOrder(
-            UUID id, String offerId, long amountMinor, String customerEmail, String termsVersion, Instant now) {
+            UUID id,
+            UUID tenantId,
+            String stripeAccountId,
+            long applicationFeeMinor,
+            String offerId,
+            long amountMinor,
+            String customerEmail,
+            String termsVersion,
+            Instant now) {
         super(id);
+        this.tenantId = tenantId;
+        this.stripeAccountId = stripeAccountId;
+        this.applicationFeeMinor = applicationFeeMinor;
         this.offerId = offerId;
         this.amountMinor = amountMinor;
         this.customerEmail = customerEmail;
@@ -97,6 +118,18 @@ public class VoucherOrder extends BaseEntity {
     public void changeStatus(OrderStatus status, Instant now) {
         this.status = status;
         this.updatedAt = now;
+    }
+
+    public UUID getTenantId() {
+        return tenantId;
+    }
+
+    public String getStripeAccountId() {
+        return stripeAccountId;
+    }
+
+    public long getApplicationFeeMinor() {
+        return applicationFeeMinor;
     }
 
     public String getOfferId() {

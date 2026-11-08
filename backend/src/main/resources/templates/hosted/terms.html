@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="cs" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{hosted/layout :: head('Obchodní podmínky voucherů')}"></head>
+<body class="page-shell page-shell--top">
+<main class="layout">
+    <section class="panel panel--stack terms">
+        <p class="eyebrow" th:text="${tenant.displayName}">Podnik</p>
+        <h1 class="h1--compact">Obchodní podmínky prodeje dárkových voucherů</h1>
+        <p class="notice">Verze <span th:text="${tenant.termsVersion}">2026-11</span>. Vzorové znění platformy – podnik ho může nahradit vlastními podmínkami.</p>
+
+        <h2>1. Prodávající</h2>
+        <p>Prodávajícím je <strong th:text="${tenant.legalLine()}">Podnik s.r.o., IČO 12345678</strong><span th:if="${tenant.address}" th:text="|, ${tenant.address}|"></span>
+            (dále „podnik“). Kontakt: <a th:if="${tenant.replyTo}" th:href="|mailto:${tenant.replyTo}|" th:text="${tenant.replyTo}">info@example.com</a>.
+            Provozovatel prodejní platformy zajišťuje pouze technické zpracování objednávky; smlouva vzniká mezi zákazníkem a podnikem.</p>
+
+        <h2>2. Voucher</h2>
+        <ul>
+            <li>Voucher má hodnotu zvolenou při nákupu a platí <strong th:text="${tenant.validityMonths} + ' měsíců'">12 měsíců</strong> od vystavení (včetně posledního dne).</li>
+            <li>Voucher lze uplatnit jednorázově, najednou v plné hodnotě, v provozovně podniku.</li>
+            <li>Je-li útrata nižší než hodnota voucheru, nevyužitý rozdíl propadá. Je-li vyšší, zákazník rozdíl doplatí.</li>
+            <li>Voucher nelze směnit za hotovost. Voucher je na doručitele – kdo zná jeho kód, může jej uplatnit.</li>
+        </ul>
+
+        <h2>3. Objednávka a platba</h2>
+        <p>Platba probíhá kartou (případně Apple Pay / Google Pay) přes platební bránu Stripe. Voucher je zaslán e-mailem
+            na adresu uvedenou v objednávce ihned po připsání platby.</p>
+
+        <h2>4. Odstoupení od smlouvy</h2>
+        <p>Spotřebitel může od smlouvy uzavřené na dálku odstoupit do 14 dnů od jejího uzavření, pokud voucher nebyl uplatněn.
+            Žádost zašlete na kontaktní e-mail podniku s číslem objednávky; platba bude vrácena stejným způsobem, jakým byla přijata.</p>
+
+        <h2>5. Reklamace a ochrana osobních údajů</h2>
+        <p>Reklamace a dotazy vyřizuje podnik na kontaktním e-mailu. Správcem osobních údajů (e-mail zákazníka, údaje o objednávce)
+            je podnik; provozovatel platformy je zpracovatelem. Údaje se používají jen k vyřízení objednávky a evidenci voucheru.</p>
+
+        <p><a class="ghost-link" th:href="@{/v/{slug}(slug=${tenant.slug})}">Zpět na nabídku</a></p>
+    </section>
+</main>
+</body>
+</html>

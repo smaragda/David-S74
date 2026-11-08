@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="cs" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex" th:if="${testMode}">
+    <meta http-equiv="refresh" content="3" th:if="${waiting}">
+    <title th:text="${title} + ' | ' + ${tenant.displayName}">Dárkové vouchery</title>
+    <link rel="stylesheet" th:href="@{/fonts/fonts.css}">
+    <link rel="stylesheet" th:href="@{/app.css}">
+    <link rel="stylesheet" th:href="@{/staff-ui.css}">
+    <link rel="stylesheet" th:href="@{/hosted.css}">
+    <link rel="stylesheet" th:href="@{/v/{slug}/brand.css(slug=${tenant.slug})}">
+</head>
+<body>
+<p th:fragment="testbanner" class="test-banner" th:if="${testMode}">
+    Zkušební provoz – platby jsou jen testovací (Stripe sandbox), voucher nebude platný.
+</p>
+<footer th:fragment="footer" class="legal-footer hosted-footer">
+    <span th:text="${tenant.legalLine()}">Podnik s.r.o., IČO 12345678</span><span th:if="${tenant.address}" th:text="| · ${tenant.address}|"></span>
+    · <a th:href="${tenant.termsUrl}">Obchodní podmínky voucherů</a>
+    <span th:if="${tenant.frontendBaseUrl}"> · <a th:href="${tenant.frontendBaseUrl}">Web podniku</a></span>
+    <br><span class="microcopy">Platby zpracovává Stripe. Prodávajícím je výše uvedený podnik.</span>
+</footer>
+</body>
+</html>

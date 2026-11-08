@@ -6,6 +6,7 @@ import cz.s74.vouchers.config.RateLimits;
 import cz.s74.vouchers.staff.StaffRole;
 import cz.s74.vouchers.staff.StaffUser;
 import cz.s74.vouchers.staff.StaffUserRepository;
+import cz.s74.vouchers.tenant.Tenants;
 import cz.s74.vouchers.voucher.Voucher;
 import cz.s74.vouchers.voucher.VoucherRepository;
 import java.nio.charset.StandardCharsets;
@@ -27,11 +28,15 @@ import org.springframework.test.web.servlet.MockMvc;
 public abstract class AbstractIT extends PostgresSupport {
 
     public static final String WEBHOOK_SECRET = "whsec_testsecret";
+    public static final String CONNECT_WEBHOOK_SECRET = "whsec_connectsecret";
+    public static final String ACCOUNT_EVENTS_SECRET = "whsec_accountevents";
+    public static final UUID DEFAULT_TENANT = Tenants.DEFAULT_ID;
 
     @Autowired protected MockMvc mvc;
     @Autowired protected JdbcTemplate jdbc;
     @Autowired protected MutableClock clock;
     @Autowired protected FakeCheckoutGateway gateway;
+    @Autowired protected FakeConnectGateway connectGateway;
     @Autowired protected RateLimits limits;
     @Autowired protected VoucherRepository vouchers;
     @Autowired protected StaffUserRepository staffUsers;
@@ -41,8 +46,16 @@ public abstract class AbstractIT extends PostgresSupport {
     void cleanState() {
         jdbc.execute("truncate audit_log, email_delivery, voucher, voucher_order, stripe_event, staff_user"
                 + " restart identity cascade");
+        jdbc.update("delete from tenant_offer");
+        jdbc.update("delete from tenant where id <> ?", DEFAULT_TENANT);
+        jdbc.update("update tenant set status = 'ACTIVE', payment_mode = 'PLATFORM', stripe_account_id = null,"
+                + " stripe_card_payments = null, stripe_requirements_due = 0, frontend_base_url = null,"
+                + " cors_allowed_origins = null, terms_url = null, terms_version = null, validity_months = null,"
+                + " show_on_return_minutes = null, brand_color = null, reply_to = null, application_fee_bps = 0,"
+                + " application_fee_fixed_minor = 0 where id = ?", DEFAULT_TENANT);
         limits.resetAll();
         gateway.reset();
+        connectGateway.reset();
         clock.reset();
     }
 
@@ -81,8 +94,26 @@ public abstract class AbstractIT extends PostgresSupport {
                 .getStatus();
     }
 
+    /** Událost připojeného účtu podniku (Connect endpoint) – nese {@code account}. */
+    protected int sendConnectWebhook(String account, String type, String objectJson) throws Exception {
+        String payload = webhookPayload("evt_" + UUID.randomUUID(), type, objectJson, false, account);
+        return mvc.perform(post("/api/stripe/connect-webhook")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Stripe-Signature", signature(payload, CONNECT_WEBHOOK_SECRET, Instant.now()))
+                        .content(payload))
+                .andReturn()
+                .getResponse()
+                .getStatus();
+    }
+
     protected static String webhookPayload(String eventId, String type, String objectJson, boolean livemode) {
+        return webhookPayload(eventId, type, objectJson, livemode, null);
+    }
+
+    protected static String webhookPayload(
+            String eventId, String type, String objectJson, boolean livemode, String account) {
         return "{\"id\":\"" + eventId + "\",\"object\":\"event\",\"api_version\":\"2026-09-30.endive\","
+                + (account == null ? "" : "\"account\":\"" + account + "\",")
                 + "\"created\":" + Instant.now().getEpochSecond() + ",\"livemode\":" + livemode
                 + ",\"type\":\"" + type + "\",\"data\":{\"object\":" + objectJson + "}}";
     }
@@ -97,8 +128,13 @@ public abstract class AbstractIT extends PostgresSupport {
     }
 
     protected StaffUser createStaff(String username, String password, StaffRole role) {
+        return createStaff(role == StaffRole.PLATFORM_ADMIN ? null : DEFAULT_TENANT, username, password, role);
+    }
+
+    protected StaffUser createStaff(UUID tenantId, String username, String password, StaffRole role) {
         return staffUsers.saveAndFlush(new StaffUser(
-                UUID.randomUUID(), username, "Jméno " + username, passwordEncoder.encode(password), role, Instant.now()));
+                UUID.randomUUID(), tenantId, username, "Jméno " + username, passwordEncoder.encode(password), role,
+                Instant.now()));
     }
 
     protected int count(String table) {
