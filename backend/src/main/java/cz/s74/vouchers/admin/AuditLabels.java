@@ -15,6 +15,7 @@ public class AuditLabels {
             Map.entry("EMAIL_FAILED", "E-mail se nepodařilo odeslat"),
             Map.entry("EMAIL_RESEND_REQUESTED", "Vyžádáno opětovné zaslání"),
             Map.entry("VOUCHER_VIEWED", "Voucher zobrazen"),
+            Map.entry("VOUCHER_DISPLAYED", "Voucher zobrazen zákazníkovi po platbě"),
             Map.entry("VOUCHER_REDEEMED", "Voucher uplatněn"),
             Map.entry("REDEMPTION_REJECTED", "Uplatnění zamítnuto"),
             Map.entry("REDEMPTION_REVERTED", "Uplatnění vráceno"),

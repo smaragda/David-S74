@@ -19,6 +19,15 @@
         <p class="eyebrow" id="status-eyebrow">Objednávka</p>
         <h1 id="status-title">Čekáme na potvrzení platby…</h1>
         <p class="lead lead--compact" id="status-text">Stránku prosím nezavírejte, potvrzení obvykle trvá několik sekund.</p>
+        <div class="voucher-card" id="voucher-card" hidden>
+            <p class="voucher-card__amount" id="voucher-amount"></p>
+            <img class="voucher-card__qr" id="voucher-qr" width="240" height="240" alt="QR kód voucheru">
+            <p class="field-hint">Kód pro ruční zadání</p>
+            <p class="voucher-card__code" id="voucher-code"></p>
+            <p class="voucher-card__valid">Platí do <strong id="voucher-valid"></strong></p>
+            <p class="microcopy">Ukažte QR kód nebo kód obsluze při placení. Voucher je jednorázový, nevyužitý rozdíl hodnoty propadá a kdo zná kód, může ho uplatnit &ndash; nesdílejte ho veřejně. Stejný voucher vám přijde i e-mailem. Tady se zobrazuje jen krátce po platbě, uložte si ho proto hned (screenshot nebo tisk).</p>
+            <button type="button" class="ghost-link voucher-card__print" id="voucher-print">Vytisknout / uložit jako PDF</button>
+        </div>
         <p class="order-ref" id="order-ref" hidden>Číslo objednávky: <strong id="order-ref-value"></strong></p>
 
         <div class="button-stack" id="status-actions" hidden>

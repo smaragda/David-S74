@@ -244,9 +244,29 @@
                 byId('order-ref-value').textContent = state.orderRef;
             }
             show(refBox, Boolean(state.orderRef));
+            if (!state.voucherShown) showVoucher(null);
             show(actions, state.final === true);
             show(retry, state.retry === true);
         }
+
+        function showVoucher(voucher) {
+            const card = byId('voucher-card');
+            if (!voucher) {
+                show(card, false);
+                return;
+            }
+            byId('voucher-amount').textContent = formatCzk(voucher.amountCzk);
+            byId('voucher-qr').src = voucher.qrDataUri;
+            byId('voucher-code').textContent = voucher.code;
+            const valid = new Date(voucher.validUntil + 'T00:00:00');
+            byId('voucher-valid').textContent = isNaN(valid.getTime())
+                ? voucher.validUntil
+                : valid.toLocaleDateString('cs-CZ', { day: 'numeric', month: 'numeric', year: 'numeric' }).replace(/\s/g, NBSP);
+            show(card, true);
+        }
+
+        const printButton = byId('voucher-print');
+        if (printButton) printButton.addEventListener('click', function () { window.print(); });
 
         function waiting(orderRef) {
             render({
@@ -281,13 +301,15 @@
                         message = 'Voucher právě odesíláme na ' + data.emailMasked + ', obvykle dorazí do minuty. Mrkněte i do složky Hromadné nebo Spam.';
                     }
                     render({
-                        icon: '☕',
+                        icon: data.voucher ? '' : '☕',
                         eyebrow: 'Děkujeme!',
                         title: data.emailStatus === 'FAILED' ? 'Platba proběhla.' : 'Hotovo.',
-                        text: message,
+                        text: data.voucher ? 'Váš voucher je níže. ' + message : message,
                         orderRef: data.orderRef,
-                        final: true
+                        final: true,
+                        voucherShown: Boolean(data.voucher)
                     });
+                    showVoucher(data.voucher);
                     return true;
                 }
                 case 'FAILED':

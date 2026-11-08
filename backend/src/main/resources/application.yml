@@ -41,6 +41,7 @@ s74:
     validity-months: 12
     terms-version: "2026-11"
     terms-path: /obchodni-podminky-vouchery.html
+    show-on-return-minutes: 60   # voucher se na návratové stránce po platbě zobrazí jen tuto dobu (0 = vypnuto)
     offers:
       - id: CZK_500
         amount-czk: 500

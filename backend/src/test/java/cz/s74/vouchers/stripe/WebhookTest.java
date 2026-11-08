@@ -208,7 +208,7 @@ class WebhookTest extends AbstractIT {
     }
 
     @Test
-    void statusEndpointReflectsPaymentAndNeverReturnsCode() throws Exception {
+    void statusEndpointReflectsPaymentAndShowsVoucherOnlyBriefly() throws Exception {
         checkout("CZK_1000", "jana@example.com");
         String sid = gateway.lastSessionId();
 
@@ -231,12 +231,43 @@ class WebhookTest extends AbstractIT {
                 .andExpect(jsonPath("$.emailStatus").value("PENDING"))
                 .andReturn();
         String code = vouchers.findAll().get(0).getCode();
-        assertThat(result.getResponse().getContentAsString()).doesNotContain(code);
+        String formatted = code.substring(0, 4) + "-" + code.substring(4, 8) + "-" + code.substring(8);
+        // krátce po zaplacení se voucher na návratové stránce zobrazí (kód, platnost, QR)
+        mvc.perform(get("/api/public/orders/status").param("session_id", sid))
+                .andExpect(jsonPath("$.voucher.code").value(formatted))
+                .andExpect(jsonPath("$.voucher.amountCzk").value(1000))
+                .andExpect(jsonPath("$.voucher.validUntil").value(java.time.LocalDate.now(clock).plusMonths(12).toString()))
+                .andExpect(jsonPath("$.voucher.qrDataUri").value(org.hamcrest.Matchers.startsWith("data:image/png;base64,")));
+        assertThat(jdbc.queryForObject(
+                        "select count(*) from audit_log where action = 'VOUCHER_DISPLAYED'", Integer.class))
+                .isGreaterThanOrEqualTo(1);
+        assertThat(jdbc.queryForObject(
+                        "select count(*) from audit_log where cast(details as varchar) like ?", Integer.class,
+                        "%" + code + "%"))
+                .isZero();
         assertThat(count("voucher")).isEqualTo(1);
+
+        // po uplynutí okna (60 min) se kód už nevrací, stav ano
+        clock.setInstant(clock.instant().plus(java.time.Duration.ofMinutes(61)));
+        String late = mvc.perform(get("/api/public/orders/status").param("session_id", sid))
+                .andExpect(jsonPath("$.status").value("PAID"))
+                .andReturn().getResponse().getContentAsString();
+        assertThat(late).doesNotContain(code).contains("\"voucher\":null");
+        clock.reset();
 
         mvc.perform(get("/api/public/orders/status").param("session_id", sid))
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("\"PAID\"")));
         assertThat(count("voucher")).isEqualTo(1);
+    }
+
+    @Test
+    void voucherIsNotShownForRefundedOrCancelledVoucher() throws Exception {
+        issueVoucher("CZK_500", "a@example.com");
+        String sid = gateway.lastSessionId();
+        jdbc.update("update voucher set status = 'CANCELLED'");
+        mvc.perform(get("/api/public/orders/status").param("session_id", sid))
+                .andExpect(jsonPath("$.status").value("PAID"))
+                .andExpect(jsonPath("$.voucher").value(org.hamcrest.Matchers.nullValue()));
     }
 
     @Test

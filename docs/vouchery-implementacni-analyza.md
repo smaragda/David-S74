@@ -79,7 +79,7 @@ Zadání nechává několik věcí otevřených. Implementace **nesmí čekat** 
 | R7 | E-mailová služba | Libovolná přes SMTP (Spring Mail), odesílatel `vouchery@s74.cz`, Reply-To `s74winecafe@seznam.cz`. Doporučení poskytovatele v admin návodu. | env |
 | R8 | QR v první verzi | Ano (levné: knihovna ZXing, obrázek v e-mailu) | – |
 | R9 | Oprávnění vedoucího | Role `MANAGER` = oba vlastníci; brigádník má roli `STAFF` | DB |
-| R10 | Zobrazit kód na návratové stránce po platbě | Ne – jen stav a maskovaný e-mail. Kód je poukaz na doručitele, URL návratové stránky může uniknout (historie, sdílení). | – |
+| R10 | Zobrazit kód na návratové stránce po platbě | **Změněno na žádost majitele (8. 11. 2026):** voucher (kód, QR, platnost) se na návratové stránce zobrazí, ale jen po omezenou dobu po zaplacení (`s74.voucher.show-on-return-minutes`, výchozí 60, `0` = vypnuto), jen dokud je voucher `ACTIVE` a objednávka `PAID`, a každé zobrazení se zapíše do auditu (`VOUCHER_DISPLAYED`, bez celého kódu). Důvod: zákazníci si dělají screenshot a e-mail bývá zpožděný nebo ve spamu. Riziko: odkaz s `session_id` může uniknout (historie, sdílení) – proto časové okno, `no-referrer` a `no-store`. Původní volba byla „ne, jen stav a maskovaný e-mail“. | `application.yml` |
 | R11 | Odložené platební metody | V Dashboardu vypnout (jen karty + Apple Pay / Google Pay / Link), kód je přesto obslouží správně. | Stripe Dashboard |
 | R12 | PDF příloha voucheru | Mimo v1 (kap. 19); e-mail lze vytisknout | – |
 | R13 | Umístění backendu (odchylka od R4, potvrzeno uživatelem) | Backend je v podadresáři `backend/` na větvi `claude/vouchery-impl-4001ac` tohoto repozitáře, ne v separátním repozitáři. Na `main` se bez rozhodnutí nemerguje (README: `main` = jen web); později `git subtree split -P backend` do `s74-vouchers`. CI workflow leží v `backend/.github/workflows/ci.yml`, takže je v tomto repozitáři neaktivní. | – |
@@ -409,7 +409,7 @@ Pro návratovou stránku. Pokud je objednávka ještě `PENDING_PAYMENT`/`PAYMEN
 }
 ```
 
-Neexistující `session_id` → `200 { "status": "UNKNOWN" }` (neprozrazovat, nic víc). **Nevrací voucherový kód** (R10).
+Neexistující `session_id` → `200 { "status": "UNKNOWN" }` (neprozrazovat, nic víc). Voucherový kód vrací jen v časovém okně po zaplacení (R10, upraveno) jako objekt `voucher` (`code`, `validUntil`, `amountCzk`, `qrDataUri`).
 
 ### 9.4 `POST /api/stripe/webhook`
 

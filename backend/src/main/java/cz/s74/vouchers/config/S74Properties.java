@@ -41,7 +41,9 @@ public record S74Properties(
             @Min(1) int validityMonths,
             @NotBlank String termsVersion,
             @NotBlank String termsPath,
-            @NotEmpty List<@Valid Offer> offers) {}
+            @NotEmpty List<@Valid Offer> offers,
+            /** Po kolika minutách od zaplacení se voucher na návratové stránce přestane zobrazovat (0 = nikdy nezobrazovat). */
+            @DefaultValue("60") @Min(0) int showOnReturnMinutes) {}
 
     public record Offer(@NotBlank String id, @Min(1) long amountCzk) {
         public long amountMinor() {

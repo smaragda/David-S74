@@ -519,3 +519,73 @@ h2 {
     font-size: clamp(1.4rem, 2vw, 2rem);
     line-height: 1.05;
 }
+
+/* --- Voucher zobrazený po zaplacení (order-success.html) --- */
+.voucher-card {
+    margin: 24px auto 0;
+    padding: 24px 20px;
+    max-width: 380px;
+    border-radius: 24px;
+    background: #fff;
+    border: 2px dashed var(--accent);
+    text-align: center;
+}
+
+.voucher-card__amount {
+    margin: 0 0 12px;
+    font-family: var(--display);
+    font-size: clamp(2rem, 9vw, 2.8rem);
+    font-weight: 600;
+    color: var(--accent);
+    line-height: 1;
+}
+
+.voucher-card__qr {
+    display: block;
+    width: min(100%, 240px);
+    height: auto;
+    margin: 0 auto 12px;
+}
+
+.voucher-card__code {
+    margin: 2px 0 10px;
+    font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    font-size: clamp(1.3rem, 6.4vw, 1.7rem);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+}
+
+.voucher-card__valid {
+    margin: 0 0 12px;
+}
+
+.voucher-card .microcopy {
+    margin: 12px 0 16px;
+    font-size: 0.88rem;
+    line-height: 1.5;
+}
+
+@media print {
+    body[data-page="order-status"] .eyebrow,
+    body[data-page="order-status"] .status-icon,
+    body[data-page="order-status"] .lead,
+    body[data-page="order-status"] #status-title,
+    body[data-page="order-status"] .order-ref,
+    body[data-page="order-status"] .button-stack,
+    body[data-page="order-status"] .form-note,
+    body[data-page="order-status"] .legal-footer,
+    body[data-page="order-status"] .voucher-card__print {
+        display: none !important;
+    }
+
+    body[data-page="order-status"] .panel {
+        box-shadow: none;
+        border: none;
+        background: white;
+    }
+
+    .voucher-card {
+        border: 2px solid #000;
+        break-inside: avoid;
+    }
+}

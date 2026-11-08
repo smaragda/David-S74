@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="cs"><head><meta charset="UTF-8"><title>Náhled voucherů</title><meta name="viewport" content="width=device-width, initial-scale=1">
+<style>body{font:16px/1.6 system-ui;max-width:640px;margin:40px auto;padding:0 16px}code{background:#eee;padding:2px 5px;border-radius:4px}</style></head><body>
+<h1>Náhled statických stránek (bez backendu)</h1>
+<p>API je tu nahrazeno ukázkovými daty. Stránky obsluhy a vedoucího (běží na backendu) tu nejsou.</p>
+<ul>
+<li><a href="vouchery.html">vouchery.html</a> – nabídka a podmínky</li>
+<li><a href="checkout.html?offer=CZK_1000">checkout.html</a> (<a href="checkout.html?offer=CZK_1000&cancelled=1">po zrušené platbě</a>, <a href="checkout.html?offer=NEEXISTUJE">neplatná nabídka</a>) – po odeslání přejde na stav objednávky</li>
+<li>order-success.html: <a href="order-success.html?session_id=cs_demo_paid">zaplaceno</a> · <a href="order-success.html?session_id=cs_demo_pending">čeká (timeout po 2 min)</a> · <a href="order-success.html?session_id=cs_demo_failed">neproběhla</a> · <a href="order-success.html?session_id=cs_demo_emailfail">e-mail selhal</a> · <a href="order-success.html">bez session_id</a></li>
+<li><a href="obchodni-podminky-vouchery.html">obchodni-podminky-vouchery.html</a> (návrh)</li>
+<li><a href="soukromi.html">soukromi.html</a></li>
+<li><a href="index.html">index.html</a> – menu „Vouchery“ (z file:// se nenačte data/content.json, texty menu proto mohou chybět; položka je v HTML)</li>
+</ul></body></html>

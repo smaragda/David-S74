@@ -77,7 +77,7 @@ Testovací karty: `4242 4242 4242 4242` (úspěch), `4000 0000 0000 0002` (zamí
 mvn verify
 ```
 
-Spouští 87 testů na skutečném PostgreSQL 16 v Testcontainers (jeden sdílený kontejner), SMTP přes GreenMail, Stripe přes atrapu
+Spouští 88 testů na skutečném PostgreSQL 16 v Testcontainers (jeden sdílený kontejner), SMTP přes GreenMail, Stripe přes atrapu
 (`CheckoutGateway`). Webhooky se podepisují v testu HMAC-SHA256 testovacím secretem, takže se ověřuje skutečná kontrola podpisu.
 Pokryto: generátor a normalizace kódu, validace konfigurace při startu, checkout (cena z ceníku, absence `payment_method_types` v parametrech Stripe,
 validace, rate limit, CORS), webhook (podpis, duplicita, `unpaid` → `async_payment_succeeded`, selhání, expirace, nesoulad částky/měny, livemode),
@@ -103,7 +103,7 @@ backend/
 
 Stav k 4. 11. 2026. **Ověřeno** = skutečně spuštěno a výsledek viděn; **neověřeno** = jen napsáno / nelze bez dalšího kroku.
 
-### Ověřeno automaticky (`mvn verify`, 87 testů zelených)
+### Ověřeno automaticky (`mvn verify`, 88 testů zelených)
 
 Viz výše – celá tabulka 17.1 analýzy včetně testu souběžného uplatnění, duplicitního webhooku a souběhu vystavení.
 
@@ -123,7 +123,7 @@ Viz výše – celá tabulka 17.1 analýzy včetně testu souběžného uplatně
 |---|---|
 | Úspěšná platba `4242…` (500 Kč) | objednávka `PAID`, právě 1 voucher, platnost +12 měsíců, e-mail v Mailpitu (HTML + text, QR dekódovaný `zbarimg` na `/staff/v/<kód>`) |
 | Skutečný Checkout | česky, částka 500,00 Kč, text „Voucher je jednorázový. Nevyužitý rozdíl hodnoty propadá.“, předvyplněný e-mail, `integration_identifier` a `locale=cs` přijaty |
-| Návratová stránka | po platbě `PAID`, maskovaný e-mail `d***@e***.com`, číslo objednávky; kód se nezobrazuje |
+| Návratová stránka | po platbě `PAID`, maskovaný e-mail, číslo objednávky (první běh bez zobrazení voucheru; poté přidáno zobrazení voucheru – viz níže) |
 | Duplicitní webhook | `stripe events resend <evt_…>` → HTTP 200, počet voucherů beze změny |
 | Zamítnutá karta `4000 0000 0000 0002` | Stripe: „Vaše kreditní karta byla odmítnuta“, objednávka zůstala `PENDING_PAYMENT`, voucher nevznikl |
 | Opuštěná session | `stripe checkout sessions expire` → webhook `checkout.session.expired` → `EXPIRED` |
@@ -132,6 +132,12 @@ Viz výše – celá tabulka 17.1 analýzy včetně testu souběžného uplatně
 | Refund (`stripe refunds create`) | skutečný `charge.refunded` → objednávka `REFUNDED`, voucher `CANCELLED` (důvod `REFUND`) |
 | Webhooky ostatních typů (`charge.succeeded`, `payment_intent.*`) | přijaty, `IGNORED`, HTTP 200 |
 | Úniky do logu | v logu backendu nebyl API klíč, webhook secret ani celý voucherový kód; audit neobsahuje celý kód |
+
+### Voucher na návratové stránce (změna R10)
+
+Po platbě se na `order-success.html` zobrazí voucher (QR, kód, platnost, tlačítko Vytisknout), ale jen `s74.voucher.show-on-return-minutes` (výchozí 60) minut,
+jen pro aktivní voucher a zaplacenou objednávku; každé zobrazení je v auditu (`VOUCHER_DISPLAYED`). Ověřeno testy (zobrazí se, po 61 min ne, zrušený voucher ne)
+a ručně v prohlížeči na 360 px (na seed objednávce, ne po nové platbě ve Stripe). `0` zobrazování vypne.
 
 ### Zbývá neověřit
 
