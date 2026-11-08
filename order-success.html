@@ -9,16 +9,25 @@
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <link rel="stylesheet" href="fonts/fonts.css?v=20260805">
-    <link rel="stylesheet" href="app.css">
+    <link rel="stylesheet" href="css/style.css?v=20261108">
 </head>
-<body class="page-shell page-shell--centered" data-page="order-status">
-<main class="layout">
-    <section class="panel panel--narrow panel--center" aria-live="polite">
+<body class="privacy-page" data-page="order-status">
+    <a class="skip-link" href="#main-content">Přeskočit na obsah</a>
+
+    <header class="privacy-header">
+        <nav class="section-shell privacy-nav" aria-label="Navigace voucherů">
+            <a class="privacy-brand" href="index.html">S74 wine&amp;café</a>
+            <a class="privacy-back" href="index.html">Zpět na web</a>
+        </nav>
+    </header>
+
+    <main id="main-content" class="voucher-page-main" tabindex="-1">
+        <section class="voucher-panel voucher-panel--center" aria-live="polite">
         <div class="spinner" id="status-spinner" aria-hidden="true"></div>
         <div class="status-icon" id="status-icon" aria-hidden="true" hidden></div>
         <p class="eyebrow" id="status-eyebrow">Objednávka</p>
         <h1 id="status-title">Čekáme na potvrzení platby…</h1>
-        <p class="lead lead--compact" id="status-text">Stránku prosím nezavírejte, potvrzení obvykle trvá několik sekund.</p>
+        <p class="panel-lead" id="status-text">Stránku prosím nezavírejte, potvrzení obvykle trvá několik sekund.</p>
         <div class="voucher-card" id="voucher-card" hidden>
             <p class="voucher-card__amount" id="voucher-amount"></p>
             <img class="voucher-card__qr" id="voucher-qr" width="240" height="240" alt="QR kód voucheru">
@@ -26,21 +35,43 @@
             <p class="voucher-card__code" id="voucher-code"></p>
             <p class="voucher-card__valid">Platí do <strong id="voucher-valid"></strong></p>
             <p class="microcopy">Ukažte QR kód nebo kód obsluze při placení. Voucher je jednorázový, nevyužitý rozdíl hodnoty propadá a kdo zná kód, může ho uplatnit &ndash; nesdílejte ho veřejně. Stejný voucher vám přijde i e-mailem. Tady se zobrazuje jen krátce po platbě, uložte si ho proto hned (screenshot nebo tisk).</p>
-            <button type="button" class="ghost-link voucher-card__print" id="voucher-print">Vytisknout / uložit jako PDF</button>
+            <button type="button" class="btn btn-outline voucher-card__print" id="voucher-print">Vytisknout / uložit jako PDF</button>
         </div>
         <p class="order-ref" id="order-ref" hidden>Číslo objednávky: <strong id="order-ref-value"></strong></p>
 
         <div class="button-stack" id="status-actions" hidden>
-            <a href="vouchery.html" class="ghost-link" id="status-retry" hidden>Zpět na vouchery</a>
-            <a href="index.html" class="ghost-link">Zpět na úvod</a>
+            <a href="vouchery.html" class="btn btn-outline" id="status-retry" hidden>Zpět na vouchery</a>
+            <a href="index.html" class="btn btn-outline">Zpět na úvod</a>
         </div>
 
-        <p class="microcopy form-note">
-            V případě dotazů nás kontaktujte na <a class="text-link" href="mailto:s74winecafe@seznam.cz">s74winecafe@seznam.cz</a>.
+        <p class="form-note">
+            V případě dotazů nás kontaktujte na <a href="mailto:s74winecafe@seznam.cz">s74winecafe@seznam.cz</a>.
         </p>
     </section>
-</main>
-<footer class="legal-footer microcopy"><a href="obchodni-podminky-vouchery.html">Obchodní podmínky voucherů</a> · <a href="soukromi.html">Soukromí a cookies</a></footer>
+    </main>
+
+    <footer class="footer">
+        <div class="section-shell footer-layout">
+            <a class="footer-brand" href="index.html">S74 wine&amp;café</a>
+            <div class="footer-details">
+                <span>Slezská 856/74, 130 00 Praha 3–Vinohrady</span>
+                <span>Po–Pá 7:30–23:00 · So 15:00–23:00 · Ne 15:00–22:00</span>
+            </div>
+            <a href="https://www.instagram.com/s74_wineandcafe/" class="footer-social" target="_blank" rel="noopener noreferrer" aria-label="Instagram S74 wine&amp;café">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                </svg>
+                Instagram
+            </a>
+        </div>
+        <div class="section-shell footer-meta">
+            <span>© 2026 S74 wine&amp;café, s.r.o.</span>
+            <span><a href="obchodni-podminky-vouchery.html">Obchodní podmínky voucherů</a> · <a href="soukromi.html">Soukromí a cookies</a></span>
+        </div>
+    </footer>
+
 <script src="js/vouchers-config.js"></script>
 <script src="js/vouchers.js" defer></script>
 </body>

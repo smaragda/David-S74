@@ -85,7 +85,7 @@
                 const actions = document.createElement('div');
                 actions.className = 'offer-actions';
                 const link = document.createElement('a');
-                link.className = 'primary-button-link';
+                link.className = 'btn btn-accent';
                 link.href = 'checkout.html?offer=' + encodeURIComponent(offer.id);
                 link.textContent = 'Koupit voucher';
                 link.setAttribute('aria-label', 'Koupit ' + offer.label.toLowerCase());
@@ -280,7 +280,7 @@
 
         function timedOut(orderRef) {
             render({
-                icon: '⏳',
+                icon: '…',
                 eyebrow: 'Zatím bez potvrzení',
                 title: 'Potvrzení zatím nedorazilo.',
                 text: 'Voucher vám přijde e-mailem, jakmile platbu potvrdíme. Pokud do 30 minut nedorazí, napište nám s číslem objednávky.',
@@ -301,7 +301,7 @@
                         message = 'Voucher právě odesíláme na ' + data.emailMasked + ', obvykle dorazí do minuty. Mrkněte i do složky Hromadné nebo Spam.';
                     }
                     render({
-                        icon: data.voucher ? '' : '☕',
+                        icon: data.voucher ? '' : '✓',
                         eyebrow: 'Děkujeme!',
                         title: data.emailStatus === 'FAILED' ? 'Platba proběhla.' : 'Hotovo.',
                         text: data.voucher ? 'Váš voucher je níže. ' + message : message,
