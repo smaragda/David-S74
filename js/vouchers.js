@@ -4,12 +4,16 @@
     'use strict';
 
     const API = String(window.S74_VOUCHER_API || '').replace(/\/+$/, '');
+    // Volitelně podnik na platformě (slug) – bez něj výchozí podnik S74 (původní adresy API).
+    const TENANT = String(window.S74_VOUCHER_TENANT || '').trim();
+    const PUBLIC = TENANT ? '/api/public/t/' + encodeURIComponent(TENANT) : '/api/public';
     const NBSP = ' ';
 
     const ERROR_MESSAGES = {
         INVALID_EMAIL: 'Zadejte platnou e-mailovou adresu.',
         INVALID_OFFER: 'Vybraný voucher už není dostupný. Vyberte prosím jiný.',
         TERMS_NOT_ACCEPTED: 'Pro pokračování je nutný souhlas s obchodními podmínkami.',
+        SALES_DISABLED: 'Prodej voucherů je teď pozastaven. Zkuste to prosím později.',
         TERMS_OUTDATED: 'Obchodní podmínky se mezitím změnily. Zkontrolujte je a potvrďte souhlas znovu.',
         RATE_LIMITED: 'Příliš mnoho pokusů. Zkuste to prosím za chvíli.',
         PAYMENT_PROVIDER_UNAVAILABLE: 'Platební brána je teď nedostupná. Zkuste to prosím za chvíli.',
@@ -43,7 +47,7 @@
     }
 
     function loadOffers() {
-        return request('/api/public/offers', { headers: { Accept: 'application/json' } }).then(function (result) {
+        return request(PUBLIC + '/offers', { headers: { Accept: 'application/json' } }).then(function (result) {
             if (!result.ok || !result.data || !Array.isArray(result.data.offers)) {
                 throw new Error('offers unavailable');
             }
@@ -190,7 +194,7 @@
             }
 
             setBusy(true);
-            request('/api/public/checkout-sessions', {
+            request(PUBLIC + '/checkout-sessions', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
                 body: JSON.stringify({
@@ -341,7 +345,7 @@
         }
 
         function poll() {
-            request('/api/public/orders/status?session_id=' + encodeURIComponent(sessionId), {
+            request(PUBLIC + '/orders/status?session_id=' + encodeURIComponent(sessionId), {
                 headers: { Accept: 'application/json' }
             }).then(function (result) {
                 if (result.ok && result.data && handle(result.data)) return;

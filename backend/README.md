@@ -71,19 +71,61 @@ webhook, vystavení voucheru, e-mail s QR kódem, rozhraní obsluhy a vedoucího
 
 Testovací karty: `4242 4242 4242 4242` (úspěch), `4000 0000 0000 0002` (zamítnutí), `4000 0027 6000 3184` (3D Secure); libovolné budoucí datum a CVC.
 
+## Více podniků (Stripe Connect)
+
+Jedna aplikace obslouží více podniků (tenantů). Návrh a rozhodnutí: `../docs/vouchery-vice-klientu-connect.md` (kap. 9).
+
+- **Výchozí podnik S74** (slug `s74`) běží beze změny: původní adresy `/api/public/*`, platby na platformní Stripe účet,
+  nastavení z `application.yml`. Ostatní podniky mají vše v DB a platí **přímo na svůj připojený Stripe účet** (direct charges).
+- **Správce platformy** (`/platform`, role `PLATFORM_ADMIN`): zakládá podniky, ceník, provizi, prvního vedoucího, pozastavení.
+  Zákaznická data nevidí. První účet: `S74_BOOTSTRAP_PLATFORM_ADMIN_USERNAME/PASSWORD`.
+- **Vedoucí podniku** připojí Stripe účet v `/admin/stripe` (hostovaný onboarding Stripe, Accounts v2). Prodej se spustí,
+  až Stripe hlásí `card_payments = active` (návrat z onboardingu, webhook `account.updated`, v2 události, hodinová kontrola).
+- **Prodej:** hostovaná stránka `/v/{slug}` (bez JS a cookies, vzorové podmínky `/v/{slug}/podminky`) nebo vlastní web
+  podniku se skriptem `js/vouchers.js` a `window.S74_VOUCHER_TENANT = '{slug}'` (API `/api/public/t/{slug}/…`, CORS z nastavení podniku).
+- **Webhooky:** `/api/stripe/webhook` (platforma), `/api/stripe/connect-webhook` (události připojených účtů,
+  `STRIPE_CONNECT_WEBHOOK_SECRET`), `/api/stripe/account-events` (v2 thin události účtů, `STRIPE_ACCOUNT_EVENTS_WEBHOOK_SECRET`).
+  Objednávka se vyřídí / refunduje jen z účtu, na kterém vznikla.
+- Zapnutí: `S74_CONNECT_ENABLED=true` (a na platformním Stripe účtu zapnutý Connect).
+
+### Lokálně bez Stripe účtu (atrapa)
+
+`dev/stripe-mock/stripe_mock.py` napodobí Accounts v2, onboarding, Checkout a pošle podepsané webhooky (jen Python 3):
+
+```bash
+STRIPE_WEBHOOK_SECRET=whsec_mock_platform STRIPE_CONNECT_WEBHOOK_SECRET=whsec_mock_connect python3 dev/stripe-mock/stripe_mock.py
+```
+
+Backend pak spusťte s `STRIPE_API_KEY=sk_test_mock`, `STRIPE_WEBHOOK_SECRET=whsec_mock_platform`,
+`STRIPE_CONNECT_WEBHOOK_SECRET=whsec_mock_connect`, `S74_STRIPE_API_BASE=http://127.0.0.1:12111`, `S74_CONNECT_ENABLED=true`
+(a bootstrap účty). `S74_STRIPE_API_BASE` aplikace s `STRIPE_LIVEMODE=true` odmítne.
+
+### Se skutečným Stripe sandboxem
+
+1. Dashboard (sandbox) → **Connect** → zapnout, profil platformy („SaaS platforma, podniky prodávají vlastním zákazníkům“).
+2. Klíč: `sk_test_…`, nebo restricted key s právy navíc *Accounts* (write) a *Account Links* (write).
+3. `stripe listen --forward-to 127.0.0.1:8080/api/stripe/webhook --forward-connect-to 127.0.0.1:8080/api/stripe/connect-webhook`
+   – vypíše jeden `whsec_…`, ten patří do `STRIPE_WEBHOOK_SECRET` i `STRIPE_CONNECT_WEBHOOK_SECRET`.
+4. Kouřový test proti sandboxu (založí jeden testovací připojený účet): klíč do `backend/.env.test` (`STRIPE_API_KEY=sk_test_…`) a
+   `STRIPE_SMOKE=1 mvn test -Dtest=StripeSandboxSmokeTest`.
+
 ## Testy
 
 ```bash
 mvn verify
 ```
 
-Spouští 88 testů na skutečném PostgreSQL 16 v Testcontainers (jeden sdílený kontejner), SMTP přes GreenMail, Stripe přes atrapu
+Spouští 118 testů (+1 volitelný proti sandboxu) na skutečném PostgreSQL 16 v Testcontainers (jeden sdílený kontejner), SMTP přes GreenMail, Stripe přes atrapu
 (`CheckoutGateway`). Webhooky se podepisují v testu HMAC-SHA256 testovacím secretem, takže se ověřuje skutečná kontrola podpisu.
 Pokryto: generátor a normalizace kódu, validace konfigurace při startu, checkout (cena z ceníku, absence `payment_method_types` v parametrech Stripe,
 validace, rate limit, CORS), webhook (podpis, duplicita, `unpaid` → `async_payment_succeeded`, selhání, expirace, nesoulad částky/měny, livemode),
 **souběh webhooku + status endpointu = 1 voucher**, refundy a spory, e-mail (obsah, QR dekódovaný ZXing, retry s backoffem 1/5/30/120 min → `FAILED` + attention, resend),
 přihlášení a QR flow, lockout, CSRF, role, **souběžné uplatnění = právě jedno úspěšné**, vypršení s fixními hodinami, správa vedoucím (důvod a audit u každého zásahu,
 zneplatnění účtu ukončí relace), CSV export.
+Více podniků: izolace dat (obsluha, vedoucí, účty, export, veřejné API), onboarding a stav účtu, přímé platby s provizí,
+směrování webhooků podle účtu včetně podvržené session z cizího účtu, refund jen ze správného účtu, pozastavení podniku,
+přechod S74 na Connect, CORS po podnicích, hostované stránky (bez cookie), e-mail s brandingem podniku a kontrakt skutečného
+stripe-java SDK (v1 formulář i v2 JSON, hlavička `Stripe-Account`) proti lokálnímu HTTP serveru.
 
 Kontrola tajemství: `scripts/check-secrets.sh` (i pro pre-commit hook).
 

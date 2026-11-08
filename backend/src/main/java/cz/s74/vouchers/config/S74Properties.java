@@ -62,7 +62,14 @@ public record S74Properties(
             /** Secret endpointu pro události připojených účtů (Connect); prázdné = endpoint vypnutý. */
             @DefaultValue("") String connectWebhookSecret,
             /** Secret endpointu pro v2 (thin) události účtů; prázdné = endpoint vypnutý. */
-            @DefaultValue("") String accountEventsWebhookSecret) {
+            @DefaultValue("") String accountEventsWebhookSecret,
+            /** Jen pro lokální vývoj: adresa atrapy Stripe API (backend/dev/stripe-mock). Prázdné = api.stripe.com. */
+            @DefaultValue("") String apiBase) {
+
+        @AssertTrue(message = "S74_STRIPE_API_BASE (Stripe mock) must not be used with STRIPE_LIVEMODE=true")
+        public boolean isApiBaseOnlyInTestMode() {
+            return !expectedLivemode || apiBase == null || apiBase.isBlank();
+        }
 
         /** Chrání před záměnou testu a ostrého provozu: live klíč jen s STRIPE_LIVEMODE=true a naopak. */
         @AssertTrue(message = "STRIPE_API_KEY does not match STRIPE_LIVEMODE (live keys need STRIPE_LIVEMODE=true,"

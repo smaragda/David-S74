@@ -61,7 +61,8 @@ public class SecurityConfig {
             @Qualifier("corsConfigurationSource") CorsConfigurationSource cors,
             SessionRegistry sessionRegistry,
             RateLimits limits,
-            AuditService audit)
+            AuditService audit,
+            S74Properties props)
             throws Exception {
         HttpSessionRequestCache requestCache = new HttpSessionRequestCache();
         // Po přihlášení zpět na původní adresu (QR → /staff/v/{kód}); bez parametru "continue".
@@ -102,11 +103,21 @@ public class SecurityConfig {
                 .logout(l -> l.logoutUrl("/logout").logoutSuccessUrl("/login?logout").deleteCookies("S74SESSION"))
                 .requestCache(rc -> rc.requestCache(requestCache))
                 .sessionManagement(s -> s.maximumSessions(3).sessionRegistry(sessionRegistry).expiredUrl("/login?expired"))
-                .headers(h -> h.contentSecurityPolicy(csp -> csp.policyDirectives(CSP))
+                .headers(h -> h.contentSecurityPolicy(csp -> csp.policyDirectives(csp(props)))
                         .referrerPolicy(r -> r.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.NO_REFERRER))
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::deny))
                 .addFilterBefore(new LoginProtectionFilter(limits, audit), UsernamePasswordAuthenticationFilter.class);
         return http.build();
+    }
+
+    /** Při lokální atrapě Stripe (jen test režim) smí formuláře přesměrovat i na ni. */
+    static String csp(S74Properties props) {
+        String mock = props.stripe().apiBase();
+        if (mock == null || mock.isBlank()) {
+            return CSP;
+        }
+        java.net.URI uri = java.net.URI.create(mock.trim());
+        return CSP + " " + uri.getScheme() + "://" + uri.getAuthority();
     }
 
     private AuthenticationSuccessHandler successHandler(

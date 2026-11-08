@@ -11,11 +11,15 @@ public class StripeConfig {
     /** Jedna instance klienta; nikdy ne globální {@code Stripe.apiKey}. */
     @Bean
     public StripeClient stripeClient(S74Properties props) {
-        return StripeClient.builder()
+        StripeClient.StripeClientBuilder builder = StripeClient.builder()
                 .setApiKey(props.stripe().apiKey())
                 .setMaxNetworkRetries(2)
                 .setConnectTimeout(10_000)
-                .setReadTimeout(20_000)
-                .build();
+                .setReadTimeout(20_000);
+        String apiBase = props.stripe().apiBase();
+        if (apiBase != null && !apiBase.isBlank()) {
+            builder.setApiBase(apiBase); // lokální atrapa (jen test režim – hlídá S74Properties)
+        }
+        return builder.build();
     }
 }

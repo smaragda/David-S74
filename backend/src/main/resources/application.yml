@@ -56,6 +56,7 @@ s74:
     checkout-expiry-minutes: 30
     connect-webhook-secret: ${STRIPE_CONNECT_WEBHOOK_SECRET:}            # whsec_… endpointu „Events on connected accounts“
     account-events-webhook-secret: ${STRIPE_ACCOUNT_EVENTS_WEBHOOK_SECRET:}  # whsec_… v2 event destination (thin)
+    api-base: ${S74_STRIPE_API_BASE:}   # jen lokálně: atrapa Stripe (backend/dev/stripe-mock), nikdy v produkci
   connect:
     enabled: ${S74_CONNECT_ENABLED:false}   # zakládání připojených účtů podniků (Stripe Connect, Accounts v2)
     country: ${S74_CONNECT_COUNTRY:CZ}

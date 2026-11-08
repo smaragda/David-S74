@@ -15,6 +15,7 @@
 7. Právo a účetnictví
 8. Spuštění ostrého provozu
 9. Pravidelná údržba a incidenty
+10. Více podniků (Stripe Connect) – volitelné
 
 Pořadí: kap. 1 a 2.1–2.3 **hned** (vývoj bez nich nemůže začít), kap. 3–5 během vývoje, kap. 7 souběžně (trvá nejdéle), kap. 8 na konci.
 
@@ -431,3 +432,24 @@ Klíče vyměň i preventivně, když odejde kdokoliv, kdo k nim měl přístup.
 1. `systemctl status s74-vouchers` a `journalctl -u s74-vouchers -n 200`.
 2. Stripe mezitím webhooky drží a opakuje je až 3 dny – po opravě se vouchery za zaplacené objednávky vystaví samy. Kontrola: Stripe → Webhooks → endpoint → neúspěšné doručení lze poslat znovu ručně.
 3. Obsluha postupuje podle 6.3.
+
+## 10. Více podniků (Stripe Connect) – volitelné
+
+Jen pokud se systém nabízí dalším podnikům (rozhodnutí: `vouchery-vice-klientu-connect.md`). S74 funguje i bez tohoto kroku.
+
+1. **Stripe Dashboard platformy → Connect → Get started.** Typ platformy: software pro podniky, které prodávají vlastním
+   zákazníkům; podniky jsou prodávající a mají plný Dashboard. Vyplnit profil platformy a počkat na schválení (ostrý režim).
+2. **Klíč:** restricted key navíc s právy *Accounts* (write) a *Account Links* (write).
+3. **Webhook pro připojené účty:** Developers → Webhooks → Add destination → *Events on: Connected accounts* →
+   `https://{BACKEND}/api/stripe/connect-webhook`, události `checkout.session.completed`, `checkout.session.async_payment_succeeded`,
+   `checkout.session.async_payment_failed`, `checkout.session.expired`, `charge.refunded`, `charge.dispute.created`,
+   `charge.dispute.closed`, `account.updated`, `account.application.deauthorized`. Secret → `STRIPE_CONNECT_WEBHOOK_SECRET`.
+4. **v2 události účtů (doporučené):** Add destination → *Thin events* → `v2.core.account[configuration.merchant].capability_status_updated`
+   a `v2.core.account[requirements].updated` → `https://{BACKEND}/api/stripe/account-events`. Secret → `STRIPE_ACCOUNT_EVENTS_WEBHOOK_SECRET`.
+5. **Server `.env`:** `S74_CONNECT_ENABLED=true`, oba secrety, jednorázově `S74_BOOTSTRAP_PLATFORM_ADMIN_USERNAME/PASSWORD`
+   (po prvním startu smazat). `docker compose up -d`.
+6. **Nový podnik:** přihlásit se jako správce platformy → `/platform` → Nový podnik → založit vedoucího a předat mu údaje
+   bezpečnou cestou → vedoucí v sekci **Platby (Stripe)** dokončí onboarding → po aktivaci Stripe se prodej spustí sám.
+   Prodejní stránka podniku: `https://{BACKEND}/v/{slug}`.
+7. **S74 na vlastní připojený účet (volitelné):** v detailu podniku S74 „Založit účet a otevřít onboarding“, po aktivaci
+   „Přepnout na přímé platby“. Starší platby zůstávají na platformním účtu (refundy dělat tam).
