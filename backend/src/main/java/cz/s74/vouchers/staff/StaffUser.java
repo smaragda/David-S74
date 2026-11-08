@@ -13,6 +13,10 @@ import java.util.UUID;
 @Table(name = "staff_user")
 public class StaffUser extends BaseEntity {
 
+    /** Podnik, ke kterému účet patří; null jen u správce platformy. */
+    @Column(name = "tenant_id", updatable = false)
+    private UUID tenantId;
+
     @Column(nullable = false, unique = true)
     private String username;
 
@@ -38,8 +42,18 @@ public class StaffUser extends BaseEntity {
     protected StaffUser() {}
 
     public StaffUser(
-            UUID id, String username, String displayName, String passwordHash, StaffRole role, Instant createdAt) {
+            UUID id,
+            UUID tenantId,
+            String username,
+            String displayName,
+            String passwordHash,
+            StaffRole role,
+            Instant createdAt) {
         super(id);
+        if ((role == StaffRole.PLATFORM_ADMIN) != (tenantId == null)) {
+            throw new IllegalArgumentException("Platform admin has no tenant; other roles need one");
+        }
+        this.tenantId = tenantId;
         this.username = username;
         this.displayName = displayName;
         this.passwordHash = passwordHash;
@@ -59,6 +73,10 @@ public class StaffUser extends BaseEntity {
 
     public void setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
+    }
+
+    public UUID getTenantId() {
+        return tenantId;
     }
 
     public String getUsername() {

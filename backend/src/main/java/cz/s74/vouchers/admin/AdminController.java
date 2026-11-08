@@ -91,7 +91,7 @@ public class AdminController {
             @RequestParam(value = "q", required = false) String q,
             @AuthenticationPrincipal StaffPrincipal me,
             Model model) {
-        List<Voucher> found = admin.search(q);
+        List<Voucher> found = admin.search(me.getTenantId(), q);
         LocalDate today = LocalDate.now(clock);
         Instant now = Instant.now(clock);
         List<Row> rows = found.stream()
@@ -112,7 +112,7 @@ public class AdminController {
             RedirectAttributes redirect) {
         VoucherAdminService.Detail d;
         try {
-            d = admin.detail(id);
+            d = admin.detail(me.getTenantId(), id);
         } catch (BusinessRuleException e) {
             redirect.addFlashAttribute("error", e.getMessage());
             return "redirect:/admin/vouchers";
@@ -139,28 +139,28 @@ public class AdminController {
             @RequestParam(value = "email", required = false) String email,
             @AuthenticationPrincipal StaffPrincipal me, HttpServletRequest request, RedirectAttributes redirect) {
         return act(redirect, "/admin/vouchers/" + id, "E-mail s voucherem byl zařazen k odeslání.",
-                () -> admin.resend(me.getId(), id, email, reason, request.getRemoteAddr()));
+                () -> admin.resend(me.getId(), me.getTenantId(), id, email, reason, request.getRemoteAddr()));
     }
 
     @PostMapping("/admin/vouchers/{id}/cancel")
     public String cancel(@PathVariable("id") UUID id, @RequestParam("reason") String reason,
             @AuthenticationPrincipal StaffPrincipal me, HttpServletRequest request, RedirectAttributes redirect) {
         return act(redirect, "/admin/vouchers/" + id, "Voucher byl zrušen.",
-                () -> admin.cancel(me.getId(), id, reason, request.getRemoteAddr()));
+                () -> admin.cancel(me.getId(), me.getTenantId(), id, reason, request.getRemoteAddr()));
     }
 
     @PostMapping("/admin/vouchers/{id}/reactivate")
     public String reactivate(@PathVariable("id") UUID id, @RequestParam("reason") String reason,
             @AuthenticationPrincipal StaffPrincipal me, HttpServletRequest request, RedirectAttributes redirect) {
         return act(redirect, "/admin/vouchers/" + id, "Voucher byl znovu aktivován.",
-                () -> admin.reactivate(me.getId(), id, reason, request.getRemoteAddr()));
+                () -> admin.reactivate(me.getId(), me.getTenantId(), id, reason, request.getRemoteAddr()));
     }
 
     @PostMapping("/admin/vouchers/{id}/revert")
     public String revert(@PathVariable("id") UUID id, @RequestParam("reason") String reason,
             @AuthenticationPrincipal StaffPrincipal me, HttpServletRequest request, RedirectAttributes redirect) {
         return act(redirect, "/admin/vouchers/" + id, "Uplatnění bylo vráceno, voucher je opět platný.",
-                () -> admin.revertRedemption(me.getId(), id, reason, request.getRemoteAddr()));
+                () -> admin.revertRedemption(me.getId(), me.getTenantId(), id, reason, request.getRemoteAddr()));
     }
 
     @PostMapping("/admin/vouchers/{id}/extend")
@@ -175,7 +175,7 @@ public class AdminController {
             return "redirect:/admin/vouchers/" + id;
         }
         return act(redirect, "/admin/vouchers/" + id, "Platnost byla upravena.",
-                () -> admin.extendValidity(me.getId(), id, date, reason, request.getRemoteAddr()));
+                () -> admin.extendValidity(me.getId(), me.getTenantId(), id, date, reason, request.getRemoteAddr()));
     }
 
     // --- k řešení ---------------------------------------------------------------------------
@@ -183,15 +183,15 @@ public class AdminController {
     public record AttentionRow(VoucherOrder order, UUID voucherId, String amount) {}
 
     @GetMapping("/admin/attention")
-    public String attention(Model model) {
-        List<AttentionRow> rows = orders.findByAttentionRequiredTrueOrderByUpdatedAtDesc().stream()
+    public String attention(@AuthenticationPrincipal StaffPrincipal me, Model model) {
+        List<AttentionRow> rows = orders.findByTenantIdAndAttentionRequiredTrueOrderByUpdatedAtDesc(me.getTenantId()).stream()
                 .map(o -> new AttentionRow(o, vouchers.findByOrderId(o.getId()).map(Voucher::getId).orElse(null),
                         formats.money(o.getAmountMinor())))
                 .toList();
-        List<EmailDelivery> failed = deliveries.findFailed();
+        List<EmailDelivery> failed = deliveries.findFailed(me.getTenantId());
         model.addAttribute("rows", rows);
         model.addAttribute("failed", failed);
-        model.addAttribute("events", audit.recent(List.of("RATE_LIMITED", "LOGIN_LOCKED"), 30));
+        model.addAttribute("events", audit.recent(me.getTenantId(), List.of("RATE_LIMITED", "LOGIN_LOCKED"), 30));
         return "admin/attention";
     }
 
@@ -199,14 +199,14 @@ public class AdminController {
     public String resolve(@PathVariable("orderId") UUID orderId, @RequestParam("note") String note,
             @AuthenticationPrincipal StaffPrincipal me, HttpServletRequest request, RedirectAttributes redirect) {
         return act(redirect, "/admin/attention", "Označeno jako vyřešené.",
-                () -> admin.resolveAttention(me.getId(), orderId, note, request.getRemoteAddr()));
+                () -> admin.resolveAttention(me.getId(), me.getTenantId(), orderId, note, request.getRemoteAddr()));
     }
 
     // --- účty obsluhy -----------------------------------------------------------------------
 
     @GetMapping("/admin/staff")
-    public String staff(Model model) {
-        model.addAttribute("accounts", users.findAllByOrderByUsernameAsc());
+    public String staff(@AuthenticationPrincipal StaffPrincipal me, Model model) {
+        model.addAttribute("accounts", users.findAllByTenantIdOrderByUsernameAsc(me.getTenantId()));
         model.addAttribute("minPassword", StaffAccountService.MIN_PASSWORD_LENGTH);
         return "admin/staff";
     }
@@ -223,34 +223,35 @@ public class AdminController {
             return "redirect:/admin/staff";
         }
         return act(redirect, "/admin/staff", "Účet byl založen.",
-                () -> accounts.create(me.getId(), username, displayName, parsed, password, request.getRemoteAddr()));
+                () -> accounts.create(me.getId(), me.getTenantId(), username, displayName, parsed, password, request.getRemoteAddr()));
     }
 
     @PostMapping("/admin/staff/{id}/disable")
     public String disableStaff(@PathVariable("id") UUID id, @AuthenticationPrincipal StaffPrincipal me,
             HttpServletRequest request, RedirectAttributes redirect) {
         return act(redirect, "/admin/staff", "Účet byl zneplatněn a jeho relace ukončeny.",
-                () -> accounts.disable(me.getId(), id, request.getRemoteAddr()));
+                () -> accounts.disable(me.getId(), me.getTenantId(), id, request.getRemoteAddr()));
     }
 
     @PostMapping("/admin/staff/{id}/enable")
     public String enableStaff(@PathVariable("id") UUID id, @AuthenticationPrincipal StaffPrincipal me,
             HttpServletRequest request, RedirectAttributes redirect) {
         return act(redirect, "/admin/staff", "Účet byl obnoven.",
-                () -> accounts.enable(me.getId(), id, request.getRemoteAddr()));
+                () -> accounts.enable(me.getId(), me.getTenantId(), id, request.getRemoteAddr()));
     }
 
     @PostMapping("/admin/staff/{id}/password")
     public String resetPassword(@PathVariable("id") UUID id, @RequestParam("password") String password,
             @AuthenticationPrincipal StaffPrincipal me, HttpServletRequest request, RedirectAttributes redirect) {
         return act(redirect, "/admin/staff", "Heslo bylo změněno a relace účtu ukončeny.",
-                () -> accounts.resetPassword(me.getId(), id, password, request.getRemoteAddr()));
+                () -> accounts.resetPassword(me.getId(), me.getTenantId(), id, password, request.getRemoteAddr()));
     }
 
     // --- export -----------------------------------------------------------------------------
 
     @GetMapping("/admin/export")
-    public String exportPage(@RequestParam(value = "month", required = false) String month, Model model,
+    public String exportPage(@RequestParam(value = "month", required = false) String month,
+            @AuthenticationPrincipal StaffPrincipal me, Model model,
             HttpServletResponse response, RedirectAttributes redirect) throws IOException {
         if (month == null || month.isBlank()) {
             model.addAttribute("defaultMonth", YearMonth.now(clock).toString());
@@ -263,7 +264,7 @@ public class AdminController {
             redirect.addFlashAttribute("error", "Zadejte měsíc ve tvaru RRRR-MM.");
             return "redirect:/admin/export";
         }
-        byte[] csv = export.csv(ym, LocalDate.now(clock));
+        byte[] csv = export.csv(me.getTenantId(), ym, LocalDate.now(clock));
         response.setContentType("text/csv; charset=UTF-8");
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION,
                 ContentDisposition.attachment().filename("vouchery-" + ym + ".csv").build().toString());

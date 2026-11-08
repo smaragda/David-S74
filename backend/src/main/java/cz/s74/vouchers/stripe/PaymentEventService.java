@@ -10,6 +10,7 @@ import cz.s74.vouchers.voucher.VoucherStatus;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
@@ -42,19 +43,23 @@ public class PaymentEventService {
     }
 
     /** {@code checkout.session.expired}: jen PENDING_PAYMENT → EXPIRED. */
-    public boolean sessionExpired(String sessionId) {
-        return changeBySession(sessionId, OrderStatus.PENDING_PAYMENT, OrderStatus.EXPIRED, null);
+    public boolean sessionExpired(String account, String sessionId) {
+        return changeBySession(account, sessionId, OrderStatus.PENDING_PAYMENT, OrderStatus.EXPIRED, null);
     }
 
     /** {@code checkout.session.async_payment_failed}: PENDING / PROCESSING → FAILED. */
-    public boolean asyncPaymentFailed(String sessionId) {
-        boolean a = changeBySession(sessionId, OrderStatus.PAYMENT_PROCESSING, OrderStatus.FAILED, "ASYNC_PAYMENT_FAILED");
-        boolean b = changeBySession(sessionId, OrderStatus.PENDING_PAYMENT, OrderStatus.FAILED, "ASYNC_PAYMENT_FAILED");
+    public boolean asyncPaymentFailed(String account, String sessionId) {
+        boolean a = changeBySession(
+                account, sessionId, OrderStatus.PAYMENT_PROCESSING, OrderStatus.FAILED, "ASYNC_PAYMENT_FAILED");
+        boolean b = changeBySession(
+                account, sessionId, OrderStatus.PENDING_PAYMENT, OrderStatus.FAILED, "ASYNC_PAYMENT_FAILED");
         return a || b;
     }
 
-    private boolean changeBySession(String sessionId, OrderStatus from, OrderStatus to, String auditAction) {
-        Optional<VoucherOrder> found = orders.findByStripeCheckoutSessionId(sessionId);
+    private boolean changeBySession(
+            String account, String sessionId, OrderStatus from, OrderStatus to, String auditAction) {
+        Optional<VoucherOrder> found = orders.findByStripeCheckoutSessionId(sessionId)
+                .filter(o -> Objects.equals(o.getStripeAccountId(), account));
         if (found.isEmpty()) {
             return false;
         }
@@ -73,8 +78,8 @@ public class PaymentEventService {
     }
 
     /** {@code charge.refunded}. @return false, pokud objednávka není naše (ignorovat). */
-    public boolean chargeRefunded(String paymentIntentId, long amountRefundedMinor) {
-        Optional<UUID> orderId = resolveOrder(paymentIntentId);
+    public boolean chargeRefunded(String account, String paymentIntentId, long amountRefundedMinor) {
+        Optional<UUID> orderId = resolveOrder(account, paymentIntentId);
         if (orderId.isEmpty()) {
             return false;
         }
@@ -106,8 +111,8 @@ public class PaymentEventService {
     }
 
     /** {@code charge.dispute.created}. */
-    public boolean disputeCreated(String paymentIntentId) {
-        Optional<UUID> orderId = resolveOrder(paymentIntentId);
+    public boolean disputeCreated(String account, String paymentIntentId) {
+        Optional<UUID> orderId = resolveOrder(account, paymentIntentId);
         if (orderId.isEmpty()) {
             return false;
         }
@@ -128,8 +133,8 @@ public class PaymentEventService {
     }
 
     /** {@code charge.dispute.closed}: won → zpět PAID, lost → ponechat; vždy k řešení vedoucím. */
-    public boolean disputeClosed(String paymentIntentId, String disputeStatus) {
-        Optional<UUID> orderId = resolveOrder(paymentIntentId);
+    public boolean disputeClosed(String account, String paymentIntentId, String disputeStatus) {
+        Optional<UUID> orderId = resolveOrder(account, paymentIntentId);
         if (orderId.isEmpty()) {
             return false;
         }
@@ -152,18 +157,21 @@ public class PaymentEventService {
         return true;
     }
 
-    private Optional<UUID> resolveOrder(String paymentIntentId) {
+    /** Objednávka k PaymentIntentu – jen pokud vznikla na stejném Stripe účtu, ze kterého událost přišla. */
+    private Optional<UUID> resolveOrder(String account, String paymentIntentId) {
         if (paymentIntentId == null || paymentIntentId.isBlank()) {
             return Optional.empty();
         }
         Optional<VoucherOrder> byPi = orders.findByStripePaymentIntentId(paymentIntentId);
         if (byPi.isPresent()) {
-            return byPi.map(VoucherOrder::getId);
+            return byPi.filter(o -> Objects.equals(o.getStripeAccountId(), account)).map(VoucherOrder::getId);
         }
         // Fallback: PI ještě nebyl uložen k objednávce – dohledat přes metadata PaymentIntentu.
-        return gateway.orderIdOfPaymentIntent(paymentIntentId)
+        return gateway.orderIdOfPaymentIntent(account, paymentIntentId)
                 .map(FulfillmentService::parse)
-                .filter(id -> orders.existsById(id));
+                .flatMap(orders::findById)
+                .filter(o -> Objects.equals(o.getStripeAccountId(), account))
+                .map(VoucherOrder::getId);
     }
 
     private VoucherOrder lockPaidOrder(UUID orderId, String paymentIntentId) {

@@ -12,7 +12,12 @@ import org.springframework.data.repository.query.Param;
 
 public interface VoucherRepository extends JpaRepository<Voucher, UUID> {
 
+    /** Globální kontrola unikátnosti kódu (při vystavení). Pro vyhledávání obsluhou vždy {@link #findByTenantIdAndCode}. */
     Optional<Voucher> findByCode(String code);
+
+    Optional<Voucher> findByTenantIdAndCode(UUID tenantId, String code);
+
+    Optional<Voucher> findByIdAndTenantId(UUID id, UUID tenantId);
 
     Optional<Voucher> findByOrderId(UUID orderId);
 
@@ -34,14 +39,15 @@ public interface VoucherRepository extends JpaRepository<Voucher, UUID> {
             @Param("today") LocalDate today);
 
     @Query(
-            "select v from Voucher v where v.code = :code or v.orderId in"
-                    + " (select o.id from VoucherOrder o where lower(o.customerEmail) = :email)")
-    List<Voucher> searchByCodeOrEmail(@Param("code") String code, @Param("email") String email);
+            "select v from Voucher v where v.tenantId = :tenantId and v.orderId in"
+                    + " (select o.id from VoucherOrder o where o.tenantId = :tenantId and lower(o.customerEmail) = :email)")
+    List<Voucher> searchByEmail(@Param("tenantId") UUID tenantId, @Param("email") String email);
 
-    @Query("select v from Voucher v where v.orderId in (select o.id from VoucherOrder o where"
-            + " upper(substring(cast(o.id as string), 1, 8)) = :ref)")
-    List<Voucher> searchByOrderRef(@Param("ref") String ref);
+    @Query("select v from Voucher v where v.tenantId = :tenantId and v.orderId in (select o.id from VoucherOrder o"
+            + " where o.tenantId = :tenantId and upper(substring(cast(o.id as string), 1, 8)) = :ref)")
+    List<Voucher> searchByOrderRef(@Param("tenantId") UUID tenantId, @Param("ref") String ref);
 
-    @Query("select v from Voucher v where v.status = 'ACTIVE' and v.validUntil >= :from and v.validUntil <= :to")
-    List<Voucher> findExpiringBetween(@Param("from") LocalDate from, @Param("to") LocalDate to);
+    long countByTenantId(UUID tenantId);
+
+    long countByTenantIdAndStatus(UUID tenantId, VoucherStatus status);
 }

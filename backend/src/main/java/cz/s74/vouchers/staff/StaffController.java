@@ -64,7 +64,9 @@ public class StaffController {
         if (authentication != null
                 && authentication.isAuthenticated()
                 && !(authentication instanceof AnonymousAuthenticationToken)) {
-            return "redirect:/staff";
+            return authentication.getAuthorities().stream().anyMatch(a -> "ROLE_PLATFORM_ADMIN".equals(a.getAuthority()))
+                    ? "redirect:/platform"
+                    : "redirect:/staff";
         }
         return "login";
     }
@@ -127,7 +129,7 @@ public class StaffController {
             HttpServletRequest request,
             RedirectAttributes redirect) {
         Optional<String> code = VoucherCodes.normalize(input);
-        Optional<Voucher> voucher = code.flatMap(vouchers::findByCode);
+        Optional<Voucher> voucher = code.flatMap(c -> vouchers.findByTenantIdAndCode(staff.getTenantId(), c));
         if (voucher.isEmpty()) {
             redirect.addFlashAttribute("error", MSG_NOT_FOUND);
             return "redirect:/staff";
@@ -149,7 +151,8 @@ public class StaffController {
             audit.staff(staff.getId(), "RATE_LIMITED", null, null, request.getRemoteAddr(), Map.of("scope", "lookup"));
             return Optional.empty();
         }
-        Optional<Voucher> voucher = vouchers.findByCode(code);
+        // Jen vouchery vlastního podniku; kód jiného podniku se chová jako neexistující (a počítá se do limitu).
+        Optional<Voucher> voucher = vouchers.findByTenantIdAndCode(staff.getTenantId(), code);
         if (voucher.isEmpty()) {
             limits.lookupMissesPerAccount.hit(staff.getUsername());
             limits.lookupMissesPerIp.hit(request.getRemoteAddr());

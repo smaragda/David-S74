@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="cs" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{hosted/layout :: head('Objednávka')}"></head>
+<body class="page-shell page-shell--top">
+<p th:replace="~{hosted/layout :: testbanner}"></p>
+<main class="layout">
+    <section class="panel panel--stack" th:switch="${result.status}">
+        <p class="eyebrow" th:text="${tenant.displayName}">Podnik</p>
+
+        <div th:case="'PAID'">
+            <h1 class="h1--compact">Děkujeme, platba proběhla</h1>
+            <p class="lead lead--compact">
+                Voucher jsme poslali na <strong th:text="${result.emailMasked}">j***@example.com</strong>.
+                Číslo objednávky: <strong class="mono" th:text="${result.orderRef}">7F3A9C21</strong>.
+            </p>
+            <p class="flash flash--error" th:if="${result.emailStatus == 'FAILED'}">
+                E-mail se nepodařilo doručit. Ozvěte se nám prosím s číslem objednávky.
+            </p>
+            <div class="voucher-sheet hosted-voucher" th:if="${result.voucher}">
+                <p class="eyebrow">Dárkový voucher</p>
+                <p class="voucher-value" th:text="${@formats.money(result.voucher.amountCzk * 100)}">1 000 Kč</p>
+                <div class="qr-card"><img th:src="${result.voucher.qrDataUri}" width="240" height="240" alt="QR kód voucheru"></div>
+                <p class="code-chip mono" th:text="${result.voucher.code}">ABCD-1234-EFGH</p>
+                <p>Platí do <strong th:text="${validUntil}">1. 1. 2027</strong> (včetně).</p>
+                <p class="notice">Voucher je na doručitele – chraňte kód jako hotovost. Tuto stránku si můžete vytisknout.</p>
+            </div>
+        </div>
+
+        <div th:case="'PENDING'">
+            <h1 class="h1--compact">Ověřujeme platbu…</h1>
+            <p class="lead lead--compact">Stránka se sama obnoví. Voucher dorazí e-mailem, i když stránku zavřete.</p>
+        </div>
+        <div th:case="'PROCESSING'">
+            <h1 class="h1--compact">Platba se zpracovává</h1>
+            <p class="lead lead--compact">U některých platebních metod to trvá déle. Voucher pošleme e-mailem, jakmile platba dorazí.</p>
+        </div>
+        <div th:case="'FAILED'">
+            <h1 class="h1--compact">Platba se nezdařila</h1>
+            <p class="lead lead--compact">Peníze nebyly strženy. <a th:href="@{/v/{slug}(slug=${tenant.slug})}">Zkusit znovu</a></p>
+        </div>
+        <div th:case="'EXPIRED'">
+            <h1 class="h1--compact">Platba vypršela</h1>
+            <p class="lead lead--compact"><a th:href="@{/v/{slug}(slug=${tenant.slug})}">Začít znovu</a></p>
+        </div>
+        <div th:case="'RATE_LIMITED'">
+            <h1 class="h1--compact">Příliš mnoho dotazů</h1>
+            <p class="lead lead--compact">Zkuste stránku obnovit za chvíli. Voucher dorazí e-mailem.</p>
+        </div>
+        <div th:case="*">
+            <h1 class="h1--compact">Objednávku jsme nenašli</h1>
+            <p class="lead lead--compact">Pokud jste platili, voucher dorazí e-mailem.
+                <a th:href="@{/v/{slug}(slug=${tenant.slug})}">Zpět na nabídku</a></p>
+        </div>
+    </section>
+</main>
+<footer th:replace="~{hosted/layout :: footer}"></footer>
+</body>
+</html>

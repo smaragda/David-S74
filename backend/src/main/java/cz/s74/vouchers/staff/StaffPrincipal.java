@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.User;
 public class StaffPrincipal extends User {
 
     private final UUID id;
+    private final UUID tenantId;
     private final String displayName;
     private final StaffRole role;
 
@@ -22,12 +23,18 @@ public class StaffPrincipal extends User {
                 true,
                 List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name())));
         this.id = user.getId();
+        this.tenantId = user.getTenantId();
         this.displayName = user.getDisplayName();
         this.role = user.getRole();
     }
 
     public UUID getId() {
         return id;
+    }
+
+    /** Podnik přihlášeného uživatele (null u správce platformy). */
+    public UUID getTenantId() {
+        return tenantId;
     }
 
     public String getDisplayName() {
@@ -40,5 +47,9 @@ public class StaffPrincipal extends User {
 
     public boolean isManager() {
         return role == StaffRole.MANAGER;
+    }
+
+    public boolean isPlatformAdmin() {
+        return role == StaffRole.PLATFORM_ADMIN;
     }
 }

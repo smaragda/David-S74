@@ -1,12 +1,12 @@
 package cz.s74.vouchers.stripe;
 
 import cz.s74.vouchers.audit.AuditService;
-import cz.s74.vouchers.config.S74Properties;
 import cz.s74.vouchers.email.EmailDelivery;
 import cz.s74.vouchers.email.EmailDeliveryRepository;
 import cz.s74.vouchers.order.OrderRepository;
 import cz.s74.vouchers.order.OrderStatus;
 import cz.s74.vouchers.order.VoucherOrder;
+import cz.s74.vouchers.tenant.TenantService;
 import cz.s74.vouchers.voucher.Voucher;
 import cz.s74.vouchers.voucher.VoucherCodeGenerator;
 import cz.s74.vouchers.voucher.VoucherRepository;
@@ -14,6 +14,7 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -55,7 +56,7 @@ public class FulfillmentService {
     private final AuditService audit;
     private final TransactionTemplate tx;
     private final Clock clock;
-    private final S74Properties props;
+    private final TenantService tenants;
 
     public FulfillmentService(
             CheckoutGateway gateway,
@@ -66,7 +67,7 @@ public class FulfillmentService {
             AuditService audit,
             TransactionTemplate tx,
             Clock clock,
-            S74Properties props) {
+            TenantService tenants) {
         this.gateway = gateway;
         this.orders = orders;
         this.vouchers = vouchers;
@@ -75,11 +76,15 @@ public class FulfillmentService {
         this.audit = audit;
         this.tx = tx;
         this.clock = clock;
-        this.props = props;
+        this.tenants = tenants;
     }
 
-    public Outcome fulfill(String sessionId) {
-        Optional<CheckoutGateway.SessionSnapshot> snapshot = gateway.retrieveSession(sessionId);
+    /**
+     * @param stripeAccountId účet, ze kterého session pochází (připojený účet podniku; null = platforma).
+     *     Session se čte z tohoto účtu a musí patřit objednávce založené na stejném účtu.
+     */
+    public Outcome fulfill(String stripeAccountId, String sessionId) {
+        Optional<CheckoutGateway.SessionSnapshot> snapshot = gateway.retrieveSession(stripeAccountId, sessionId);
         if (snapshot.isEmpty()) {
             return Outcome.IGNORED;
         }
@@ -88,12 +93,26 @@ public class FulfillmentService {
         if (orderId == null) {
             return Outcome.IGNORED; // cizí session
         }
-        return tx.execute(status -> apply(orderId, session));
+        return tx.execute(status -> apply(orderId, stripeAccountId, session));
     }
 
-    private Outcome apply(UUID orderId, CheckoutGateway.SessionSnapshot session) {
-        VoucherOrder order = orders.lockById(orderId)
-                .orElseThrow(() -> new IllegalStateException("Order " + orderId + " for Stripe session not found"));
+    private Outcome apply(UUID orderId, String stripeAccountId, CheckoutGateway.SessionSnapshot session) {
+        Optional<VoucherOrder> locked = orders.lockById(orderId);
+        if (locked.isEmpty()) {
+            if (stripeAccountId != null) {
+                // Připojený účet může mít i vlastní (ne naše) Checkout Sessions s podobnými metadaty.
+                log.warn("Session {} on account {} references unknown order {}", session.id(), stripeAccountId, orderId);
+                return Outcome.IGNORED;
+            }
+            throw new IllegalStateException("Order " + orderId + " for Stripe session not found");
+        }
+        VoucherOrder order = locked.get();
+        if (!Objects.equals(order.getStripeAccountId(), stripeAccountId)) {
+            // Session z jiného účtu, než na kterém objednávka vznikla – nikdy nevystavit voucher cizího podniku.
+            log.error("Order {} belongs to account {} but session {} came from account {}",
+                    order.orderRef(), order.getStripeAccountId(), session.id(), stripeAccountId);
+            return Outcome.IGNORED;
+        }
         Instant now = Instant.now(clock);
 
         if (TERMINAL_PAID.contains(order.getStatus())) {
@@ -117,14 +136,16 @@ public class FulfillmentService {
             order.changeStatus(OrderStatus.PAID, now);
             orders.save(order);
 
+            int validityMonths = tenants.settings(order.getTenantId()).validityMonths();
             Voucher voucher = vouchers.saveAndFlush(new Voucher(
                     UUID.randomUUID(),
+                    order.getTenantId(),
                     order.getId(),
                     uniqueCode(),
                     order.getAmountMinor(),
                     order.getCurrency(),
                     now,
-                    LocalDate.now(clock).plusMonths(props.voucher().validityMonths())));
+                    LocalDate.now(clock).plusMonths(validityMonths)));
             deliveries.save(new EmailDelivery(
                     UUID.randomUUID(), voucher.getId(), EmailDelivery.Kind.ISSUED, order.getCustomerEmail(), null, now));
             audit.stripe("PAYMENT_CONFIRMED", voucher.getId(), order.getId(), Map.of("sessionId", session.id()));

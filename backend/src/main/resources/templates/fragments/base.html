@@ -4,18 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
-    <title th:text="${title} + ' | S74 vouchery'">S74 vouchery</title>
+    <title th:text="${title} + ' | ' + (${tenantName} ?: 'Vouchery')">Vouchery</title>
     <link rel="stylesheet" th:href="@{/fonts/fonts.css}">
     <link rel="stylesheet" th:href="@{/app.css}">
     <link rel="stylesheet" th:href="@{/staff-ui.css}">
 </head>
 <body>
 <header th:fragment="topbar(user)" class="topbar">
-    <a class="topbar__brand" th:href="@{/staff}">S74 vouchery</a>
+    <a class="topbar__brand" th:href="${user.platformAdmin} ? @{/platform} : @{/staff}"
+       th:text="${user.platformAdmin} ? 'Platforma voucherů' : (${tenantName} ?: 'Vouchery')">Vouchery</a>
     <nav class="topbar__nav">
         <span class="topbar__user" th:text="${user.displayName}">Jméno</span>
-        <a class="small-button" th:href="@{/staff}">Ověřit voucher</a>
+        <a class="small-button" th:unless="${user.platformAdmin}" th:href="@{/staff}">Ověřit voucher</a>
         <a class="small-button" th:if="${user.manager}" th:href="@{/admin/vouchers}">Vedoucí</a>
+        <a class="small-button" th:if="${user.platformAdmin}" th:href="@{/platform}">Podniky</a>
         <form th:action="@{/logout}" method="post">
             <button type="submit" class="small-button">Odhlásit se</button>
         </form>
@@ -26,6 +28,7 @@
     <a class="small-button" th:href="@{/admin/attention}">K řešení</a>
     <a class="small-button" th:href="@{/admin/staff}">Účty obsluhy</a>
     <a class="small-button" th:href="@{/admin/export}">Export CSV</a>
+    <a class="small-button" th:href="@{/admin/stripe}">Platby (Stripe)</a>
 </nav>
 </body>
 </html>

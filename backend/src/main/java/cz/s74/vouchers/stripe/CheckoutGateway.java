@@ -4,26 +4,34 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
-/** Hranice vůči Stripe API – v testech nahrazena atrapou. */
+/**
+ * Hranice vůči Stripe API pro platby – v testech nahrazena atrapou.
+ * {@code stripeAccountId} = připojený účet podniku (přímá platba přes hlavičku {@code Stripe-Account}),
+ * {@code null} = platformní účet.
+ */
 public interface CheckoutGateway {
 
     CreatedSession createSession(SessionRequest request);
 
     /** Aktuální stav Checkout Session ze Stripe (ne z payloadu webhooku). Prázdné, pokud neexistuje. */
-    Optional<SessionSnapshot> retrieveSession(String sessionId);
+    Optional<SessionSnapshot> retrieveSession(String stripeAccountId, String sessionId);
 
     /** {@code metadata.order_id} PaymentIntentu (fallback pro refund / spor). */
-    Optional<String> orderIdOfPaymentIntent(String paymentIntentId);
+    Optional<String> orderIdOfPaymentIntent(String stripeAccountId, String paymentIntentId);
 
     record SessionRequest(
             UUID orderId,
             String orderRef,
+            UUID tenantId,
+            String stripeAccountId,
+            long applicationFeeMinor,
             String offerId,
             long amountMinor,
             String currency,
             String customerEmail,
             String productName,
             String productDescription,
+            String paymentDescription,
             String successUrl,
             String cancelUrl,
             Instant expiresAt) {}

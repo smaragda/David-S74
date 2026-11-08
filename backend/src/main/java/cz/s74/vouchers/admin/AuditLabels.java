@@ -32,7 +32,18 @@ public class AuditLabels {
             Map.entry("LOGIN_FAILED", "Neúspěšné přihlášení"),
             Map.entry("LOGIN_LOCKED", "Přihlášení zablokováno"),
             Map.entry("LOOKUP_NOT_FOUND", "Kód nenalezen"),
-            Map.entry("RATE_LIMITED", "Překročen limit pokusů"));
+            Map.entry("RATE_LIMITED", "Překročen limit pokusů"),
+            Map.entry("TENANT_CREATED", "Podnik založen"),
+            Map.entry("TENANT_PROFILE_UPDATED", "Profil podniku upraven"),
+            Map.entry("TENANT_SALES_UPDATED", "Nastavení prodeje upraveno"),
+            Map.entry("TENANT_OFFERS_UPDATED", "Ceník upraven"),
+            Map.entry("TENANT_FEES_UPDATED", "Provize platformy upravena"),
+            Map.entry("TENANT_SUSPENDED", "Prodej pozastaven"),
+            Map.entry("TENANT_ACTIVATED", "Prodej obnoven"),
+            Map.entry("TENANT_PAYMENT_MODE_CHANGED", "Změna režimu plateb"),
+            Map.entry("STRIPE_ACCOUNT_CREATED", "Stripe účet založen"),
+            Map.entry("STRIPE_ONBOARDING_STARTED", "Otevřen onboarding Stripe"),
+            Map.entry("STRIPE_STATUS_CHANGED", "Změna stavu Stripe účtu"));
 
     public String label(String action) {
         return LABELS.getOrDefault(action, action);

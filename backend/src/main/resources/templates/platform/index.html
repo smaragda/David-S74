@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="cs" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: head('Podniky')}"></head>
+<body class="page-shell page-shell--top">
+<header th:replace="~{fragments/base :: topbar(${user})}"></header>
+<main>
+    <section class="panel panel--admin">
+        <p class="eyebrow">Správa platformy</p>
+        <h1 class="h1--compact">Podniky</h1>
+        <p class="flash flash--error" th:if="${error}" th:text="${error}"></p>
+        <p class="flash flash--info" th:if="${info}" th:text="${info}"></p>
+        <p class="flash flash--info" th:unless="${connectEnabled}">Stripe Connect je vypnutý (S74_CONNECT_ENABLED=false) – nové podniky zatím nemohou připojit účet.</p>
+
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead><tr><th>Podnik</th><th>Stav</th><th>Platby</th><th>Prodej</th><th>Zaplacené objednávky</th><th>Aktivní vouchery</th></tr></thead>
+                <tbody>
+                <tr th:each="r : ${rows}">
+                    <td><a th:href="@{/platform/tenants/{id}(id=${r.tenant.id})}" th:text="${r.tenant.displayName}">Podnik</a>
+                        <div class="mono microcopy" th:text="${r.tenant.slug}">slug</div></td>
+                    <td><span class="badge" th:classappend="${r.tenant.status.name() == 'ACTIVE'} ? 'badge--ok' : 'badge--bad'"
+                              th:text="${r.tenant.status.name() == 'ACTIVE'} ? 'Aktivní' : 'Pozastaven'">Aktivní</span></td>
+                    <td th:text="${r.tenant.paymentMode.name() == 'CONNECT'} ? ('Connect: ' + (${r.tenant.stripeCardPayments} ?: 'nepřipojeno')) : 'Platformní účet'">Connect</td>
+                    <td><span class="badge" th:classappend="${r.settings.salesEnabled} ? 'badge--ok' : 'badge--warn'"
+                              th:text="${r.settings.salesEnabled} ? 'Běží' : 'Neběží'">Běží</span></td>
+                    <td th:text="${r.paidOrders}">0</td>
+                    <td th:text="${r.activeVouchers}">0</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 class="section-gap">Nový podnik</h2>
+        <form class="stacked-form" th:action="@{/platform/tenants}" method="post">
+            <label>Adresa (slug) – hostovaná stránka bude /v/<em>slug</em>
+                <input type="text" name="slug" pattern="[a-z0-9-]{1,40}" autocapitalize="none" required>
+            </label>
+            <label>Název podniku (jak ho uvidí zákazník)
+                <input type="text" name="displayName" maxlength="120" required>
+            </label>
+            <label>Obchodní firma (prodávající)
+                <input type="text" name="legalName" maxlength="200">
+            </label>
+            <label>IČO
+                <input type="text" name="companyId" inputmode="numeric" maxlength="20">
+            </label>
+            <label>Adresa provozovny
+                <input type="text" name="address" maxlength="255">
+            </label>
+            <label>Kontaktní e-mail podniku
+                <input type="email" name="contactEmail" maxlength="254" required>
+            </label>
+            <label>Hodnoty voucherů v Kč (čárkou)
+                <input type="text" name="offers" value="500, 1000, 2000" required>
+            </label>
+            <button type="submit" class="primary-button">Založit podnik</button>
+        </form>
+    </section>
+</main>
+</body>
+</html>

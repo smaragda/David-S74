@@ -41,10 +41,30 @@ public class AuditService {
             UUID orderId,
             String ip,
             Map<String, ?> details) {
+        record(null, actor, actorId, action, voucherId, orderId, ip, details);
+    }
+
+    /**
+     * Zápis s podnikem. Není-li {@code tenantId} zadán, odvodí se z objednávky, voucheru nebo účtu aktéra
+     * (události správce platformy bez vazby na podnik mají {@code tenant_id = null}).
+     */
+    public void record(
+            UUID tenantId,
+            Actor actor,
+            UUID actorId,
+            String action,
+            UUID voucherId,
+            UUID orderId,
+            String ip,
+            Map<String, ?> details) {
         String detailsJson = details == null || details.isEmpty() ? null : json.writeValueAsString(details);
         jdbc.update(
-                "insert into audit_log (occurred_at, actor_type, actor_id, action, voucher_id, order_id, ip, details)"
-                        + " values (?, ?, ?, ?, ?, ?, cast(cast(? as varchar) as inet), cast(cast(? as varchar) as jsonb))",
+                "insert into audit_log (occurred_at, actor_type, actor_id, action, voucher_id, order_id, ip, details,"
+                        + " tenant_id) values (?, ?, ?, ?, ?, ?, cast(cast(? as varchar) as inet),"
+                        + " cast(cast(? as varchar) as jsonb), coalesce(cast(? as uuid),"
+                        + " (select o.tenant_id from voucher_order o where o.id = cast(? as uuid)),"
+                        + " (select v.tenant_id from voucher v where v.id = cast(? as uuid)),"
+                        + " (select s.tenant_id from staff_user s where s.id = cast(? as uuid))))",
                 Timestamp.from(Instant.now(clock)),
                 actor.name(),
                 actorId,
@@ -52,7 +72,29 @@ public class AuditService {
                 voucherId,
                 orderId,
                 ip,
-                detailsJson);
+                detailsJson,
+                tenantId,
+                orderId,
+                voucherId,
+                actorId);
+    }
+
+    /** Podnik účtu podle uživatelského jména (pro události přihlášení); null pro neznámé jméno nebo správce platformy. */
+    public UUID tenantOfUsername(String username) {
+        if (username == null || username.isBlank()) {
+            return null;
+        }
+        return jdbc.query("select tenant_id from staff_user where lower(username) = lower(?)",
+                        (rs, i) -> (UUID) rs.getObject(1), username)
+                .stream()
+                .filter(java.util.Objects::nonNull)
+                .findFirst()
+                .orElse(null);
+    }
+
+    /** Událost podniku bez vazby na voucher (správa podniku, Stripe účet). */
+    public void tenant(UUID tenantId, Actor actor, UUID actorId, String action, String ip, Map<String, ?> details) {
+        record(tenantId, actor, actorId, action, null, null, ip, details);
     }
 
     public void system(String action, UUID voucherId, UUID orderId, Map<String, ?> details) {
@@ -83,18 +125,35 @@ public class AuditService {
                 orderId);
     }
 
-    /** Poslední události daných typů (bezpečnostní události pro vedoucího). */
-    public List<AuditEntry> recent(List<String> actions, int limit) {
+    /** Poslední události daných typů jednoho podniku (bezpečnostní události pro vedoucího). */
+    public List<AuditEntry> recent(UUID tenantId, List<String> actions, int limit) {
         String in = String.join(",", actions.stream().map(a -> "?").toList());
-        List<Object> args = new java.util.ArrayList<>(actions);
+        List<Object> args = new java.util.ArrayList<>();
+        args.add(tenantId);
+        args.addAll(actions);
         args.add(limit);
         return jdbc.query(
                 "select a.occurred_at, a.actor_type, s.display_name, a.action, cast(a.details as varchar)"
                         + " from audit_log a left join staff_user s on s.id = a.actor_id"
-                        + " where a.action in (" + in + ") order by a.occurred_at desc, a.id desc limit ?",
+                        + " where a.tenant_id = ? and a.action in (" + in + ")"
+                        + " order by a.occurred_at desc, a.id desc limit ?",
                 (rs, i) -> new AuditEntry(
                         rs.getTimestamp(1).toInstant(), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5)),
                 args.toArray());
+    }
+
+    /** Události správy podniku (pro správce platformy – bez zákaznických dat). */
+    public List<AuditEntry> forTenantAdministration(UUID tenantId, int limit) {
+        return jdbc.query(
+                "select a.occurred_at, a.actor_type, s.display_name, a.action, cast(a.details as varchar)"
+                        + " from audit_log a left join staff_user s on s.id = a.actor_id"
+                        + " where a.tenant_id = ? and a.voucher_id is null and a.order_id is null"
+                        + " and (a.action like 'TENANT_%' or a.action like 'STRIPE_%')"
+                        + " order by a.occurred_at desc, a.id desc limit ?",
+                (rs, i) -> new AuditEntry(
+                        rs.getTimestamp(1).toInstant(), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5)),
+                tenantId,
+                limit);
     }
 
     public record AuditEntry(Instant at, String actorType, String actorName, String action, String details) {}

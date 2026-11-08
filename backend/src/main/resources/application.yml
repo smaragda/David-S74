@@ -54,6 +54,11 @@ s74:
     webhook-secret: ${STRIPE_WEBHOOK_SECRET:}
     expected-livemode: ${STRIPE_LIVEMODE:false}
     checkout-expiry-minutes: 30
+    connect-webhook-secret: ${STRIPE_CONNECT_WEBHOOK_SECRET:}            # whsec_… endpointu „Events on connected accounts“
+    account-events-webhook-secret: ${STRIPE_ACCOUNT_EVENTS_WEBHOOK_SECRET:}  # whsec_… v2 event destination (thin)
+  connect:
+    enabled: ${S74_CONNECT_ENABLED:false}   # zakládání připojených účtů podniků (Stripe Connect, Accounts v2)
+    country: ${S74_CONNECT_COUNTRY:CZ}
   mail:
     from: ${S74_MAIL_FROM:S74 wine&café <vouchery@s74.cz>}
     reply-to: ${S74_MAIL_REPLY_TO:s74winecafe@seznam.cz}
@@ -61,6 +66,9 @@ s74:
   bootstrap-admin:
     username: ${S74_BOOTSTRAP_ADMIN_USERNAME:}
     password: ${S74_BOOTSTRAP_ADMIN_PASSWORD:}
+  bootstrap-platform-admin:
+    username: ${S74_BOOTSTRAP_PLATFORM_ADMIN_USERNAME:}
+    password: ${S74_BOOTSTRAP_PLATFORM_ADMIN_PASSWORD:}
 
 server:
   port: ${SERVER_PORT:8080}

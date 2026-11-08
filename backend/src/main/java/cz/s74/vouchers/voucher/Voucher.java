@@ -17,6 +17,9 @@ import org.hibernate.type.SqlTypes;
 @Table(name = "voucher")
 public class Voucher extends BaseEntity {
 
+    @Column(name = "tenant_id", nullable = false, updatable = false)
+    private UUID tenantId;
+
     @Column(name = "order_id", nullable = false, unique = true)
     private UUID orderId;
 
@@ -65,6 +68,7 @@ public class Voucher extends BaseEntity {
 
     public Voucher(
             UUID id,
+            UUID tenantId,
             UUID orderId,
             String code,
             long amountMinor,
@@ -72,6 +76,7 @@ public class Voucher extends BaseEntity {
             Instant issuedAt,
             LocalDate validUntil) {
         super(id);
+        this.tenantId = tenantId;
         this.orderId = orderId;
         this.code = code;
         this.amountMinor = amountMinor;
@@ -112,6 +117,10 @@ public class Voucher extends BaseEntity {
 
     public void extendTo(LocalDate newValidUntil) {
         this.validUntil = newValidUntil;
+    }
+
+    public UUID getTenantId() {
+        return tenantId;
     }
 
     public UUID getOrderId() {
