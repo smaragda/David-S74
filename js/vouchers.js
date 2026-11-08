@@ -379,7 +379,30 @@
         });
     }
 
+    // --- upozornění na testovací režim ---------------------------------------------------------
+    // Backend vrací testMode=true, dokud platby jdou přes Stripe test/sandbox (STRIPE_LIVEMODE=false).
+    // S ostrými klíči příznak zmizí a pruh se nezobrazí – není potřeba nic ručně přepínat.
+
+    function initTestBanner() {
+        loadOffers().then(function (data) {
+            if (data.testMode !== true) return;
+
+            const banner = document.createElement('div');
+            banner.className = 'test-banner';
+            banner.setAttribute('role', 'note');
+            const strong = document.createElement('strong');
+            strong.textContent = 'Testovací režim';
+            banner.append(strong, ' – nákup je jen zkouška, nic se neúčtuje a voucher nemá žádnou hodnotu. Testovací karta: 4242 4242 4242 4242, libovolná budoucí platnost a CVC.');
+            document.body.prepend(banner);
+
+            const robots = document.querySelector('meta[name="robots"]') || document.head.appendChild(document.createElement('meta'));
+            robots.setAttribute('name', 'robots');
+            robots.setAttribute('content', 'noindex, nofollow');
+        }).catch(function () { /* bez backendu se nic neprodává, upozornění není potřeba */ });
+    }
+
     const page = document.body.dataset.page;
+    if (page === 'offers' || page === 'checkout' || page === 'order-status') initTestBanner();
     if (page === 'offers') initOffers();
     if (page === 'checkout') initCheckout();
     if (page === 'order-status') initOrderStatus();

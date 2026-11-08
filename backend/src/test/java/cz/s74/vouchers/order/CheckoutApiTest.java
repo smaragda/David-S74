@@ -35,6 +35,7 @@ class CheckoutApiTest extends AbstractIT {
                 .andExpect(jsonPath("$.validityMonths").value(12))
                 .andExpect(jsonPath("$.termsVersion").value("2026-11"))
                 .andExpect(jsonPath("$.termsUrl").value("http://localhost:8000/obchodni-podminky-vouchery.html"))
+                .andExpect(jsonPath("$.testMode").value(true))
                 .andExpect(jsonPath("$.offers.length()").value(3))
                 .andExpect(jsonPath("$.offers[1].id").value("CZK_1000"))
                 .andExpect(jsonPath("$.offers[1].amountCzk").value(1000))

@@ -1159,6 +1159,26 @@ h3 {
     border: 0;
 }
 
+.test-banner {
+    padding: 0.7rem var(--gutter);
+    background: var(--color-wine);
+    color: var(--color-paper-light);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    text-align: center;
+}
+
+.test-banner strong {
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+@media print {
+    .test-banner {
+        display: none;
+    }
+}
+
 .btn-outline {
     border-color: var(--color-ink);
     background: transparent;

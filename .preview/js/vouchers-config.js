@@ -9,7 +9,7 @@ window.S74_VOUCHER_API = 'http://preview.invalid';
         var u = String(url);
         if (u.indexOf('/api/public/offers') !== -1) {
             return json(200, {
-                currency: 'CZK', validityMonths: 12, termsVersion: '2026-11', termsUrl: 'obchodni-podminky-vouchery.html',
+                currency: 'CZK', validityMonths: 12, termsVersion: '2026-11', termsUrl: 'obchodni-podminky-vouchery.html', testMode: true,
                 offers: [500, 1000, 2000].map(function (n) {
                     var s = String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
                     return { id: 'CZK_' + n, amountCzk: n, label: 'Voucher v hodnotě ' + s + ' Kč' };

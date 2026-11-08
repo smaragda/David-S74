@@ -32,6 +32,7 @@ public class OfferService {
                 props.voucher().validityMonths(),
                 props.voucher().termsVersion(),
                 props.frontendBaseUrlNoSlash() + props.voucher().termsPath(),
+                !props.stripe().expectedLivemode(),
                 offers);
     }
 
@@ -39,8 +40,14 @@ public class OfferService {
         return "Voucher v hodnotě " + Money.czk(o.amountCzk());
     }
 
+    /** {@code testMode}: platby jdou přes Stripe test/sandbox (STRIPE_LIVEMODE=false); web podle toho zobrazí upozornění. */
     public record OffersResponse(
-            String currency, int validityMonths, String termsVersion, String termsUrl, List<OfferDto> offers) {}
+            String currency,
+            int validityMonths,
+            String termsVersion,
+            String termsUrl,
+            boolean testMode,
+            List<OfferDto> offers) {}
 
     public record OfferDto(String id, long amountCzk, String label) {}
 }
