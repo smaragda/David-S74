@@ -202,7 +202,88 @@ Před čímkoli zálohujte konfiguraci: `cp -a /usr/local/lsws/conf /usr/local/l
    }
    ```
 
-   a do **obou** existujících listenerů (HTTP :80 a HTTPS :443) řádek `map  vouchery vouchery.mimiapes.cz`. Existující `map` řádky WordPressu neměňte.
+   a do **dvou** existujících listenerů **`wordpress`** (HTTP) a **`wordpressssl`** (HTTPS) řádek `map  vouchery vouchery.mimiapes.cz` (zjištěno ze serveru; listener `Default` na :8088 se nemění).
+   Existující `map wordpress …` řádky neměňte. Vše níže provede skript v kroku 7a.
+
+### 7a. Skript (webová konzole, jako root)
+
+Vytvoří vhost, přidá `map` do listenerů `wordpress` a `wordpressssl`, připojí blok `virtualhost` a restartuje LiteSpeed (krátké přerušení WordPressu). Je idempotentní, před změnou zálohuje konfiguraci:
+
+```bash
+set -e
+cp -a /usr/local/lsws/conf /usr/local/lsws/conf.bak-$(date +%F-%H%M)
+mkdir -p /var/www/vouchery/html/.well-known/acme-challenge /usr/local/lsws/conf/vhosts/vouchery
+cat > /usr/local/lsws/conf/vhosts/vouchery/vhost.conf <<'EOF'
+docRoot                   /var/www/vouchery/html
+vhDomain                  vouchery.mimiapes.cz
+enableGzip                1
+
+extprocessor s74backend {
+  type                    proxy
+  address                 127.0.0.1:8080
+  maxConns                20
+  pcKeepAliveTimeout      60
+  initTimeout             60
+  retryTimeout            0
+  respBuffer              0
+}
+
+context /.well-known/ {
+  location                /var/www/vouchery/html/.well-known/
+  allowBrowse             1
+}
+
+context / {
+  type                    proxy
+  handler                 s74backend
+  addDefaultCharset       off
+  extraHeaders            RequestHeader set X-Forwarded-Proto https
+}
+
+rewrite  {
+  enable                  1
+  rules                   <<<END_rules
+RewriteRule ^/actuator - [F,L]
+RewriteCond %{HTTPS} !on
+RewriteCond %{REQUEST_URI} !^/\.well-known/
+RewriteRule ^(.*)$ https://%{HTTP_HOST}$1 [R=301,L]
+END_rules
+}
+EOF
+id lsadm >/dev/null 2>&1 && chown -R lsadm:lsadm /usr/local/lsws/conf/vhosts/vouchery || true
+python3 - <<'PY'
+import re
+p = '/usr/local/lsws/conf/httpd_config.conf'
+s = open(p).read()
+if 'vouchery.mimiapes.cz' in s:
+    raise SystemExit('httpd_config.conf už vouchery obsahuje, nic neměním')
+out, cur, added = [], None, 0
+for line in s.split('\n'):
+    m = re.match(r'^listener\s+(\S+)\s*\{', line)
+    if m:
+        cur = m.group(1)
+    out.append(line)
+    if cur in ('wordpress', 'wordpressssl') and re.match(r'^\s*map\s+wordpress\b', line):
+        out.append('  map                     vouchery vouchery.mimiapes.cz')
+        added += 1
+if added != 2:
+    raise SystemExit('očekával jsem 2 listenery, přidáno %d – nic nezapisuji' % added)
+out.append('''
+virtualhost vouchery {
+  vhRoot                  /var/www/vouchery
+  configFile              $SERVER_ROOT/conf/vhosts/vouchery/vhost.conf
+  allowSymbolLink         1
+  enableScript            0
+  restrained              1
+}
+''')
+open(p, 'w').write('\n'.join(out))
+print('OK: přidáno do 2 listenerů + virtualhost vouchery')
+PY
+/usr/local/lsws/bin/lswsctrl restart
+sleep 3
+curl -sI -H 'Host: mimiapes.cz' http://127.0.0.1/ | head -1   # WordPress musí odpovědět (200 nebo 301)
+```
 4. Certifikát (LiteSpeed zůstává na 80, proto webroot, ne standalone):
 
    ```bash
