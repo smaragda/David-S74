@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/s74_vouchers}
+    username: ${DATABASE_USERNAME:s74_vouchers}
+    password: ${DATABASE_PASSWORD:s74_vouchers}
+  mail:
+    host: ${SMTP_HOST:localhost}
+    port: ${SMTP_PORT:1025}
+    username: ${SMTP_USERNAME:}
+    password: ${SMTP_PASSWORD:}
+  thymeleaf:
+    cache: false
+
+s74:
+  public-base-url: ${S74_PUBLIC_BASE_URL:http://127.0.0.1:8080}
+  frontend-base-url: ${S74_FRONTEND_BASE_URL:http://localhost:8000}
+  cors-allowed-origins: ${S74_CORS_ALLOWED_ORIGINS:http://localhost:8000}
+
+server:
+  servlet:
+    session:
+      cookie:
+        secure: false
+
+logging:
+  level:
+    cz.s74.vouchers: DEBUG

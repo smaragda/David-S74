@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="cs" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: head('Vedoucí – účty')}"></head>
+<body class="page-shell page-shell--top">
+<header th:replace="~{fragments/base :: topbar(${user})}"></header>
+<main>
+    <section class="panel panel--admin">
+        <p class="eyebrow">Vedoucí</p>
+        <h1 class="h1--compact">Účty obsluhy</h1>
+        <nav th:replace="~{fragments/base :: adminnav}"></nav>
+        <p class="flash flash--error" th:if="${error}" th:text="${error}"></p>
+        <p class="flash flash--info" th:if="${info}" th:text="${info}"></p>
+
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead><tr><th>Uživatel</th><th>Jméno</th><th>Role</th><th>Stav</th><th>Akce</th></tr></thead>
+                <tbody>
+                <tr th:each="a : ${accounts}">
+                    <td class="mono" th:text="${a.username}">barista</td>
+                    <td th:text="${a.displayName}">Jméno</td>
+                    <td th:text="${a.role.name() == 'MANAGER'} ? 'Vedoucí' : 'Obsluha'">Obsluha</td>
+                    <td><span class="badge" th:classappend="${a.enabled} ? 'badge--ok' : 'badge--bad'" th:text="${a.enabled} ? 'Aktivní' : 'Zneplatněn'">Aktivní</span></td>
+                    <td>
+                        <form class="inline-form" th:if="${a.enabled and a.id != user.id}" th:action="@{/admin/staff/{id}/disable(id=${a.id})}" method="post">
+                            <button type="submit" class="small-button small-button--danger">Zneplatnit</button>
+                        </form>
+                        <form class="inline-form" th:if="${!a.enabled}" th:action="@{/admin/staff/{id}/enable(id=${a.id})}" method="post">
+                            <button type="submit" class="small-button">Obnovit</button>
+                        </form>
+                        <form class="stacked-form" th:action="@{/admin/staff/{id}/password(id=${a.id})}" method="post">
+                            <label>Nové heslo
+                                <input type="password" name="password" autocomplete="new-password" th:minlength="${minPassword}" required>
+                            </label>
+                            <button type="submit" class="small-button">Nastavit heslo</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 class="section-gap">Založit účet</h2>
+        <form class="stacked-form" th:action="@{/admin/staff}" method="post">
+            <label>Uživatelské jméno (malá písmena bez diakritiky)
+                <input type="text" name="username" autocomplete="off" autocapitalize="none" required>
+            </label>
+            <label>Zobrazované jméno
+                <input type="text" name="displayName" autocomplete="off" required>
+            </label>
+            <label>Role
+                <select name="role">
+                    <option value="STAFF">Obsluha</option>
+                    <option value="MANAGER">Vedoucí</option>
+                </select>
+            </label>
+            <label>Heslo (alespoň <span th:text="${minPassword}">12</span> znaků)
+                <input type="password" name="password" autocomplete="new-password" th:minlength="${minPassword}" required>
+            </label>
+            <button type="submit" class="primary-button">Založit</button>
+        </form>
+    </section>
+</main>
+</body>
+</html>

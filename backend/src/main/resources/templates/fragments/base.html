@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="cs" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title th:text="${title} + ' | S74 vouchery'">S74 vouchery</title>
+    <link rel="stylesheet" th:href="@{/fonts/fonts.css}">
+    <link rel="stylesheet" th:href="@{/app.css}">
+    <link rel="stylesheet" th:href="@{/staff-ui.css}">
+</head>
+<body>
+<header th:fragment="topbar(user)" class="topbar">
+    <a class="topbar__brand" th:href="@{/staff}">S74 vouchery</a>
+    <nav class="topbar__nav">
+        <span class="topbar__user" th:text="${user.displayName}">Jméno</span>
+        <a class="small-button" th:href="@{/staff}">Ověřit voucher</a>
+        <a class="small-button" th:if="${user.manager}" th:href="@{/admin/vouchers}">Vedoucí</a>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="small-button">Odhlásit se</button>
+        </form>
+    </nav>
+</header>
+<nav th:fragment="adminnav" class="topbar__nav admin-nav">
+    <a class="small-button" th:href="@{/admin/vouchers}">Hledání</a>
+    <a class="small-button" th:href="@{/admin/attention}">K řešení</a>
+    <a class="small-button" th:href="@{/admin/staff}">Účty obsluhy</a>
+    <a class="small-button" th:href="@{/admin/export}">Export CSV</a>
+</nav>
+</body>
+</html>

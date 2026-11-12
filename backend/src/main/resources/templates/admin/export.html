@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="cs" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: head('Vedoucí – export')}"></head>
+<body class="page-shell page-shell--top">
+<header th:replace="~{fragments/base :: topbar(${user})}"></header>
+<main>
+    <section class="panel panel--admin">
+        <p class="eyebrow">Vedoucí</p>
+        <h1 class="h1--compact">Export pro účetní</h1>
+        <nav th:replace="~{fragments/base :: adminnav}"></nav>
+        <p class="flash flash--error" th:if="${error}" th:text="${error}"></p>
+        <p class="lead lead--compact">CSV (UTF-8, oddělovač středník) s prodanými, uplatněnými, zrušenými a vypršelými vouchery za vybraný měsíc.</p>
+        <form class="stacked-form" th:action="@{/admin/export}" method="get">
+            <label>Měsíc
+                <input type="month" name="month" th:value="${defaultMonth}" required>
+            </label>
+            <button type="submit" class="primary-button">Stáhnout CSV</button>
+        </form>
+    </section>
+</main>
+</body>
+</html>

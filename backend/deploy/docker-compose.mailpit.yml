@@ -1,0 +1,19 @@
+# Jen pro TESTOVÁNÍ na serveru: zachytává e-maily z aplikace místo skutečného doručení (žádný zákazník nic nedostane).
+# Použití: v /opt/s74-vouchers/.env nastavte COMPOSE_FILE=docker-compose.yml:docker-compose.mailpit.yml
+# a SMTP_HOST=mailpit, SMTP_PORT=1025, SMTP_USERNAME=test, SMTP_PASSWORD=test (prod profil vyžaduje přihlášení, Mailpit přijme cokoli).
+# Schránku si zobrazíte přes SSH tunel: ssh -L 8025:127.0.0.1:8025 deploy@<server> → http://localhost:8025
+# Pro ostrý provoz tento soubor z COMPOSE_FILE odstraňte a nastavte skutečného SMTP poskytovatele.
+services:
+  mailpit:
+    image: axllent/mailpit:latest
+    restart: unless-stopped
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: "1"
+      MP_SMTP_AUTH_ALLOW_INSECURE: "1"
+      MP_MAX_MESSAGES: "200"
+    ports:
+      - "127.0.0.1:8025:8025"   # webové UI jen na localhostu serveru
+    mem_limit: 64m
+    logging:
+      driver: json-file
+      options: {max-size: "5m", max-file: "2"}

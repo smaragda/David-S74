@@ -1,0 +1,304 @@
+/* Doplňky k app.css pro rozhraní obsluhy a vedoucího (bez inline stylů – CSP). */
+.page-shell--top {
+    display: block;
+}
+
+.topbar {
+    width: min(1120px, 100%);
+    margin: 0 auto 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.topbar__brand {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.15rem;
+    text-decoration: none;
+    color: var(--ink);
+}
+
+.topbar__nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.topbar__nav form {
+    margin: 0;
+}
+
+.topbar__user {
+    color: var(--muted);
+    font-size: 0.92rem;
+}
+
+.small-button {
+    min-height: 40px;
+    padding: 0 14px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.55);
+    color: var(--ink);
+    font: inherit;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.small-button--danger {
+    border-color: rgba(177, 68, 47, 0.45);
+    color: var(--accent);
+}
+
+.panel--stack {
+    width: min(720px, 100%);
+    margin: 0 auto 20px;
+}
+
+.panel--admin {
+    width: min(1120px, 100%);
+    margin: 0 auto 20px;
+}
+
+.panel h1.h1--compact {
+    font-size: clamp(1.9rem, 6vw, 2.8rem);
+    max-width: none;
+}
+
+.stacked-form input[type="text"],
+.stacked-form input[type="password"],
+.stacked-form input[type="email"],
+.stacked-form input[type="date"],
+.stacked-form input[type="month"],
+.stacked-form select,
+.stacked-form textarea {
+    width: 100%;
+    border-radius: 16px;
+    border: 1px solid rgba(31, 26, 23, 0.16);
+    background: rgba(255, 255, 255, 0.65);
+    padding: 14px 16px;
+    font: inherit;
+}
+
+.code-input {
+    font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    font-size: 1.6rem !important;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.check-row {
+    display: flex !important;
+    grid-template-columns: none !important;
+    gap: 12px !important;
+    align-items: flex-start;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.check-row input {
+    width: 24px !important;
+    height: 24px;
+    margin: 2px 0 0;
+    flex: none;
+}
+
+.flash {
+    margin: 18px 0 0;
+    padding: 14px 16px;
+    border-radius: 16px;
+    font-weight: 600;
+    line-height: 1.45;
+}
+
+.flash--error {
+    background: rgba(177, 68, 47, 0.12);
+    color: #8f321f;
+}
+
+.flash--ok {
+    background: rgba(72, 84, 63, 0.14);
+    color: var(--olive);
+}
+
+.flash--info {
+    background: rgba(106, 90, 80, 0.1);
+    color: var(--muted);
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.badge--ok { background: rgba(72, 84, 63, 0.18); color: #35422d; }
+.badge--muted { background: rgba(106, 90, 80, 0.16); color: #4d4038; }
+.badge--warn { background: rgba(214, 128, 31, 0.2); color: #8a4b05; }
+.badge--bad { background: rgba(177, 68, 47, 0.16); color: #8f321f; }
+
+.amount {
+    margin: 14px 0 6px;
+    font-family: var(--display);
+    font-size: clamp(2.6rem, 12vw, 4rem);
+    font-weight: 600;
+    line-height: 1;
+}
+
+.kv {
+    margin: 18px 0 0;
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 8px 18px;
+}
+
+.kv dt {
+    color: var(--muted);
+}
+
+.kv dd {
+    margin: 0;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.mono {
+    font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+
+.big-confirm {
+    margin: 22px 0 0;
+    padding: 22px;
+    border-radius: 22px;
+    background: rgba(72, 84, 63, 0.18);
+    border: 2px solid var(--olive);
+    color: #2b3724;
+}
+
+.big-confirm__title {
+    margin: 0;
+    font-family: var(--display);
+    font-size: clamp(1.6rem, 7vw, 2.3rem);
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.big-confirm p {
+    margin: 8px 0 0;
+    font-size: 1.05rem;
+}
+
+.blocked-note {
+    margin: 22px 0 0;
+    padding: 16px;
+    border-radius: 18px;
+    background: rgba(106, 90, 80, 0.1);
+    line-height: 1.5;
+}
+
+.redeem-form {
+    margin-top: 24px;
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+}
+
+.redeem-form .primary-button {
+    width: 100%;
+    min-height: 58px;
+    font-size: 1.1rem;
+}
+
+.table-wrap {
+    overflow-x: auto;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 18px;
+    font-size: 0.95rem;
+}
+
+.data-table th,
+.data-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+}
+
+.data-table th {
+    color: var(--muted);
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.action-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.action-grid .detail-card {
+    margin-top: 0;
+}
+
+.action-grid h2 {
+    font-size: 1.15rem;
+    line-height: 1.2;
+    margin-bottom: 4px;
+}
+
+.action-grid .stacked-form {
+    margin-top: 12px;
+    gap: 12px;
+}
+
+.inline-form {
+    display: inline;
+}
+
+.section-gap {
+    margin-top: 28px;
+}
+
+.audit-list {
+    list-style: none;
+    margin: 12px 0 0;
+    padding: 0;
+    display: grid;
+    gap: 6px;
+    font-size: 0.92rem;
+}
+
+.audit-list li {
+    padding: 8px 12px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.5);
+}
+
+@media (max-width: 560px) {
+    .page-shell {
+        padding: 20px 16px 40px;
+    }
+
+    .kv {
+        grid-template-columns: 1fr;
+        gap: 2px;
+    }
+
+    .kv dd {
+        margin-bottom: 10px;
+    }
+}

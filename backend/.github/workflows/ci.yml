@@ -1,0 +1,24 @@
+# CI backendu voucherů. Soubor leží v backend/.github/, takže je v tomto (statickém) repozitáři neaktivní;
+# po vyjmutí backendu do samostatného repozitáře (git subtree split -P backend) se stane jeho CI.
+name: backend-ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: maven
+      - name: Secrets check
+        run: ./scripts/check-secrets.sh
+      # Testcontainers používá Docker, který je na ubuntu-latest k dispozici.
+      - name: Build and test
+        run: mvn -B verify

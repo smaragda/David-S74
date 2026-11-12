@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="cs" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dárkový voucher S74 wine&amp;café</title>
+</head>
+<body style="margin:0;padding:0;background:#f4ece1;font-family:'Segoe UI',Helvetica,Arial,sans-serif;color:#1f1a17;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4ece1;padding:24px 12px;">
+    <tr><td align="center">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#fffaf3;border-radius:16px;border:1px solid #e6d9c8;">
+            <tr><td style="padding:32px 28px 8px 28px;text-align:center;">
+                <div style="font-size:13px;letter-spacing:0.14em;text-transform:uppercase;color:#6a5a50;">S74 wine&amp;café</div>
+                <h1 style="margin:10px 0 4px 0;font-family:Georgia,'Times New Roman',serif;font-weight:600;font-size:30px;color:#1f1a17;">Dárkový voucher</h1>
+                <div style="font-family:Georgia,'Times New Roman',serif;font-size:44px;font-weight:600;color:#b1442f;" th:text="${value}">1 000 Kč</div>
+            </td></tr>
+            <tr><td style="padding:16px 28px;text-align:center;">
+                <img th:src="|cid:${qrCid}|" width="240" height="240" alt="QR kód voucheru" style="display:block;margin:0 auto;border:0;">
+                <div style="margin-top:14px;font-size:13px;color:#6a5a50;">Kód pro ruční zadání</div>
+                <div style="margin-top:4px;font-family:'SFMono-Regular',Menlo,Consolas,monospace;font-size:26px;letter-spacing:0.06em;font-weight:700;" th:text="${code}">ABCD-1234-EFGH</div>
+                <div style="margin-top:12px;font-size:16px;">Platí do <strong th:text="${validUntil}">4. 11. 2027</strong> (včetně)</div>
+            </td></tr>
+            <tr><td style="padding:8px 28px 4px 28px;">
+                <h2 style="font-size:17px;margin:16px 0 6px 0;">Jak voucher uplatnit</h2>
+                <p style="margin:0;font-size:15px;line-height:1.5;">Ukažte QR kód nebo kód obsluze při placení v S74 wine&amp;café, Slezská 856/74, Praha 3. Aktuální otevírací dobu najdete na <a th:href="${siteUrl}" th:text="${siteUrl}" style="color:#b1442f;">s74.cz</a>.</p>
+                <h2 style="font-size:17px;margin:20px 0 6px 0;">Podmínky v kostce</h2>
+                <ul style="margin:0;padding-left:20px;font-size:15px;line-height:1.55;">
+                    <li>Voucher lze uplatnit <strong>jednorázově</strong>, najednou v plné hodnotě.</li>
+                    <li>Je-li útrata nižší než hodnota voucheru, <strong>nevyužitý rozdíl propadá</strong>. Je-li vyšší, rozdíl doplatíte.</li>
+                    <li>Voucher nelze směnit za hotovost.</li>
+                    <li>Voucher je na doručitele: kdo zná kód, může jej uplatnit. Chraňte ho jako hotovost.</li>
+                    <li>Po uplatnění voucher zaniká.</li>
+                </ul>
+                <p style="margin:12px 0 0 0;font-size:14px;">Plné znění: <a th:href="${termsUrl}" style="color:#b1442f;">obchodní podmínky voucherů</a>.</p>
+                <p style="margin:14px 0 0 0;font-size:14px;color:#6a5a50;">Tip: e-mail můžete přeposlat obdarovanému nebo vytisknout.</p>
+            </td></tr>
+            <tr><td style="padding:20px 28px 28px 28px;font-size:13px;line-height:1.5;color:#6a5a50;border-top:1px solid #e6d9c8;">
+                <div>Číslo objednávky: <strong th:text="${orderRef}">7F3A9C21</strong> · Dotazy: <a th:href="|mailto:${replyTo}|" th:text="${replyTo}" style="color:#6a5a50;">s74winecafe@seznam.cz</a></div>
+                <div style="margin-top:6px;">S74 wine&amp;café, s.r.o., IČO 23035111</div>
+            </td></tr>
+        </table>
+    </td></tr>
+</table>
+</body>
+</html>

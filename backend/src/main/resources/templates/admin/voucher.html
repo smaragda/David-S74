@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="cs" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: head('Vedoucí – voucher')}"></head>
+<body class="page-shell page-shell--top">
+<header th:replace="~{fragments/base :: topbar(${user})}"></header>
+<main>
+    <section class="panel panel--admin">
+        <p class="eyebrow">Voucher <span class="mono" th:text="${v.maskedCode}">****-****-AB12</span> · objednávka <span class="mono" th:text="${order.orderRef()}">7F3A9C21</span></p>
+        <nav th:replace="~{fragments/base :: adminnav}"></nav>
+        <p class="flash flash--error" th:if="${error}" th:text="${error}"></p>
+        <p class="flash flash--info" th:if="${info}" th:text="${info}"></p>
+
+        <div class="amount" th:text="${v.amount}">1 000 Kč</div>
+        <span class="badge" th:classappend="${v.badgeClass}" th:text="${v.statusLabel}">Platný</span>
+        <p class="flash flash--error" th:if="${order.attentionRequired}" th:text="${'K řešení: ' + order.attentionReason}"></p>
+
+        <dl class="kv">
+            <dt>E-mail zákazníka</dt><dd th:text="${order.customerEmail}">jana@example.com</dd>
+            <dt>Platí do</dt><dd th:text="${v.validUntil}">4. 11. 2027</dd>
+            <dt>Vystaveno</dt><dd th:text="${v.issuedAt}">4. 11. 2026</dd>
+            <dt>Stav objednávky</dt><dd th:text="${order.status}">PAID</dd>
+            <dt>Zaplaceno</dt><dd th:text="${@formats.dateTime(order.paidAt)}">4. 11. 2026</dd>
+            <dt th:if="${order.refundedAmountMinor > 0}">Vráceno</dt>
+            <dd th:if="${order.refundedAmountMinor > 0}" th:text="${@formats.money(order.refundedAmountMinor)}">0 Kč</dd>
+            <dt th:if="${v.redeemedAtLabel != null}">Uplatněno</dt>
+            <dd th:if="${v.redeemedAtLabel != null}"><span th:text="${v.redeemedAtLabel}">dnes</span>, <span th:text="${v.redeemedByName}">obsluha</span><span th:if="${v.note}"> · <span th:text="${v.note}"></span></span></dd>
+            <dt th:if="${v.cancelReason != null}">Důvod zrušení</dt>
+            <dd th:if="${v.cancelReason != null}" th:text="${v.cancelReason}">Důvod</dd>
+            <dt th:if="${stripeUrl != null}">Stripe</dt>
+            <dd th:if="${stripeUrl != null}"><a th:href="${stripeUrl}" th:text="${order.stripePaymentIntentId}" rel="noopener noreferrer" target="_blank">pi_…</a></dd>
+        </dl>
+
+        <h2 class="section-gap">Zásahy</h2>
+        <p class="notice">Každý zásah vyžaduje důvod a zapíše se do historie.</p>
+        <div class="action-grid">
+            <div class="detail-card">
+                <h2>Znovu poslat e-mail</h2>
+                <form class="stacked-form" th:action="@{/admin/vouchers/{id}/resend(id=${id})}" method="post">
+                    <label>Adresa (nechte prázdné pro původní)
+                        <input type="email" name="email" autocomplete="off" th:placeholder="${order.customerEmail}">
+                    </label>
+                    <label>Důvod
+                        <input type="text" name="reason" required minlength="3" maxlength="255" autocomplete="off">
+                    </label>
+                    <button type="submit" class="primary-button">Poslat</button>
+                </form>
+            </div>
+            <div class="detail-card" th:if="${v.redeemable}">
+                <h2>Zrušit voucher</h2>
+                <form class="stacked-form" th:action="@{/admin/vouchers/{id}/cancel(id=${id})}" method="post">
+                    <label>Důvod
+                        <input type="text" name="reason" required minlength="3" maxlength="255" autocomplete="off">
+                    </label>
+                    <button type="submit" class="small-button small-button--danger">Zrušit voucher</button>
+                </form>
+            </div>
+            <div class="detail-card" th:if="${voucher.status.name() == 'CANCELLED'}">
+                <h2>Reaktivovat</h2>
+                <form class="stacked-form" th:action="@{/admin/vouchers/{id}/reactivate(id=${id})}" method="post">
+                    <label>Důvod
+                        <input type="text" name="reason" required minlength="3" maxlength="255" autocomplete="off">
+                    </label>
+                    <button type="submit" class="primary-button">Reaktivovat</button>
+                </form>
+            </div>
+            <div class="detail-card" th:if="${voucher.status.name() == 'REDEEMED'}">
+                <h2>Vrátit uplatnění</h2>
+                <p class="microcopy">Oprava chyby mezi uplatněním a pokladnou.</p>
+                <form class="stacked-form" th:action="@{/admin/vouchers/{id}/revert(id=${id})}" method="post">
+                    <label>Důvod
+                        <input type="text" name="reason" required minlength="3" maxlength="255" autocomplete="off">
+                    </label>
+                    <button type="submit" class="small-button small-button--danger">Vrátit uplatnění</button>
+                </form>
+            </div>
+            <div class="detail-card">
+                <h2>Prodloužit platnost</h2>
+                <form class="stacked-form" th:action="@{/admin/vouchers/{id}/extend(id=${id})}" method="post">
+                    <label>Nové datum platnosti
+                        <input type="date" name="validUntil" required th:min="${today}" th:value="${voucher.validUntil}">
+                    </label>
+                    <label>Důvod
+                        <input type="text" name="reason" required minlength="3" maxlength="255" autocomplete="off">
+                    </label>
+                    <button type="submit" class="primary-button">Uložit</button>
+                </form>
+            </div>
+        </div>
+
+        <h2 class="section-gap">Doručení e-mailu</h2>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead><tr><th>Druh</th><th>Příjemce</th><th>Stav</th><th>Pokusů</th><th>Odesláno / příští pokus</th><th>Chyba</th></tr></thead>
+                <tbody>
+                <tr th:each="d : ${deliveries}">
+                    <td th:text="${d.kind}">ISSUED</td>
+                    <td th:text="${d.recipient}">a@b.cz</td>
+                    <td th:text="${d.status}">SENT</td>
+                    <td th:text="${d.attempts}">1</td>
+                    <td th:text="${d.sentAt != null} ? ${@formats.dateTime(d.sentAt)} : ${@formats.dateTime(d.nextAttemptAt)}">…</td>
+                    <td th:text="${d.lastError}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 class="section-gap">Historie</h2>
+        <ul class="audit-list">
+            <li th:each="h : ${history}">
+                <strong th:text="${@auditLabels.label(h.action)}">Akce</strong>
+                · <span th:text="${@formats.dateTime(h.at)}">čas</span>
+                · <span th:text="${h.actorName != null} ? ${h.actorName} : ${h.actorType}">kdo</span>
+                <span class="microcopy" th:if="${h.details != null}" th:text="${' · ' + h.details}"></span>
+            </li>
+        </ul>
+    </section>
+</main>
+</body>
+</html>

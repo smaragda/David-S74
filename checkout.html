@@ -3,43 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pokladna | s74.cz</title>
+    <title>Objednávka voucheru | S74 wine&amp;café</title>
     <meta name="robots" content="noindex, nofollow">
+    <meta name="referrer" content="no-referrer">
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <link rel="stylesheet" href="fonts/fonts.css?v=20260805">
-    <link rel="stylesheet" href="app.css">
+    <link rel="stylesheet" href="css/style.css?v=20261109">
 </head>
-<body class="page-shell page-shell--centered">
-<main class="layout">
-    <section class="panel panel--narrow">
+<body class="privacy-page" data-page="checkout">
+    <a class="skip-link" href="#main-content">Přeskočit na obsah</a>
+
+    <header class="privacy-header">
+        <nav class="section-shell privacy-nav" aria-label="Navigace voucherů">
+            <a class="privacy-brand" href="index.html">S74 wine&amp;café</a>
+            <a class="privacy-back" href="vouchery.html">Zpět na vouchery</a>
+        </nav>
+    </header>
+
+    <main id="main-content" class="voucher-page-main" tabindex="-1">
+        <section class="voucher-panel">
         <p class="eyebrow">Shrnutí objednávky</p>
         <h1>Skvělá volba!</h1>
-        
-        <div class="detail-card">
-            <p class="offer-price">1 000 Kč</p>
-            <h2 id="offer-name">Voucher v hodnotě 1 000 Kč</h2>
-            <p class="microcopy">Tento voucher lze využít na cokoli z aktuální nabídky s74 do hodnoty uvedené částky.</p>
+
+        <p class="form-message" id="cancelled-note" role="status" hidden>Platba nebyla dokončena. Můžete to zkusit znovu.</p>
+        <p class="form-message" id="loading-note" role="status">Načítám nabídku…</p>
+        <div class="form-message form-message--error" id="offer-error" role="alert" hidden>
+            <span id="offer-error-text">Vybraný voucher se nepodařilo načíst.</span>
+            <a href="vouchery.html">Zpět na výběr voucheru</a>
         </div>
 
-        <form class="stacked-form" action="order-success.html" method="get">
-            <label>
-                Váš e-mail
-                <input type="email" name="email" placeholder="jan.novak@priklad.cz" required autofocus>
-                <span class="microcopy">Na tento e-mail vám voucher doručíme ihned po zaplacení.</span>
-            </label>
-
-            <div style="margin-top: 12px; display: grid; gap: 8px;">
-                <button type="submit" class="primary-button">Zaplatit kartou</button>
-                <a href="vouchery.html" class="ghost-link">Změnit výběr</a>
+        <div id="checkout-content" hidden>
+            <div class="detail-card">
+                <p class="offer-price" id="offer-price">1&nbsp;000&nbsp;Kč</p>
+                <h2 id="offer-name">Voucher</h2>
+                <p class="microcopy">Voucher lze využít na cokoli z nabídky S74 wine&amp;café. Platnost <span id="validity-months">12</span> měsíců od vystavení.</p>
             </div>
-        </form>
 
-        <p class="microcopy" style="margin-top: 24px; text-align: center;">
-            Platba probíhá bezpečně přes šifrovanou bránu <strong>Stripe</strong>.
-        </p>
+            <form class="stacked-form" id="checkout-form" novalidate>
+                <label for="email">
+                    Váš e-mail
+                    <input type="email" id="email" name="email" placeholder="jan.novak@priklad.cz" autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false" required>
+                    <span class="field-hint">Na tuto adresu vám voucher pošleme ihned po zaplacení.</span>
+                </label>
+                <label for="email2">
+                    E-mail znovu
+                    <input type="email" id="email2" name="email2" autocomplete="off" inputmode="email" autocapitalize="none" spellcheck="false" required>
+                    <span class="field-error" id="email-error" role="alert" hidden></span>
+                </label>
+
+                <label class="checkbox-row" for="terms">
+                    <input type="checkbox" id="terms" name="terms" required>
+                    <span>Souhlasím s <a id="terms-link" href="obchodni-podminky-vouchery.html" target="_blank" rel="noopener">obchodními podmínkami</a> a beru na vědomí, že voucher je jednorázový a nevyužitý rozdíl hodnoty propadá.</span>
+                </label>
+
+                <p class="form-message form-message--error" id="form-error" role="alert" hidden></p>
+
+                <div class="button-stack">
+                    <button type="submit" class="btn btn-accent" id="submit-button">Zaplatit kartou</button>
+                    <a href="vouchery.html" class="btn btn-outline">Změnit výběr</a>
+                </div>
+            </form>
+        </div>
+
+        <p class="form-note">Platba probíhá bezpečně přes šifrovanou bránu <strong>Stripe</strong>. Údaje o kartě se k nám nedostanou.</p>
     </section>
-</main>
-<footer class="legal-footer microcopy"><a href="soukromi.html">Soukromí a cookies</a></footer>
+    </main>
+
+    <footer class="footer">
+        <div class="section-shell footer-layout">
+            <a class="footer-brand" href="index.html">S74 wine&amp;café</a>
+            <div class="footer-details">
+                <span>Slezská 856/74, 130 00 Praha 3–Vinohrady</span>
+                <span>Po–Pá 7:30–23:00 · So 15:00–23:00 · Ne 15:00–22:00</span>
+            </div>
+            <a href="https://www.instagram.com/s74_wineandcafe/" class="footer-social" target="_blank" rel="noopener noreferrer" aria-label="Instagram S74 wine&amp;café">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                </svg>
+                Instagram
+            </a>
+        </div>
+        <div class="section-shell footer-meta">
+            <span>© 2026 S74 wine&amp;café, s.r.o.</span>
+            <span><a href="obchodni-podminky-vouchery.html">Obchodní podmínky voucherů</a> · <a href="soukromi.html">Soukromí a cookies</a></span>
+        </div>
+    </footer>
+
+<script src="js/vouchers-config.js?v=20261112"></script>
+<script src="js/vouchers.js" defer></script>
 </body>
 </html>

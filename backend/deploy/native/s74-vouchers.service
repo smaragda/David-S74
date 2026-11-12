@@ -1,0 +1,31 @@
+# systemd jednotka. NEPOUŽITÝ PODKLAD (F8). Umístění: /etc/systemd/system/s74-vouchers.service
+[Unit]
+Description=S74 voucher backend
+After=network-online.target postgresql.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=s74vouchers
+Group=s74vouchers
+WorkingDirectory=/opt/s74-vouchers
+# SPRING_PROFILES_ACTIVE=prod a všechny tajné hodnoty jsou v tomto souboru (práva 640 root:s74vouchers).
+EnvironmentFile=/etc/s74-vouchers/env
+ExecStart=/usr/bin/java -Xms128m -Xmx384m -jar /opt/s74-vouchers/app.jar
+SuccessExitStatus=143
+Restart=on-failure
+RestartSec=5
+
+# Hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+ReadWritePaths=/var/log/s74-vouchers
+
+[Install]
+WantedBy=multi-user.target

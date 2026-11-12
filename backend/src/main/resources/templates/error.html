@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="cs" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: head('Chyba')}"></head>
+<body class="page-shell page-shell--centered">
+<main class="layout">
+    <section class="panel panel--narrow">
+        <p class="eyebrow">Chyba</p>
+        <h1 class="h1--compact" th:text="${status == 403} ? 'Přístup odepřen' : (${status == 404} ? 'Stránka nenalezena' : 'Něco se nepovedlo')">Chyba</h1>
+        <p class="lead lead--compact" th:if="${status == 403}">K této stránce nemáte oprávnění.</p>
+        <p class="lead lead--compact" th:if="${status != 403}">Zkuste to znovu nebo se vraťte na úvodní stránku.</p>
+        <p><a class="ghost-link" th:href="@{/staff}">Zpět</a></p>
+    </section>
+</main>
+</body>
+</html>

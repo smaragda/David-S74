@@ -1,0 +1,23 @@
+S74 wine&café – DÁRKOVÝ VOUCHER
+[[${value}]]
+
+Kód voucheru: [[${code}]]
+Platí do [[${validUntil}]] (včetně).
+
+JAK VOUCHER UPLATNIT
+Ukažte kód (nebo QR kód v HTML verzi tohoto e-mailu) obsluze při placení v S74 wine&café,
+Slezská 856/74, Praha 3. Aktuální otevírací dobu najdete na [[${siteUrl}]].
+
+PODMÍNKY V KOSTCE
+- Voucher lze uplatnit jednorázově, najednou v plné hodnotě.
+- Je-li útrata nižší než hodnota voucheru, nevyužitý rozdíl propadá. Je-li vyšší, rozdíl doplatíte.
+- Voucher nelze směnit za hotovost.
+- Voucher je na doručitele: kdo zná kód, může jej uplatnit. Chraňte ho jako hotovost.
+- Po uplatnění voucher zaniká.
+Plné znění: [[${termsUrl}]]
+
+Tip: e-mail můžete přeposlat obdarovanému nebo vytisknout.
+
+Číslo objednávky: [[${orderRef}]]
+Dotazy: [[${replyTo}]]
+S74 wine&café, s.r.o., IČO 23035111

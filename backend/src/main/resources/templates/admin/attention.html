@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="cs" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: head('Vedoucí – k řešení')}"></head>
+<body class="page-shell page-shell--top">
+<header th:replace="~{fragments/base :: topbar(${user})}"></header>
+<main>
+    <section class="panel panel--admin">
+        <p class="eyebrow">Vedoucí</p>
+        <h1 class="h1--compact">K řešení</h1>
+        <nav th:replace="~{fragments/base :: adminnav}"></nav>
+        <p class="flash flash--error" th:if="${error}" th:text="${error}"></p>
+        <p class="flash flash--info" th:if="${info}" th:text="${info}"></p>
+
+        <p class="notice" th:if="${#lists.isEmpty(rows)}">Nic k řešení.</p>
+        <div class="action-grid">
+            <div class="detail-card" th:each="r : ${rows}">
+                <h2><span class="mono" th:text="${r.order.orderRef()}">7F3A9C21</span> · <span th:text="${r.amount}">1 000 Kč</span></h2>
+                <p class="flash flash--error" th:text="${r.order.attentionReason}">Důvod</p>
+                <p class="microcopy" th:text="${r.order.customerEmail + ' · ' + r.order.status}">…</p>
+                <p th:if="${r.voucherId != null}"><a class="small-button" th:href="@{/admin/vouchers/{id}(id=${r.voucherId})}">Detail voucheru</a></p>
+                <form class="stacked-form" th:action="@{/admin/attention/{id}/resolve(id=${r.order.id})}" method="post">
+                    <label>Poznámka k vyřešení
+                        <input type="text" name="note" required minlength="3" maxlength="255" autocomplete="off">
+                    </label>
+                    <button type="submit" class="primary-button">Vyřešeno</button>
+                </form>
+            </div>
+        </div>
+
+        <h2 class="section-gap">Selhaná doručení e-mailu</h2>
+        <p class="notice" th:if="${#lists.isEmpty(failed)}">Žádná.</p>
+        <div class="table-wrap" th:if="${!#lists.isEmpty(failed)}">
+            <table class="data-table">
+                <thead><tr><th>Příjemce</th><th>Pokusů</th><th>Chyba</th><th></th></tr></thead>
+                <tbody>
+                <tr th:each="d : ${failed}">
+                    <td th:text="${d.recipient}">a@b.cz</td>
+                    <td th:text="${d.attempts}">5</td>
+                    <td th:text="${d.lastError}">chyba</td>
+                    <td><a class="small-button" th:href="@{/admin/vouchers/{id}(id=${d.voucherId})}">Detail</a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 class="section-gap">Bezpečnostní události</h2>
+        <p class="notice" th:if="${#lists.isEmpty(events)}">Žádné.</p>
+        <ul class="audit-list">
+            <li th:each="e : ${events}">
+                <strong th:text="${@auditLabels.label(e.action)}">Akce</strong>
+                · <span th:text="${@formats.dateTime(e.at)}">čas</span>
+                · <span th:text="${e.actorName != null} ? ${e.actorName} : ${e.actorType}">kdo</span>
+                <span class="microcopy" th:if="${e.details != null}" th:text="${' · ' + e.details}"></span>
+            </li>
+        </ul>
+    </section>
+</main>
+</body>
+</html>
