@@ -1,9 +1,24 @@
 # Testovací nasazení na server mimiapes.cz (LiteSpeed + WordPress)
 
-> **Stav:** návod nebyl na serveru nikdy spuštěn. Je to testovací nasazení se Stripe **sandboxem** (`STRIPE_LIVEMODE=false`), ne ostrý provoz.
-> Obecné podklady pro nginx jsou v `README.md`; tento server ale používá **LiteSpeed**, takže nginx a `deploy.sh` se nepoužívají.
+## Nasazení z 12. listopadu 2026
 
-## Cílový stav
+- Backend z revize `0cfde95` běží na `https://vouchery.mimiapes.cz`. Compose, JAR a konfigurace jsou na dropletu v `/opt/s74-vouchers`. Používá se Compose v2 z balíčku Ubuntu `docker-compose-v2`.
+- [Testovací vouchery](https://s74.cz/vouchery.html) jsou dostupné z menu hlavní stránky. Frontend se publikuje z větve `main` přes GitHub Pages. `S74_FRONTEND_BASE_URL=https://s74.cz` určuje návrat ze Stripe a `S74_CORS_ALLOWED_ORIGINS=https://s74.cz` povoluje veřejné API pro web.
+- V DNS už existuje CNAME `vouchery.mimiapes.cz` na `mimiapes.cz`. OpenLiteSpeed směruje subdoménu na `127.0.0.1:8080` a používá vlastní certifikát Let’s Encrypt. Simulace obnovy přes Certbot prošla. Veřejné požadavky na `/actuator` a požadavky s podvrženými proxy hlavičkami vhost odmítá.
+- Stripe sandbox „TEST - David S74“ má webhook na `/api/stripe/webhook`. Testovací checkout vystavil voucher a Mailpit zachytil potvrzení. PostgreSQL a Mailpit mají vlastní Docker volumes. Databáze je dostupná uvnitř Compose sítě a Mailpit na `127.0.0.1:8025`.
+
+Běžná kontrola z DigitalOcean Web Console jako `root`:
+
+```bash
+cd /opt/s74-vouchers
+docker compose ps
+docker compose logs --tail 60 app
+curl -fsS http://127.0.0.1:8080/actuator/health
+```
+
+Po změně nastavení aplikace v `.env` použijte `docker compose up -d --wait app`. Pro úplně nové nasazení slouží postup níže jako podklad. Adresy v něm odpovídají původnímu plánu, pro běžící test použijte hodnoty výše.
+
+## Původní postup pro nasazení od začátku
 
 ```
 Prohlížeč ──https──► LiteSpeed (porty 80/443, drží ho WordPress)
