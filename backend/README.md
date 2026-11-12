@@ -57,6 +57,17 @@ webhook, vystavení voucheru, e-mail s QR kódem, rozhraní obsluhy a vedoucího
 
    Vypíše `whsec_…`; vložte ho do `.env` a backend restartujte. Dokud `stripe listen` běží, secret se nemění.
 
+   > **Stripe CLI musí poslouchat na stejném účtu jako klíč v `.env`.** `stripe listen` bez dalšího použije účet, ke kterému je CLI přihlášené
+   > (`stripe whoami`), a to nemusí být sandbox, jehož klíč máte v `.env`. Pak webhooky z vašich plateb nikdy nedorazí a voucher nevznikne
+   > (objednávka zůstane `PENDING_PAYMENT`). Spusťte listener s klíčem ze sandboxu, předaným přes proměnnou prostředí (ne přes argument, ať neskončí v seznamu procesů):
+   >
+   > ```bash
+   > set -a; . ./.env; set +a
+   > STRIPE_API_KEY="$STRIPE_API_KEY" stripe listen --forward-to 127.0.0.1:8080/api/stripe/webhook
+   > ```
+   >
+   > Takto vypsané `whsec_…` je pro daný sandbox pořád stejné.
+
 5. **Web** v kořeni repozitáře:
 
    ```bash
@@ -69,6 +80,39 @@ webhook, vystavení voucheru, e-mail s QR kódem, rozhraní obsluhy a vedoucího
 6. **Obsluha / vedoucí:** http://127.0.0.1:8080/login (účet z bootstrapu). Vedoucí má v hlavičce odkaz „Vedoucí“ (`/admin`).
    E-maily s vouchery jsou v Mailpitu (http://127.0.0.1:8025); odesílá je job každých ~30 s.
 
+### Když jsou porty 8080 / 5432 / 8000 obsazené
+
+Na vývojářském stroji často běží i jiný projekt (zkušenost: Spring aplikace na 8080 a Postgres na 5432). Své služby pak pusťte na jiných portech
+a nic cizího nezastavujte:
+
+- **Postgres na 5433:** `docker-compose.yml` publikuje `127.0.0.1:5432`. Přepište ho override souborem (Compose ≥ 2.24) a zvolte vlastní název projektu:
+
+  ```yaml
+  # compose-override.yml (necommitovat)
+  services:
+    postgres:
+      ports: !override
+        - "127.0.0.1:5433:5432"
+  ```
+
+  ```bash
+  docker compose -p s74-vouchers-test -f docker-compose.yml -f compose-override.yml up -d
+  ```
+
+- **Backend na 8081:** nastavte proměnné prostředí (přebijí `.env` i výchozí hodnoty, `.env` zůstane beze změny):
+
+  ```bash
+  SERVER_PORT=8081 \
+  S74_PUBLIC_BASE_URL=http://127.0.0.1:8081 \
+  DATABASE_URL=jdbc:postgresql://127.0.0.1:5433/s74_vouchers \
+  mvn spring-boot:run
+  ```
+
+  `stripe listen --forward-to 127.0.0.1:8081/api/stripe/webhook`. Odkazy na QR a návratové URL pak míří na 8081.
+- **Web:** `window.S74_VOUCHER_API` v `../js/vouchers-config.js` musí ukazovat na adresu backendu (8081). Soubor ve větvi neměňte; pro test
+  si zkopírujte kořen repozitáře (bez `backend/`) do dočasné složky, upravte tam konfiguraci a tu servírujte (`python3 -m http.server 8000 --bind 127.0.0.1`).
+  Pokud je obsazený i port 8000, změňte spolu s ním `S74_FRONTEND_BASE_URL` a `S74_CORS_ALLOWED_ORIGINS` v `.env`.
+
 Testovací karty: `4242 4242 4242 4242` (úspěch), `4000 0000 0000 0002` (zamítnutí), `4000 0027 6000 3184` (3D Secure); libovolné budoucí datum a CVC.
 
 ## Testy
@@ -77,7 +121,7 @@ Testovací karty: `4242 4242 4242 4242` (úspěch), `4000 0000 0000 0002` (zamí
 mvn verify
 ```
 
-Spouští 88 testů na skutečném PostgreSQL 16 v Testcontainers (jeden sdílený kontejner), SMTP přes GreenMail, Stripe přes atrapu
+Spouští 89 testů na skutečném PostgreSQL 16 v Testcontainers (jeden sdílený kontejner), SMTP přes GreenMail, Stripe přes atrapu
 (`CheckoutGateway`). Webhooky se podepisují v testu HMAC-SHA256 testovacím secretem, takže se ověřuje skutečná kontrola podpisu.
 Pokryto: generátor a normalizace kódu, validace konfigurace při startu, checkout (cena z ceníku, absence `payment_method_types` v parametrech Stripe,
 validace, rate limit, CORS), webhook (podpis, duplicita, `unpaid` → `async_payment_succeeded`, selhání, expirace, nesoulad částky/měny, livemode),
@@ -104,7 +148,7 @@ backend/
 
 Stav k 4. 11. 2026. **Ověřeno** = skutečně spuštěno a výsledek viděn; **neověřeno** = jen napsáno / nelze bez dalšího kroku.
 
-### Ověřeno automaticky (`mvn verify`, 88 testů zelených)
+### Ověřeno automaticky (`mvn verify`, 89 testů zelených)
 
 Viz výše – celá tabulka 17.1 analýzy včetně testu souběžného uplatnění, duplicitního webhooku a souběhu vystavení.
 
@@ -134,11 +178,30 @@ Viz výše – celá tabulka 17.1 analýzy včetně testu souběžného uplatně
 | Webhooky ostatních typů (`charge.succeeded`, `payment_intent.*`) | přijaty, `IGNORED`, HTTP 200 |
 | Úniky do logu | v logu backendu nebyl API klíč, webhook secret ani celý voucherový kód; audit neobsahuje celý kód |
 
+### Opakované ověření (12. 11. 2026, nový běh od nuly)
+
+Znovu spuštěno nezávisle na předchozím běhu: `mvn verify` (89 testů), Docker Postgres + Mailpit na alternativních portech (viz výše), `stripe listen`
+se sandbox klíčem, web v prohlížeči.
+
+| Scénář | Výsledek |
+|---|---|
+| Veřejné API | špatná nabídka / chybějící souhlas / špatný e-mail → 400; cena z požadavku se ignoruje; webhook bez podpisu i se špatným podpisem → 400; CORS jen pro povolený origin; `/actuator/env` a `/actuator/beans` nedostupné; CSP a další hlavičky nastavené |
+| Platba `4242…` (500 Kč) přes web → Stripe Checkout | česky, 500,00 Kč, text o propadnutí; po zaplacení objednávka `PAID`, právě 1 voucher `ACTIVE` (platnost +12 měsíců), `checkout.session.completed` `PROCESSED`, ostatní události `IGNORED` |
+| E-mail | 1 zpráva v Mailpitu: Reply-To `s74winecafe@seznam.cz`, kód, platnost, podmínky, bez externích obrázků; QR dekódovaný `zbarimg` vede na `/staff/v/<kód>` |
+| Návratová stránka po nové platbě | zobrazí voucher (QR, kód, platnost) a maskovaný e-mail |
+| Obsluha | QR anonymně → `/login` → po přihlášení detail; zobrazení voucher nespotřebuje; uplatnění bez zaškrtnutého upozornění se neprovede; bez CSRF tokenu 403 |
+| Souběžné uplatnění (2 požadavky naráz) | právě 1× `VOUCHER_REDEEMED`, 1× `REDEMPTION_REJECTED` |
+| Refund použitého voucheru (`stripe refunds create`) | objednávka `REFUNDED`, voucher zůstane `REDEEMED`, objednávka `attention_required` („řešit individuálně“) |
+
+Při tomto běhu se ukázalo, že Stripe CLI bylo přihlášené k jinému účtu než klíč v `.env` (webhooky pak nedorazí) a že port 8080 / 5432 byl obsazený jiným projektem;
+obojí je popsáno v kapitole „Lokální běh“. Krok „zavření okna po platbě“, 3D Secure, `rk_test_` klíč a mobilní zařízení zůstávají neověřené (viz níže).
+
 ### Voucher na návratové stránce (změna R10)
 
 Po platbě se na `order-success.html` zobrazí voucher (QR, kód, platnost, tlačítko Vytisknout), ale jen `s74.voucher.show-on-return-minutes` (výchozí 60) minut,
 jen pro aktivní voucher a zaplacenou objednávku; každé zobrazení je v auditu (`VOUCHER_DISPLAYED`). Ověřeno testy (zobrazí se, po 61 min ne, zrušený voucher ne)
-a ručně v prohlížeči na 360 px (na seed objednávce, ne po nové platbě ve Stripe). `0` zobrazování vypne.
+a ručně v prohlížeči, včetně nové platby ve Stripe (12. 11. 2026). Kdokoli s URL návratové stránky (obsahuje `session_id`) uvidí voucher po celou dobu okna;
+je to záměrný kompromis proti původnímu R10, o jeho ponechání rozhodne majitel. `0` zobrazování vypne.
 
 ### Zbývá neověřit
 
@@ -159,7 +222,7 @@ Endpoint webhooku musí mít v ostrém provozu stejnou API verzi jako SDK (admin
 
 1. Ve Stripe Dashboardu (přepnuto na **sandbox / testovací režim**) vytvořte restricted key `rk_test_…` s právy z kroku 2 a vložte ho do `backend/.env` jako `STRIPE_API_KEY`.
    Klíč nikdy nevkládejte do chatu, gitu ani logu.
-2. `stripe listen --forward-to 127.0.0.1:8080/api/stripe/webhook` → `whsec_…` do `.env` jako `STRIPE_WEBHOOK_SECRET`, backend restartovat.
+2. `stripe listen` se sandbox klíčem (viz krok 4 v „Lokální běh“, ne s účtem, ke kterému je CLI jinak přihlášené) → `whsec_…` do `.env` jako `STRIPE_WEBHOOK_SECRET`, backend restartovat.
 3. Projděte tabulku „Ověřeno ve Stripe sandboxu“: nákup na http://localhost:8000/vouchery.html, e-mail v Mailpitu, uplatnění; zamítnutá karta; `stripe events resend <evt_…>` (nesmí vzniknout druhý voucher);
    zastavte Mailpit (`docker compose stop mailpit`) a nakupte → po pokusech `FAILED` na `/admin/attention`, pak ho spusťte a pošlete znovu z detailu; refund (`stripe refunds create --payment-intent pi_…`) → voucher `CANCELLED`.
 4. Zbývající body (3D Secure, restricted key, mobilní zařízení) doplňte do tabulky výše.
