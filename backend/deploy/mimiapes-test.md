@@ -50,14 +50,26 @@ Endpoint můžete vytvořit hned, i když server ještě neběží. **Secret z `
 
 ## 3. Docker a uživatel (webová konzole, jako root)
 
+Server (zjištěno): Ubuntu 22.04.1, x86_64, 1,9 GB RAM, bez swapu, OpenLiteSpeed + MariaDB, `certbot` nainstalovaný, Docker ne.
+
 ```bash
-apt update && apt install -y docker.io docker-compose-v2 certbot
-docker compose version || echo "compose plugin chybí – použijte https://docs.docker.com/engine/install/ubuntu/"
-# swap jako pojistka, pokud server nemá žádný (zkontrolujte `swapon --show` a `free -h`)
+# Docker z oficiálního repozitáře (balíčky Ubuntu 22.04 jsou zastaralé)
+apt update && apt install -y ca-certificates curl
+install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc && chmod a+r /etc/apt/keyrings/docker.asc
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo $VERSION_CODENAME) stable" > /etc/apt/sources.list.d/docker.list
+apt update && apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+docker --version && docker compose version
+# swap 2 GB jako pojistka (server žádný nemá)
+fallocate -l 2G /swapfile && chmod 600 /swapfile && mkswap /swapfile && swapon /swapfile
+echo '/swapfile none swap sw 0 0' >> /etc/fstab && echo 'vm.swappiness=20' > /etc/sysctl.d/99-swap.conf && sysctl --system >/dev/null
+free -h
 adduser --disabled-password --gecos "" deploy && usermod -aG docker deploy
 install -d -o deploy -g deploy -m 750 /opt/s74-vouchers /opt/s74-vouchers/build/target
 install -d -m 700 -o deploy -g deploy /home/deploy/.ssh
 ```
+
+Pozor: LiteSpeed WebAdmin poslouchá na `0.0.0.0:7080` (dostupný z internetu). Omezte ho firewallem (DigitalOcean Cloud Firewall nebo `ufw`) na vaši IP, nebo aspoň ověřte silné heslo správce; neměňte to, dokud nemáte jistotu, že se nezamknete mimo správu.
 
 Docker publikuje porty přes iptables vedle firewallu; v tomto nasazení publikujeme jen `127.0.0.1`, takže se zvenku nic neotevře.
 
